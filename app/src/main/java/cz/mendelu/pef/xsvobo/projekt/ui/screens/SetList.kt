@@ -32,13 +32,14 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Set List")
                 })
         },
     ) {
 
         SetListScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter=navigationRouter
         )
 
 
@@ -49,7 +50,8 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun SetListScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
 
 
@@ -58,8 +60,16 @@ fun SetListScreenContent(
     )
     {
         Button(onClick = {
+            //TODO toto změnit podle 11 cvičení kde se bude generovat list i s tlačítkem
+            navigationRouter.navigateToCardList(null)
         }) {
-            Text(text = "Save task")
+            Text(text = "CardList")
+        }
+        Button(onClick = {
+            //TODO toto změnit podle 11 cvičení kde se bude generovat list i s tlačítkem
+            navigationRouter.navigateToPlaySet(null)
+        }) {
+            Text(text = "PlaySet")
         }
     }
 

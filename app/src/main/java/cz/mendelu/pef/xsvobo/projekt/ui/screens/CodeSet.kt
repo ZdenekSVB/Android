@@ -32,13 +32,14 @@ fun CodeSetScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Code Set")
                 })
         },
     ) {
 
         CodeSetScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter=navigationRouter
         )
 
 
@@ -49,7 +50,8 @@ fun CodeSetScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun CodeSetScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
 
 
@@ -58,8 +60,9 @@ fun CodeSetScreenContent(
     )
     {
         Button(onClick = {
+            navigationRouter.returnBack()
         }) {
-            Text(text = "Save task")
+            Text(text = "Add Set")
         }
     }
 

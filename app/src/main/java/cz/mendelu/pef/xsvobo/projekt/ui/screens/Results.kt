@@ -25,14 +25,14 @@ fun ResultsScreen(navigationRouter: INavigationRouter) {
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = {
-                        navigationRouter.returnBack()
+                        navigationRouter.navigateToMenu(null)
                     }) {
                         Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
                     }
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Results")
                 })
         },
     ) {
@@ -57,10 +57,7 @@ fun ResultsScreenContent(
         modifier = Modifier.padding(paddingValues)
     )
     {
-        Button(onClick = {
-        }) {
-            Text(text = "Save task")
-        }
+
     }
 
 

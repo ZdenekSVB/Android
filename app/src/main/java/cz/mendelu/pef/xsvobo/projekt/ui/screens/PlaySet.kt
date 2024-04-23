@@ -13,6 +13,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
@@ -32,13 +37,14 @@ fun PlaySetScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Play Set")
                 })
         },
     ) {
 
         PlaySetScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter = navigationRouter
         )
 
 
@@ -49,19 +55,18 @@ fun PlaySetScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun PlaySetScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
-
 
     Column(
         modifier = Modifier.padding(paddingValues)
-    )
-    {
+    ) {
         Button(onClick = {
+            navigationRouter.navigateToResults(null)
         }) {
-            Text(text = "Save task")
+            Text(text = "Next")
         }
     }
-
-
 }
+

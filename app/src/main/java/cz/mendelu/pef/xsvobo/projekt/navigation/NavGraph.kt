@@ -37,19 +37,19 @@ fun NavGraph(
             CodeSetScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSet.route){
+        composable(Destination.CardList.route){
             CardListScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSet.route){
+        composable(Destination.AddCard.route){
             AddCardScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSet.route){
+        composable(Destination.PlaySet.route){
             PlaySetScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSet.route){
+        composable(Destination.Results.route){
             ResultsScreen(navigationRouter = navigationRouter)
         }
 

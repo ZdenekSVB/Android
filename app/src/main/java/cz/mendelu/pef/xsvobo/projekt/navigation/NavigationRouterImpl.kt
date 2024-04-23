@@ -4,7 +4,9 @@ import androidx.navigation.NavController
 
 class NavigationRouterImpl(private val navController: NavController) : INavigationRouter {
 
-
+    override fun navigateToMenu(id: Long?) {
+        navController.navigate(Destination.MenuScreen.route)
+    }
     override fun navigateToSetList(id: Long?) {
         navController.navigate(Destination.SetList.route)
     }

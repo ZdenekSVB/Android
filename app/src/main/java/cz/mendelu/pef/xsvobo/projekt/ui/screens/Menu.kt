@@ -22,22 +22,15 @@ fun MenuScreen(navigationRouter: INavigationRouter) {
     Scaffold(
         topBar = {
             TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navigationRouter.returnBack()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                    }
-
-                },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Menu")
                 })
         },
     ) {
 
         MenuScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter=navigationRouter
         )
 
 
@@ -48,7 +41,8 @@ fun MenuScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun MenuScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
 
 
@@ -57,8 +51,14 @@ fun MenuScreenContent(
     )
     {
         Button(onClick = {
+            navigationRouter.navigateToSetList(null)
         }) {
-            Text(text = "Save task")
+            Text(text = "Show Sets")
+        }
+        Button(onClick = {
+            navigationRouter.navigateToCodeSet(null)
+        }) {
+            Text(text = "Add set from code")
         }
     }
 

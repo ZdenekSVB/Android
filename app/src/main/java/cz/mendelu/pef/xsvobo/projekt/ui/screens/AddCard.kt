@@ -32,13 +32,14 @@ fun AddCardScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Add Card")
                 })
         },
     ) {
 
         AddCardScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter=navigationRouter
         )
 
 
@@ -49,7 +50,8 @@ fun AddCardScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun AddCardScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
 
 
@@ -58,8 +60,9 @@ fun AddCardScreenContent(
     )
     {
         Button(onClick = {
+            navigationRouter.returnBack()
         }) {
-            Text(text = "Save task")
+            Text(text = "Save")
         }
     }
 

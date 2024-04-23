@@ -3,6 +3,7 @@ package cz.mendelu.pef.xsvobo.projekt.navigation
 import androidx.navigation.NavController
 
 interface INavigationRouter {
+    fun navigateToMenu(id: Long?)
     fun navigateToSetList(id: Long?)
     fun navigateToCodeSet(id: Long?)
     fun navigateToCardList(id: Long?)

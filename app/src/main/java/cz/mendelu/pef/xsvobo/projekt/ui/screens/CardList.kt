@@ -32,13 +32,14 @@ fun CardListScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Pridani ukolu")
+                    Text(text = "Card List")
                 })
         },
     ) {
 
         CardListScreenContent(
-            paddingValues = it
+            paddingValues = it,
+            navigationRouter=navigationRouter
         )
 
 
@@ -49,7 +50,8 @@ fun CardListScreen(navigationRouter: INavigationRouter) {
 
 @Composable
 fun CardListScreenContent(
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues,
+    navigationRouter: INavigationRouter
 ) {
 
 
@@ -58,8 +60,10 @@ fun CardListScreenContent(
     )
     {
         Button(onClick = {
+            //TODO toto změnit podle 11 cvičení kde se bude generovat list i s tlačítkem
+            navigationRouter.navigateToAddCard(null)
         }) {
-            Text(text = "Save task")
+            Text(text = "AddCard")
         }
     }
 
