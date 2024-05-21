@@ -127,7 +127,7 @@ fun MenuScreenContent(
         ) {
             sets.forEach {
                 item {
-                    SetListRow(
+                    LastSetRow(
                         set = it,
                         onClick = {
                             navigationRouter.navigateToPlaySet(it.id)
@@ -140,7 +140,7 @@ fun MenuScreenContent(
 }
 
 @Composable
-fun SetListRow(
+fun LastSetRow(
     set: Set,
     onClick: () -> Unit
 ) {
