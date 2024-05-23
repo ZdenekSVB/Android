@@ -2,6 +2,7 @@ package cz.mendelu.pef.xsvobo.projekt.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,12 +22,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.dp
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCardScreen(navigationRouter: INavigationRouter) {
+fun PlaySetScreen(navigationRouter: INavigationRouter) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -39,14 +40,14 @@ fun AddCardScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Add Card")
+                    Text(text = "Play Set")
                 })
         },
     ) {
 
-        AddCardScreenContent(
+        PlaySetScreenContent(
             paddingValues = it,
-            navigationRouter=navigationRouter
+            navigationRouter = navigationRouter
         )
 
 
@@ -56,11 +57,10 @@ fun AddCardScreen(navigationRouter: INavigationRouter) {
 }
 
 @Composable
-fun AddCardScreenContent(
+fun PlaySetScreenContent(
     paddingValues: PaddingValues,
     navigationRouter: INavigationRouter
 ) {
-
 
     Column(
         modifier = Modifier
@@ -69,37 +69,33 @@ fun AddCardScreenContent(
             .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
+    ) {
+        Box(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(16.dp)
+        ) {
+            Text(text = "Question")
+        }
 
         TextField(
-            label = { Text(text = "Question")},
-            value = "TEST",//TODO data.card.question
+            value = "Answer",//TODO data.card.text
             onValueChange = {
-                //TODO actions.cardTextChanged(it)
+                //TODO actions.taskTextChanged(it)
             },
             //TODO ERROR
 
         )
-        TextField(
-            label = { Text(text = "Answer")},
-            value = "TEST",//TODO data.card.answer
-            onValueChange = {
-                //TODO actions.cardTextChanged(it)
-            },
-            //TODO ERROR
-
-        )
-
+        //TODO porovnání
         Button(onClick = {
-            navigationRouter.returnBack()
+            navigationRouter.navigateToResults(null)
         },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color.White)) {
-            Text(text = "Save")
+            Text(text = "Next")
         }
+        //TODO kolečko procent hotovo
     }
-
-
 }
+

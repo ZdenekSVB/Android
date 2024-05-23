@@ -21,12 +21,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.hilt.navigation.compose.hiltViewModel
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CodeSetScreen(navigationRouter: INavigationRouter) {
+fun AddCardScreen(navigationRouter: INavigationRouter) {
+
+
+
+
+
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -39,12 +44,12 @@ fun CodeSetScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Code Set")
+                    Text(text = "Add Card")
                 })
         },
     ) {
 
-        CodeSetScreenContent(
+        AddCardScreenContent(
             paddingValues = it,
             navigationRouter=navigationRouter
         )
@@ -55,8 +60,9 @@ fun CodeSetScreen(navigationRouter: INavigationRouter) {
 
 }
 
+
 @Composable
-fun CodeSetScreenContent(
+fun AddCardScreenContent(
     paddingValues: PaddingValues,
     navigationRouter: INavigationRouter
 ) {
@@ -72,14 +78,32 @@ fun CodeSetScreenContent(
     )
     {
 
-        TextField(value = "", onValueChange = {})//TODO
+        TextField(
+            label = { Text(text = "Question")},
+            value = "TEST",//TODO data.card.question
+            onValueChange = {
+                //TODO actions.cardTextChanged(it)
+            },
+            //TODO ERROR
+
+        )
+        TextField(
+            label = { Text(text = "Answer")},
+            value = "TEST",//TODO data.card.answer
+            onValueChange = {
+                //TODO actions.cardTextChanged(it)
+            },
+            //TODO ERROR
+
+        )
+
         Button(onClick = {
             navigationRouter.returnBack()
         },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
                 contentColor = Color.White)) {
-            Text(text = "Add Set")
+            Text(text = "Save")
         }
     }
 

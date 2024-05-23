@@ -9,5 +9,7 @@ data class Card(var name: String){
 
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
+    var question: String? = null
+    var answer: String? = null
 
 }

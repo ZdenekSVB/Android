@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -154,21 +153,6 @@ fun LastSetRow(
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            Text(
-                text = set.name.substring(0, 1),
-                modifier = Modifier
-                    .padding(16.dp)
-                    .drawBehind {
-                        drawCircle(
-                            color = Color.hsl(230F, 0.89F, 0.64F),
-                            radius = this.size.maxDimension
-                        )
-                    },
-                color = Color.White,
-            )
-        }
-        Spacer(modifier = Modifier.width(8.dp))
         Column {
             Text(text = set.name)
         }

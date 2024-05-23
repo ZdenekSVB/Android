@@ -29,27 +29,28 @@ fun NavGraph(
             MenuScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.SetList.route){
+        composable(Destination.SetListScreen.route){
             SetListScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSet.route){
+        composable(Destination.CodeSetScreen.route){
             CodeSetScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CardList.route){
+        composable(Destination.CardListScreen.route){
             CardListScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.AddCard.route){
-            AddCardScreen(navigationRouter = navigationRouter)
+        composable(Destination.AddCardScreen.route){
+            AddCardScreen(
+                navigationRouter = navigationRouter)
         }
 
-        composable(Destination.PlaySet.route){
+        composable(Destination.PlaySetScreen.route){
             PlaySetScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.Results.route){
+        composable(Destination.ResultsScreen.route){
             ResultsScreen(navigationRouter = navigationRouter)
         }
 

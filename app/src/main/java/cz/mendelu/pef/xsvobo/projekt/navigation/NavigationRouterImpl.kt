@@ -8,27 +8,27 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navController.navigate(Destination.MenuScreen.route)
     }
     override fun navigateToSetList(id: Long?) {
-        navController.navigate(Destination.SetList.route)
+        navController.navigate(Destination.SetListScreen.route)
     }
 
     override fun navigateToCodeSet(id: Long?) {
-        navController.navigate(Destination.CodeSet.route)
+        navController.navigate(Destination.CodeSetScreen.route)
     }
 
     override fun navigateToCardList(id: Long?) {
-        navController.navigate(Destination.CardList.route)
+        navController.navigate(Destination.CardListScreen.route)
     }
 
     override fun navigateToAddCard(id: Long?) {
-        navController.navigate(Destination.AddCard.route)
+        navController.navigate(Destination.AddCardScreen.route)
     }
 
     override fun navigateToPlaySet(id: Long?) {
-        navController.navigate(Destination.PlaySet.route)
+        navController.navigate(Destination.PlaySetScreen.route)
     }
 
     override fun navigateToResults(id: Long?) {
-        navController.navigate(Destination.Results.route)
+        navController.navigate(Destination.ResultsScreen.route)
     }
 
     override fun getNavController(): NavController {
