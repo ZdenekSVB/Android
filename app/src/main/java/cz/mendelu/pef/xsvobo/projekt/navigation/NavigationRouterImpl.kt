@@ -4,30 +4,30 @@ import androidx.navigation.NavController
 
 class NavigationRouterImpl(private val navController: NavController) : INavigationRouter {
 
-    override fun navigateToMenu(id: Long?) {
+    override fun navigateToMenuScreen(id: Long?) {
         navController.navigate(Destination.MenuScreen.route)
     }
-    override fun navigateToSetList(id: Long?) {
+    override fun navigateToSetListScreen(id: Long?) {
         navController.navigate(Destination.SetListScreen.route)
     }
 
-    override fun navigateToCodeSet(id: Long?) {
+    override fun navigateToCodeSetScreen(id: Long?) {
         navController.navigate(Destination.CodeSetScreen.route)
     }
 
-    override fun navigateToCardList(id: Long?) {
-        navController.navigate(Destination.CardListScreen.route)
+    override fun navigateToCardListScreen(id: Long) {
+        navController.navigate(Destination.CardListScreen.route + "/" + id)
     }
 
-    override fun navigateToAddCard(id: Long?) {
-        navController.navigate(Destination.AddCardScreen.route)
+    override fun navigateToAddCardScreen(id: Long) {
+            navController.navigate(Destination.AddCardScreen.route + "/" + id)
     }
 
-    override fun navigateToPlaySet(id: Long?) {
-        navController.navigate(Destination.PlaySetScreen.route)
+    override fun navigateToPlaySetScreen(id: Long?) {
+        navController.navigate(Destination.PlaySetScreen.route + "/" + id)
     }
 
-    override fun navigateToResults(id: Long?) {
+    override fun navigateToResultsScreen(id: Long?) {
         navController.navigate(Destination.ResultsScreen.route)
     }
 

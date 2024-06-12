@@ -4,12 +4,16 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import cz.mendelu.pef.xsvobo.projekt.database.card.CardsDao
+import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
+import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 
-@Database(entities = [Set::class], version = 4, exportSchema = true)
+@Database(entities = [Set::class, Card::class], version = 5, exportSchema = true)
 abstract class SetsDatabase : RoomDatabase() {
 
     abstract fun setsDao(): SetsDao
+    abstract fun cardsDao(): CardsDao
 
     companion object {
         private var INSTANCE: SetsDatabase? = null

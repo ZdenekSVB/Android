@@ -1,5 +1,6 @@
 package cz.mendelu.pef.xsvobo.projekt.di
-import cz.mendelu.pef.xsvobo.projekt.database.SetsDao
+import cz.mendelu.pef.xsvobo.projekt.database.card.CardsDao
+import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
 import cz.mendelu.pef.xsvobo.projekt.database.SetsDatabase
 import dagger.Module
 import dagger.Provides
@@ -13,7 +14,12 @@ object DaoModule {
 
     @Provides
     @Singleton
-    fun provideTasksDao(database: SetsDatabase): SetsDao {
+    fun provideSetDao(database: SetsDatabase): SetsDao {
         return database.setsDao()
+    }
+    @Provides
+    @Singleton
+    fun provideCardDao(database: SetsDatabase): CardsDao {
+        return database.cardsDao()
     }
 }

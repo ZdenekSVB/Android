@@ -8,7 +8,6 @@ data class Set(var name: String){
 
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
-    //TODO var cards: List<Card>? = null
 
 
 }
