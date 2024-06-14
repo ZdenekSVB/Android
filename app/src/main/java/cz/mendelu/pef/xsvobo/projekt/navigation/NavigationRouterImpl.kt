@@ -27,8 +27,8 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navController.navigate(Destination.PlaySetScreen.route + "/" + id)
     }
 
-    override fun navigateToResultsScreen(id: Long?) {
-        navController.navigate(Destination.ResultsScreen.route)
+    override fun navigateToResultsScreen(id: Long?, correctCount: Int) {
+        navController.navigate("${Destination.ResultsScreen}/$id/$correctCount")
     }
 
     override fun getNavController(): NavController {

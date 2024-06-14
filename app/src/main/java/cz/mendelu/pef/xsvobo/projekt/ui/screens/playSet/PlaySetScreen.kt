@@ -1,73 +1,95 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.playSet
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PlaySetScreen(navigationRouter: INavigationRouter,id: Long) {
+fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
 
+    var cardData by remember {
+        mutableStateOf(PlaySetScreenData())
+    }
+
+    val cards: MutableList<Card> = remember { mutableListOf() }
+
+    val viewModel = hiltViewModel<ResultsScreenViewModel>()
+
+    val state = viewModel.playSetUIState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.value) {
+        state.value.let {
+            when (it) {
+                is PlaySetScreenUIState.Loading -> {
+                    viewModel.loadSet(id)
+                }
+                is PlaySetScreenUIState.Success -> {
+                    if (cards.isEmpty()) {
+                        cards.addAll(it.cards)
+                    }
+                    cardData.card = it.cards[cardData.index]
+                }
+                is PlaySetScreenUIState.CardAnswerChanged -> {
+                    Log.d("CardAnswerChanged", "Answer:${it.data.card.answer}")
+                    cardData = it.data
+                }
+                is PlaySetScreenUIState.Nextcard -> {
+                    cardData = it.data
+                }
+            }
+        }
+    }
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navigationRouter.returnBack()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                    }
-
-                },
-                title = {
-                    Text(text = "Play Set ${id}")
-                })
+            TopAppBar(navigationIcon = {
+                IconButton(onClick = {
+                    navigationRouter.returnBack()
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                }
+            }, title = {
+                Text(text = "Play Set $id")
+            })
         },
-    ) {
-
+    ) { paddingValues ->
         PlaySetScreenContent(
-            paddingValues = it,
-            navigationRouter = navigationRouter
+            paddingValues = paddingValues,
+            navigationRouter = navigationRouter,
+            cardData = cardData,
+            viewModel = viewModel,
+            id = id,
+            cards = cards
         )
-
-
     }
-
-
 }
 
 @Composable
 fun PlaySetScreenContent(
     paddingValues: PaddingValues,
-    navigationRouter: INavigationRouter
+    navigationRouter: INavigationRouter,
+    cardData: PlaySetScreenData,
+    viewModel: PlaySetScreenActions,
+    id: Long,
+    cards: List<Card>
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray) // Set the background color to gray
+            .background(Color.LightGray)
             .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -77,27 +99,30 @@ fun PlaySetScreenContent(
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = "Question")
+            Text(text = cardData.card.question ?: "")
         }
-
         TextField(
-            value = "Answer",//TODO data.card.text
+            value = cardData.card.answer ?: "",
             onValueChange = {
-                //TODO actions.taskTextChanged(it)
+                viewModel.cardAnswerChanged(it)
             },
-            //TODO ERROR
-
         )
-        //TODO porovnání
-        Button(onClick = {
-            navigationRouter.navigateToResultsScreen(null)
-        },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White)) {
+        Button(
+            onClick = {
+                Log.d("Next", "rightAnswer " + cardData.card.rightAnswer + " | answer "+ cardData.card.answer)
+                if (cardData.card.answer == cardData.card.rightAnswer) {
+                    viewModel.incrementCorrectCount()
+                }
+                if (cardData.index == cards.size - 1) {
+                    navigationRouter.navigateToResultsScreen(id,cardData.correctCount)
+                } else {
+                    viewModel.nextCard()
+                }
+            }, colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black, contentColor = Color.White
+            )
+        ) {
             Text(text = "Next")
         }
-        //TODO kolečko procent hotovo
     }
 }
-

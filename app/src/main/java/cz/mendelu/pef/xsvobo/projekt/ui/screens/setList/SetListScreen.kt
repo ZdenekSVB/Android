@@ -181,7 +181,7 @@ fun SetListRow(
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "")
                 }
                 IconButton(onClick = {
-                    navigationRouter.navigateToPlaySetScreen(set.id)
+                    navigationRouter.navigateToPlaySetScreen(set.id!!)
                 }) {
                     Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
                 }

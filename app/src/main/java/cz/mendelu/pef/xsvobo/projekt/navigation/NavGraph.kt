@@ -85,8 +85,28 @@ fun NavGraph(
             }
         }
 
-        composable(Destination.ResultsScreen.route){
-            ResultsScreen(navigationRouter = navigationRouter)
+        composable(
+            "${Destination.ResultsScreen}/{id}/{correctCount}",
+            arguments = listOf(
+                navArgument("id") {
+                    type = NavType.LongType
+                    defaultValue = -1L
+                },
+                navArgument("correctCount") {
+                    type = NavType.IntType
+                    defaultValue = -1
+                }
+            )
+        ) { backStackEntry ->
+            val id = backStackEntry.arguments?.getLong("id")
+            val correctCount = backStackEntry.arguments?.getInt("correctCount")
+            if (id != null && correctCount != null) {
+                ResultsScreen(
+                    navigationRouter = navigationRouter,
+                    setId = id,
+                    correctCount = correctCount
+                )
+            }
         }
 
 

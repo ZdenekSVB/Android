@@ -30,14 +30,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenData
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenUIState
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddCardScreen(navigationRouter: INavigationRouter,
-                  id: Long?) {
+fun AddCardScreen(
+    navigationRouter: INavigationRouter,
+    id: Long?
+) {
 
 
     val viewModel = hiltViewModel<AddCardScreenViewModel>()
@@ -49,10 +48,11 @@ fun AddCardScreen(navigationRouter: INavigationRouter,
     }
 
     state.value.let {
-        when(it){
+        when (it) {
             is AddCardScreenUIState.Loading -> {
                 viewModel.loadCard(id)
             }
+
             is AddCardScreenUIState.CardSaved -> {
                 LaunchedEffect(it) {
                     navigationRouter.returnBack()
@@ -85,9 +85,9 @@ fun AddCardScreen(navigationRouter: INavigationRouter,
 
         AddCardScreenContent(
             paddingValues = it,
-            navigationRouter=navigationRouter,
+            navigationRouter = navigationRouter,
             actions = viewModel,
-            cardData= data
+            cardData = data
         )
 
 
@@ -101,7 +101,7 @@ fun AddCardScreen(navigationRouter: INavigationRouter,
 fun AddCardScreenContent(
     paddingValues: PaddingValues,
     navigationRouter: INavigationRouter,
-    actions:AddCardScreenActions,
+    actions: AddCardScreenActions,
     cardData: AddCardScreenData
 ) {
 
@@ -117,31 +117,42 @@ fun AddCardScreenContent(
     {
 
         TextField(
-            label = { Text(text = "Question")},
-            value = cardData.card.question+"" ,
+            label = { Text(text = "Question") },
+            value = cardData.card.question + "",
             onValueChange = {
                 actions.cardQuestionChanged(it)
             },
-            //TODO ERROR
+            isError = cardData.cardTextError != null,
+            supportingText = {
+                if (cardData.cardTextError != null){
+                    Text(text = cardData.cardTextError!!)
+                }
+            }
 
         )
         TextField(
-            label = { Text(text = "Answer")},
-            value = cardData.card.answer+"" ,
+            label = { Text(text = "Answer") },
+            value = cardData.card.rightAnswer + "",
             onValueChange = {
-                actions.cardAnswerChanged(it)
+                actions.cardRightAnswerChanged(it)
             },
-            //TODO ERROR
-
+            isError = cardData.cardTextError != null,
+            supportingText = {
+                if (cardData.cardTextError != null){
+                    Text(text = cardData.cardTextError!!)
+                }
+            }
         )
 
-        Button(onClick = {
-            actions.saveCard()
-            navigationRouter.returnBack()
-        },
+        Button(
+            onClick = {
+                actions.saveCard()
+            },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Black,
-                contentColor = Color.White)) {
+                contentColor = Color.White
+            )
+        ) {
             Text(text = "Save")
         }
     }

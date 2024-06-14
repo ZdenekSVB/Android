@@ -34,18 +34,16 @@ class CardListScreenViewModel @Inject constructor(
 
     private var setData: SetListScreenData = SetListScreenData()
 
-    val cardListScreenUIState: MutableState<CardListScreenUIState> =
-        mutableStateOf(CardListScreenUIState.Loading())
 
     private val _cardListScreenUIState: MutableStateFlow<CardListScreenUIState> =
         MutableStateFlow(value = CardListScreenUIState.Loading())
 
-    val addEditSetUIState = _cardListScreenUIState.asStateFlow()
+    val cardListScreenUIState = _cardListScreenUIState.asStateFlow()
     override fun addCard(id:Long) {
         viewModelScope.launch {
 
             Log.d("CardViewModel", "addCard called")
-            if (cardData.card.id == null) {
+            if (cardData.card.id == null ) {
                 cardData.card.setsId=id
                 cardData.card.name = "Card"
                 Log.d("CardViewModel", "Inserting card: ${cardData.card.setsId} + ${cardData.card.id}")
@@ -94,7 +92,7 @@ class CardListScreenViewModel @Inject constructor(
         }
         viewModelScope.launch {
             repositoryCards.getCardsBySetId(id).collect {cards= it.toMutableList()
-                cardListScreenUIState.value = CardListScreenUIState.Success(cards)
+                _cardListScreenUIState.value = CardListScreenUIState.Success(cards)
                 _cardListScreenUIState.update {
                     CardListScreenUIState.Success(cards)
                 }
@@ -102,7 +100,7 @@ class CardListScreenViewModel @Inject constructor(
         }
     }
 
-    fun deleteCard(id:Long) {
+    override fun deleteCard(id:Long) {
         viewModelScope.launch {
             val numberOfDeleted = repositoryCards.delete(repositoryCards.getCard(id))
             if (numberOfDeleted > 0) {

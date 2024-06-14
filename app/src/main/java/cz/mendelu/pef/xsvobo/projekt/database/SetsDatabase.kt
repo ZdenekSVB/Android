@@ -9,7 +9,7 @@ import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 
-@Database(entities = [Set::class, Card::class], version = 5, exportSchema = true)
+@Database(entities = [Set::class, Card::class], version = 6, exportSchema = true)
 abstract class SetsDatabase : RoomDatabase() {
 
     abstract fun setsDao(): SetsDao

@@ -63,7 +63,7 @@ fun CardListScreen(
 
     val viewModel = hiltViewModel<CardListScreenViewModel>()
 
-    val state = viewModel.addEditSetUIState.collectAsStateWithLifecycle()
+    val state = viewModel.cardListScreenUIState.collectAsStateWithLifecycle()
 
 
     state.value.let {
@@ -83,9 +83,12 @@ fun CardListScreen(
             is CardListScreenUIState.CardDeleted -> {
                 viewModel.loadSet(id)
             }
+
         }
 
     }
+
+    Log.d("Načtení CardListScreen", "Velikost Baličku: ${cards.size}")
     Scaffold(
         topBar = {
             TopAppBar(
@@ -121,8 +124,7 @@ fun CardListScreen(
             cards = cards,
             navigationRouter = navigationRouter,
             setData = setData,
-            actions=viewModel,
-            viewModel = viewModel
+            actions=viewModel
         )
     }
 }
@@ -133,8 +135,7 @@ fun CardListScreenContent(
     cards: List<Card>,
     navigationRouter: INavigationRouter,
     setData: SetListScreenData,
-    actions: CardListScreenActions,
-    viewModel: CardListScreenViewModel
+    actions: CardListScreenActions
 ) {
     Column(
         modifier = Modifier
@@ -190,7 +191,7 @@ fun CardListScreenContent(
                     CardListRow(
                         card = it,
                         navigationRouter = navigationRouter,
-                        viewModel = viewModel
+                        actions = actions
                     )
                 }
             }
@@ -203,7 +204,7 @@ fun CardListScreenContent(
 fun CardListRow(
     card: Card,
     navigationRouter: INavigationRouter,
-    viewModel: CardListScreenViewModel
+    actions: CardListScreenActions
 ) {
 
     Row(
@@ -240,7 +241,7 @@ fun CardListRow(
         Column {
             Row {
                 IconButton(onClick = {
-                    card.id?.let { viewModel.deleteCard(it) }
+                    card.id?.let { actions.deleteCard(it) }
                 }) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "")
                 }
