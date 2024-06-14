@@ -4,14 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.util.readVersion
 import androidx.sqlite.db.SupportSQLiteDatabase
 import cz.mendelu.pef.xsvobo.projekt.database.card.CardsDao
 import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 
-@Database(entities = [Set::class, Card::class], version = 6, exportSchema = true)
+@Database(entities = [Set::class, Card::class], version = 7, exportSchema = true)
 abstract class SetsDatabase : RoomDatabase() {
 
     abstract fun setsDao(): SetsDao

@@ -1,10 +1,6 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList
 
 import android.util.Log
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
@@ -15,11 +11,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.handleCoroutineException
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import cz.mendelu.pef.xsvobo.projekt.model.Set
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenUIState
 
 @HiltViewModel
 class CardListScreenViewModel @Inject constructor(

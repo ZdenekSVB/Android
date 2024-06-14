@@ -22,6 +22,10 @@ class LocalSetsRepositoryImpl @Inject constructor(private val dao: SetsDao) : IL
         return dao.getSet(id)
     }
 
+    override  fun getLatestSet(): Flow<List<Set>> {
+        return dao.getLatestSet()
+    }
+
     override suspend fun delete(set: Set): Int {
         return dao.delete(set)
     }

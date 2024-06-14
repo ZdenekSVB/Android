@@ -1,7 +1,7 @@
 package cz.mendelu.pef.xsvobo.projekt.di
+import cz.mendelu.pef.xsvobo.projekt.database.SetsDatabase
 import cz.mendelu.pef.xsvobo.projekt.database.card.CardsDao
 import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
-import cz.mendelu.pef.xsvobo.projekt.database.SetsDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

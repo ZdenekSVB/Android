@@ -1,6 +1,5 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.setList
 
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -22,7 +21,7 @@ class SetListScreenViewModel @Inject constructor(private val repository: ILocalS
 
     private var data: SetListScreenData = SetListScreenData()
 
-    private val _addCardScreenUIState: MutableStateFlow<SetListScreenUIState> =
+    private val _setListScreenUIState: MutableStateFlow<SetListScreenUIState> =
         MutableStateFlow(value = SetListScreenUIState.Loading())
 
     override fun createSet() {
@@ -38,7 +37,7 @@ class SetListScreenViewModel @Inject constructor(private val repository: ILocalS
         viewModelScope.launch {
             val numberOfDeleted = repository.delete(repository.getSet(setId))
             if (numberOfDeleted > 0) {
-                _addCardScreenUIState.update {
+                _setListScreenUIState.update {
                     SetListScreenUIState.SetDeleted()
                 }
             }

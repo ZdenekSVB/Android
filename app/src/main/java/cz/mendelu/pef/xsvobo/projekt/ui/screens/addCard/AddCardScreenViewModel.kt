@@ -1,15 +1,8 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.addCard
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
-import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
-import cz.mendelu.pef.xsvobo.projekt.model.Card
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenUIState
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow

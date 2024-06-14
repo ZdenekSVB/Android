@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
@@ -30,9 +33,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import co.yml.charts.common.model.PlotType
+import co.yml.charts.ui.piechart.charts.PieChart
+import co.yml.charts.ui.piechart.models.PieChartConfig
+import co.yml.charts.ui.piechart.models.PieChartData
 import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
+import androidx.compose.foundation.layout.size
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,6 +98,7 @@ fun ResultsScreenContent(
     paddingValues: PaddingValues, cards: List<Card>, correctCount: Int
 ) {
 
+    val incorrectCount = cards.size - correctCount
 
     Column(
         modifier = Modifier
@@ -112,24 +121,42 @@ fun ResultsScreenContent(
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            //TODO CHART
+            // Pie Chart
+
+            val pieChartData = PieChartData(
+                slices = listOf(
+                    PieChartData.Slice(
+                        label = stringResource(id = R.string.correct_count),
+                        value = correctCount.toFloat(),
+                        color = Color(0xFF2f8c00)
+                    ), PieChartData.Slice(
+                        label = stringResource(id = R.string.wrong_count),
+                        value = incorrectCount.toFloat(),
+                        color = Color(0xFFa30000)
+                    )
+                ), plotType = PlotType.Pie
+            )
+            val pieChartConfig = PieChartConfig(
+                isAnimationEnable = true, showSliceLabels = true, animationDuration = 1500
+            )
+
+            PieChart(
+                modifier = Modifier
+                    .width(400.dp)
+                    .height(400.dp), pieChartData, pieChartConfig
+            )
         }
         Box(
             modifier = Modifier
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = stringResource(id = R.string.correct_count)+" ${correctCount} / ${cards.size}")
-        }
-        Box(
-            modifier = Modifier
-                .background(color = Color.White)
-                .padding(16.dp)
-        ) {
-            Text(text = stringResource(id = R.string.wrong_count)+" ${cards.size - correctCount} / ${cards.size}")
+            Column {
+                Text(text = stringResource(id = R.string.correct_count) + " ${correctCount} / ${cards.size}")
+                Spacer(modifier = Modifier.size(30.dp))
+                Text(text = stringResource(id = R.string.wrong_count) + " ${cards.size - correctCount} / ${cards.size}")
+            }
         }
 
     }
-
-
 }

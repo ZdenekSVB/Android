@@ -14,6 +14,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,15 +28,42 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.R
+import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.results.ResultsScreenUIState
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.results.ResultsScreenViewModel
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navigationRouter: INavigationRouter) {
-    val sets: MutableList<Set> = mutableListOf()
+/*
+    var set by remember {
+        mutableStateOf(Set(""))
+    }
+*/
+    var sets: MutableList<Set> = mutableListOf()
 
+    val viewModel = hiltViewModel<MenuScreenViewModel>()
+
+    val state = viewModel.menuScreenUIState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(state.value) {
+        state.value.let {
+            when (it) {
+                is MenuScreenUIState.Loading -> {
+                    viewModel.loadLatestSet()
+                }
+                is MenuScreenUIState.Success -> {
+                    sets.addAll(it.sets)
+                }
+            }
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(

@@ -12,7 +12,7 @@ android {
 
     defaultConfig {
         applicationId = "cz.mendelu.pef.xsvobo.projekt"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -97,4 +97,6 @@ dependencies {
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation("co.yml:ycharts:2.1.0")
+
 }
