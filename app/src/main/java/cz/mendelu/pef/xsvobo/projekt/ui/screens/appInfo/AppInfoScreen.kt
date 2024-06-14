@@ -125,7 +125,7 @@ fun ResultsScreenContent(
             val appSize = viewModel.getAppSize(it)
 
             // Zobrazíme informace v Compose UI
-            Text(text = stringResource(id = R.string.app_name)+"App Name: $appName")
+            Text(text = stringResource(id = R.string.app_name)+": $appName")
             Text(text = stringResource(id = R.string.version_name)+": $versionName")
             Text(text = stringResource(id = R.string.minsdk_version)+": $minSdkVersion")
             Text(text = stringResource(id = R.string.targetsdk_version)+": $targetSdkVersion")

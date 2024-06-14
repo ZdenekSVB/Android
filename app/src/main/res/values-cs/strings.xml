@@ -1,2 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="app_name">projekt</string>
+    <string name="add_code_button">Přidat sadu podle kódu</string>
+    <string name="menu_title">Menu</string>
+    <string name="flashcards_box">FlashCards</string>
+    <string name="show_sets">Zobrazit sady</string>
+    <string name="app_info_button">Info o aplikaci</string>
+    <string name="last_played_set">Poslední hrávaná sada</string>
+    <string name="set_list_title">Seznam sad</string>
+    <string name="set_name">Sada</string>
+    <string name="results_title">Výsledky</string>
+    <string name="set_completed">Sada dokončena</string>
+    <string name="correct_count">Správné odpovědi</string>
+    <string name="wrong_count">Nesprávné odpovědi</string>
+    <string name="play_set_title">Hrát sadu</string>
+    <string name="next">Další</string>
+    <string name="code_set_title">Kód sady</string>
+    <string name="set_generated_code">Vygenerovaný kód sady</string>
+    <string name="select_picture">Vybrat obrázek</string>
+    <string name="cards">Karty</string>
+    <string name="card_list_title">Seznam karet</string>
+    <string name="app_info_not_available">Info o aplikaci není k dispozici</string>
+    <string name="app_size">Velikost aplikace</string>
+    <string name="install_time">Čas instalace</string>
+    <string name="targetsdk_version">Cílová verze SDK</string>
+    <string name="minsdk_version">Minimální verze SDK</string>
+    <string name="version_name">Verze</string>
+    <string name="database_version">Verze databáze</string>
+    <string name="add_card">Přidat kartu</string>
+    <string name="question">Otázka</string>
+    <string name="answer">Odpověď</string>
+    <string name="save">Uložit</string>
+</resources>
