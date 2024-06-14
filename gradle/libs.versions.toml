@@ -16,6 +16,10 @@ hilt-compose = "1.1.0"
 moshi = "1.15.0"
 
 lifecycle = "2.6.2"
+appcompat = "1.6.1"
+material = "1.10.0"
+activity = "1.9.0"
+constraintlayout = "2.1.4"
 
 
 [libraries]
@@ -52,6 +56,10 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kapt = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
 lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="Theme.MySplashScreen" parent="Theme.SplashScreen" >
+        <item name="windowSplashScreenBackground">@color/darkblue</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon</item>
+        <item name="postSplashScreenTheme">@style/Theme.Projekt</item>
+    </style>
     <style name="Theme.Projekt" parent="android:Theme.Material.Light.NoActionBar" />
 </resources>
