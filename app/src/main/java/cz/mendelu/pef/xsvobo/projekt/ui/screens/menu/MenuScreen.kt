@@ -112,6 +112,19 @@ fun MenuScreenContent(
             Text(text = "Add set from code")
         }
         Spacer(modifier = Modifier.height(16.dp))
+        Button(
+            modifier = Modifier,
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black,
+                contentColor = Color.White
+            ),
+            onClick = {
+                navigationRouter.navigateToAppInfoScreen()
+            }
+        ) {
+            Text(text = "App Info")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
         Box(
             modifier = Modifier
                 .background(color = Color.White)

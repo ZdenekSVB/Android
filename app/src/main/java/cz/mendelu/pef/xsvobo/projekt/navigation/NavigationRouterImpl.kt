@@ -7,6 +7,7 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     override fun navigateToMenuScreen(id: Long?) {
         navController.navigate(Destination.MenuScreen.route)
     }
+
     override fun navigateToSetListScreen(id: Long?) {
         navController.navigate(Destination.SetListScreen.route)
     }
@@ -20,11 +21,15 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     }
 
     override fun navigateToAddCardScreen(id: Long) {
-            navController.navigate(Destination.AddCardScreen.route + "/" + id)
+        navController.navigate(Destination.AddCardScreen.route + "/" + id)
     }
 
     override fun navigateToPlaySetScreen(id: Long?) {
         navController.navigate(Destination.PlaySetScreen.route + "/" + id)
+    }
+
+    override fun navigateToAppInfoScreen() {
+        navController.navigate(Destination.AppInfoScreen.route)
     }
 
     override fun navigateToResultsScreen(id: Long?, correctCount: Int) {

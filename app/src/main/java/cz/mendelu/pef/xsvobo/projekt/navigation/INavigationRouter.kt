@@ -9,7 +9,8 @@ interface INavigationRouter {
     fun navigateToCardListScreen(id: Long)
     fun navigateToAddCardScreen(id: Long)
     fun navigateToPlaySetScreen(id: Long?)
-    fun navigateToResultsScreen(id: Long?,correctCount:Int)
+    fun navigateToAppInfoScreen()
+    fun navigateToResultsScreen(id: Long?, correctCount: Int)
     fun getNavController(): NavController
     fun returnBack()
 }

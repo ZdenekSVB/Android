@@ -8,4 +8,5 @@ sealed class Destination(val route: String) {
     object AddCardScreen : Destination("add_card")
     object PlaySetScreen : Destination("play_set")
     object ResultsScreen : Destination("results")
+    object AppInfoScreen : Destination("app_Info")
 }

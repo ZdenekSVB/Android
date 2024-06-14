@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.util.readVersion
+import androidx.sqlite.db.SupportSQLiteDatabase
 import cz.mendelu.pef.xsvobo.projekt.database.card.CardsDao
 import cz.mendelu.pef.xsvobo.projekt.database.set.SetsDao
 import cz.mendelu.pef.xsvobo.projekt.model.Card
@@ -23,8 +25,7 @@ abstract class SetsDatabase : RoomDatabase() {
                 synchronized(SetsDatabase::class.java) {
                     if (INSTANCE == null) {
                         INSTANCE = Room.databaseBuilder(
-                            context.applicationContext,
-                            SetsDatabase::class.java, "sets_database"
+                            context.applicationContext, SetsDatabase::class.java, "sets_database"
                         ).build()
                     }
                 }
@@ -32,5 +33,11 @@ abstract class SetsDatabase : RoomDatabase() {
             return INSTANCE!!
         }
 
+        fun getDatabaseVersion(context: Context): Int {
+            val db: SupportSQLiteDatabase = Room.databaseBuilder(
+                context.applicationContext, SetsDatabase::class.java, "sets_database"
+            ).build().openHelper.readableDatabase
+            return db.version
+        }
     }
 }
