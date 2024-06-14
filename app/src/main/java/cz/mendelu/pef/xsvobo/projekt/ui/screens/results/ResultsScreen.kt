@@ -26,9 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
@@ -68,7 +70,7 @@ fun ResultsScreen(navigationRouter: INavigationRouter, setId: Long, correctCount
                 }
 
             }, title = {
-                Text(text = "Results")
+                Text(text = stringResource(id = R.string.results_title))
             })
         },
     ) {
@@ -102,7 +104,7 @@ fun ResultsScreenContent(
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = "Set Completed ")
+            Text(text = stringResource(id = R.string.set_completed))
             //Icon(imageVector = Icons.Default.Check, contentDescription = "")
         }
         Box(
@@ -117,14 +119,14 @@ fun ResultsScreenContent(
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = "Correct Answers: ${correctCount} / ${cards.size}")
+            Text(text = stringResource(id = R.string.correct_count)+" ${correctCount} / ${cards.size}")
         }
         Box(
             modifier = Modifier
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = "Wrong Answers: ${cards.size - correctCount} / ${cards.size}")
+            Text(text = stringResource(id = R.string.wrong_count)+" ${cards.size - correctCount} / ${cards.size}")
         }
 
     }

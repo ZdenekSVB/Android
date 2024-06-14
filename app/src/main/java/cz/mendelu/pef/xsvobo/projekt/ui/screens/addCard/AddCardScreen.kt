@@ -27,8 +27,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +80,7 @@ fun AddCardScreen(
 
                 },
                 title = {
-                    Text(text = "Add Card")
+                    Text(text = stringResource(id = R.string.add_card))
                 })
         },
     ) {
@@ -117,7 +119,7 @@ fun AddCardScreenContent(
     {
 
         TextField(
-            label = { Text(text = "Question") },
+            label = { Text(text = stringResource(id = R.string.question)) },
             value = cardData.card.question + "",
             onValueChange = {
                 actions.cardQuestionChanged(it)
@@ -131,7 +133,7 @@ fun AddCardScreenContent(
 
         )
         TextField(
-            label = { Text(text = "Answer") },
+            label = { Text(text = stringResource(id = R.string.answer)) },
             value = cardData.card.rightAnswer + "",
             onValueChange = {
                 actions.cardRightAnswerChanged(it)
@@ -153,7 +155,7 @@ fun AddCardScreenContent(
                 contentColor = Color.White
             )
         ) {
-            Text(text = "Save")
+            Text(text = stringResource(id = R.string.save))
         }
     }
 

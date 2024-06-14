@@ -28,8 +28,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
@@ -72,7 +74,7 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
                 },
                 title = {
                     Text(
-                        text = "Set List",
+                        text = stringResource(id = R.string.set_list_title),
                     )
                 }
             )
@@ -165,7 +167,11 @@ fun SetListRow(
                 )
             }
             Column {
-                Text(text = "${set.name} ${set.id} ")
+                if(set.name != "Set"){
+                    Text(text = "${set.name} ${set.id} ")
+                }else {
+                    Text(text = stringResource(id = R.string.set_name)+" ${set.id}")
+                }
             }
         }
         Column {

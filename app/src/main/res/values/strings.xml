@@ -1,3 +1,33 @@
 <resources>
     <string name="app_name">projekt</string>
+    <string name="add_code_button">Add set from code</string>
+    <string name="menu_title">Menu</string>
+    <string name="flashcards_box">FlashCards</string>
+    <string name="show_sets">Show Sets</string>
+    <string name="app_info_button">App Info</string>
+    <string name="last_played_set">Last Played Set</string>
+    <string name="set_list_title">Set List</string>
+    <string name="set_name">Set</string>
+    <string name="results_title">Results</string>
+    <string name="set_completed">Set Completed</string>
+    <string name="correct_count">Correct Answers</string>
+    <string name="wrong_count">Wrong Answers</string>
+    <string name="play_set_title">Play Set</string>
+    <string name="next">Next</string>
+    <string name="code_set_title">Code Set</string>
+    <string name="set_generated_code">Set Generated Code</string>
+    <string name="select_picture">Select Picture</string>
+    <string name="cards">Cards</string>
+    <string name="card_list_title">Card List</string>
+    <string name="app_info_not_available">App info not available</string>
+    <string name="app_size">App Size</string>
+    <string name="install_time">Install Time</string>
+    <string name="targetsdk_version">TargetSDK Version</string>
+    <string name="minsdk_version">MinSDK Version</string>
+    <string name="version_name">Version Name</string>
+    <string name="database_version">Database version</string>
+    <string name="add_card">Add Card</string>
+    <string name="question">Question</string>
+    <string name="answer">Answer</string>
+    <string name="save">Save</string>
 </resources>

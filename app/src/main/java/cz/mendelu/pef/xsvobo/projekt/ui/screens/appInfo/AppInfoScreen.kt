@@ -39,6 +39,8 @@ import android.content.pm.PackageInfo
 import android.os.Build
 import android.text.format.DateFormat
 import androidx.annotation.RequiresApi
+import androidx.compose.ui.res.stringResource
+import cz.mendelu.pef.xsvobo.projekt.R
 import java.util.Date
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -111,7 +113,7 @@ fun ResultsScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "Database version: $DBversion")
+        Text(text = stringResource(id = R.string.database_version)+": $DBversion")
 
         packageInfo?.let {
             val appName = it.applicationInfo.loadLabel(context.packageManager).toString()
@@ -123,14 +125,14 @@ fun ResultsScreenContent(
             val appSize = viewModel.getAppSize(it)
 
             // Zobrazíme informace v Compose UI
-            Text(text = "App Name: $appName")
-            Text(text = "Version Name: $versionName")
-            Text(text = "MinSdk Version: $minSdkVersion")
-            Text(text = "TargetSdk Version: $targetSdkVersion")
-            Text(text = "Install Time: $installTime")
-            Text(text = "App Size: $appSize bytes")
+            Text(text = stringResource(id = R.string.app_name)+"App Name: $appName")
+            Text(text = stringResource(id = R.string.version_name)+": $versionName")
+            Text(text = stringResource(id = R.string.minsdk_version)+": $minSdkVersion")
+            Text(text = stringResource(id = R.string.targetsdk_version)+": $targetSdkVersion")
+            Text(text = stringResource(id = R.string.install_time)+": $installTime")
+            Text(text = stringResource(id = R.string.app_size)+": $appSize bytes")
         } ?: run {
-            Text(text = "App info not available")
+            Text(text = stringResource(id = R.string.app_info_not_available))
         }
     }
 }

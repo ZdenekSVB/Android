@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -35,7 +36,7 @@ fun MenuScreen(navigationRouter: INavigationRouter) {
             TopAppBar(
                 title = {
                     Text(
-                        text = "Menu",
+                        text = stringResource(id = R.string.menu_title),
                         textAlign = TextAlign.Center,
                         modifier = Modifier.fillMaxWidth()
                     )
@@ -80,7 +81,7 @@ fun MenuScreenContent(
                     tint = Color.White
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "FlashCards", color = Color.White)
+                Text(text = stringResource(id = R.string.flashcards_box), color = Color.White)
             }
         }
 
@@ -96,7 +97,7 @@ fun MenuScreenContent(
                 navigationRouter.navigateToSetListScreen(null)
             }
         ) {
-            Text(text = "Show Sets")
+            Text(text = stringResource(id = R.string.show_sets))
         }
         Spacer(modifier = Modifier.height(8.dp))
         Button(
@@ -109,7 +110,7 @@ fun MenuScreenContent(
                 navigationRouter.navigateToCodeSetScreen(null)
             }
         ) {
-            Text(text = "Add set from code")
+            Text(text = stringResource(id = R.string.add_code_button))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -122,7 +123,7 @@ fun MenuScreenContent(
                 navigationRouter.navigateToAppInfoScreen()
             }
         ) {
-            Text(text = "App Info")
+            Text(text = stringResource(id = R.string.app_info_button))
         }
         Spacer(modifier = Modifier.height(16.dp))
         Box(
@@ -130,7 +131,7 @@ fun MenuScreenContent(
                 .background(color = Color.White)
                 .padding(16.dp)
         ) {
-            Text(text = "Last Played Set")
+            Text(text = stringResource(id = R.string.last_played_set))
         }
         Spacer(modifier = Modifier.height(16.dp))
         LazyColumn(

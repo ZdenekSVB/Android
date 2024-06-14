@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -38,7 +40,7 @@ fun CodeSetScreen(navigationRouter: INavigationRouter) {
 
                 },
                 title = {
-                    Text(text = "Code Set")
+                    Text(text = stringResource(id = R.string.code_set_title))
                 })
         },
     ) {

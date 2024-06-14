@@ -10,9 +10,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 
@@ -62,7 +64,7 @@ fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
                     Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
                 }
             }, title = {
-                Text(text = "Play Set $id")
+                    Text(text = stringResource(id = R.string.set_name)+" ${id}")
             })
         },
     ) { paddingValues ->
@@ -122,7 +124,7 @@ fun PlaySetScreenContent(
                 containerColor = Color.Black, contentColor = Color.White
             )
         ) {
-            Text(text = "Next")
+            Text(text = stringResource(id = R.string.next))
         }
     }
 }
