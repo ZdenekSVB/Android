@@ -9,6 +9,6 @@ data class Set(var name: String){
     @PrimaryKey(autoGenerate = true)
     var id: Long? = null
     var latest: Int = 0
-
+    var cardsCount: Int = 0
 
 }

@@ -1,5 +1,6 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.menu
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -15,11 +16,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,39 +29,20 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.R
-import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.results.ResultsScreenUIState
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.results.ResultsScreenViewModel
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navigationRouter: INavigationRouter) {
-/*
-    var set by remember {
-        mutableStateOf(Set(""))
-    }
-*/
-    var sets: MutableList<Set> = mutableListOf()
-
     val viewModel = hiltViewModel<MenuScreenViewModel>()
-
     val state = viewModel.menuScreenUIState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(state.value) {
-        state.value.let {
-            when (it) {
-                is MenuScreenUIState.Loading -> {
-                    viewModel.loadLatestSet()
-                }
-                is MenuScreenUIState.Success -> {
-                    sets.addAll(it.sets)
-                }
-            }
-        }
+    // Ensure latest sets are loaded when MenuScreen is recomposed
+    LaunchedEffect(key1 = Unit) {
+        viewModel.loadLatestSet()
     }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -82,7 +61,7 @@ fun MenuScreen(navigationRouter: INavigationRouter) {
     ) {
         MenuScreenContent(
             paddingValues = it,
-            sets = sets,
+            sets = (state.value as? MenuScreenUIState.Success)?.sets ?: emptyList(),
             navigationRouter = navigationRouter
         )
     }
@@ -97,7 +76,7 @@ fun MenuScreenContent(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray) // Set the background color to gray
+            .background(Color.LightGray)
             .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -117,7 +96,6 @@ fun MenuScreenContent(
                 Text(text = stringResource(id = R.string.flashcards_box), color = Color.White)
             }
         }
-
 
         Spacer(modifier = Modifier.height(16.dp))
         Button(
@@ -192,9 +170,7 @@ fun LastSetRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {
-                onClick()
-            }
+            .clickable { onClick() }
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically

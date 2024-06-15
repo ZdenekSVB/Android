@@ -1,5 +1,6 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.menu
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
@@ -23,6 +24,7 @@ class MenuScreenViewModel @Inject constructor(private val repositorySet: ILocalS
         viewModelScope.launch {
             repositorySet.getLatestSet().collect {
                 _menuScreenUIState.value = MenuScreenUIState.Success(it)
+                Log.d("ListSize",""+it.size)
             }
         }
     }

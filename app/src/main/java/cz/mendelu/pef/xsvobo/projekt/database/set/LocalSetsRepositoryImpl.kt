@@ -22,6 +22,10 @@ class LocalSetsRepositoryImpl @Inject constructor(private val dao: SetsDao) : IL
         return dao.getSet(id)
     }
 
+    override suspend fun getCardsCount(id: Long): Int {
+        return dao.getCardsCount(id)
+    }
+
     override  fun getLatestSet(): Flow<List<Set>> {
         return dao.getLatestSet()
     }
