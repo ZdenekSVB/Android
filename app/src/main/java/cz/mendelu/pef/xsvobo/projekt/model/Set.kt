@@ -10,5 +10,5 @@ data class Set(var name: String){
     var id: Long? = null
     var latest: Int = 0
     var cardsCount: Int = 0
-
+    var icon: String? =null
 }

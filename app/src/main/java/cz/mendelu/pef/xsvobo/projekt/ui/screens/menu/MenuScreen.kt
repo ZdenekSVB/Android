@@ -20,12 +20,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.R
@@ -110,19 +114,6 @@ fun MenuScreenContent(
         ) {
             Text(text = stringResource(id = R.string.show_sets))
         }
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(
-            modifier = Modifier,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            ),
-            onClick = {
-                navigationRouter.navigateToCodeSetScreen(null)
-            }
-        ) {
-            Text(text = stringResource(id = R.string.add_code_button))
-        }
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             modifier = Modifier,
@@ -167,6 +158,8 @@ fun LastSetRow(
     set: Set,
     onClick: () -> Unit
 ) {
+    val iconSize = 48.dp  // Define a constant size for the circle
+if(set.cardsCount>=1 && set.latest>0){
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -175,12 +168,33 @@ fun LastSetRow(
             .background(Color.White),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .size(iconSize)
+                .drawBehind {
+                    drawCircle(
+                        color = Color.hsl(230F, 0.89F, 0.64F),
+                        radius = this.size.minDimension / 2
+                    )
+                }
+        ) {
+            Text(
+                text = set.name.substring(0, 1),
+                color = Color.White,
+                style = TextStyle(
+                    fontSize = 24.sp,  // Adjust font size as needed
+                    fontWeight = FontWeight.Bold
+                )
+            )
+        }
+        Spacer(modifier = Modifier.width(8.dp))  // Add some space between the circle and the set name
         Column {
             Text(text = set.name)
         }
-        Spacer(modifier = Modifier.width(8.dp))
+        Spacer(modifier = Modifier.weight(1f))  // Add a spacer to push the icon to the right
         Column {
             Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
         }
     }
-}
+}}

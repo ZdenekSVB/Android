@@ -6,4 +6,6 @@ interface AddCardScreenActions {
     fun cardRightAnswerChanged(text: String)
     fun loadCard(id: Long?)
     fun saveCard()
+
+    fun cardTextChanged(text: String)
 }

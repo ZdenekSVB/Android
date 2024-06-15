@@ -30,6 +30,12 @@ class AddCardScreenViewModel @Inject constructor(
         }
     }
 
+    override fun cardTextChanged(text: String) {
+        cardData.card.name = text
+        _addCardScreenUIState.update {
+            AddCardScreenUIState.CardDataChanged(cardData)
+        }
+    }
     override fun cardRightAnswerChanged(text: String) {
         cardData.card.rightAnswer = text
         _addCardScreenUIState.update {
@@ -38,7 +44,7 @@ class AddCardScreenViewModel @Inject constructor(
     }
 
     override fun saveCard() {
-        if (cardData.card.rightAnswer != "" && cardData.card.question != "") {
+        if (cardData.card.rightAnswer != "" && cardData.card.question != "" && cardData.card.name != "") {
             viewModelScope.launch {
                 repositoryCards.update(cardData.card)
                 _addCardScreenUIState.update {

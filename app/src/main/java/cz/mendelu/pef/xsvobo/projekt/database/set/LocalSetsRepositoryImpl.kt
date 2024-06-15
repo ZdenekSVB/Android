@@ -22,6 +22,12 @@ class LocalSetsRepositoryImpl @Inject constructor(private val dao: SetsDao) : IL
         return dao.getSet(id)
     }
 
+    override suspend fun updateSetIcon(setId: Long, iconPath: String) {
+        val set = dao.getSet(setId)
+        set.icon = iconPath
+        dao.update(set)
+    }
+
     override suspend fun getCardsCount(id: Long): Int {
         return dao.getCardsCount(id)
     }

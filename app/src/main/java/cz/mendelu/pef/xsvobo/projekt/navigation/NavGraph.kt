@@ -4,7 +4,6 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,7 +15,6 @@ import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreen
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreen
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.addCard.AddCardScreen
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.appInfo.AppInfoScreen
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.codeSet.CodeSetScreen
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.playSet.PlaySetScreen
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.results.ResultsScreen
 
@@ -40,9 +38,6 @@ fun NavGraph(
             SetListScreen(navigationRouter = navigationRouter)
         }
 
-        composable(Destination.CodeSetScreen.route) {
-            CodeSetScreen(navigationRouter = navigationRouter)
-        }
         composable(Destination.AppInfoScreen.route) {
             AppInfoScreen(navigationRouter = navigationRouter)
         }

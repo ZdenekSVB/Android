@@ -64,10 +64,21 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
+import coil.compose.AsyncImage
 import coil.compose.rememberImagePainter
 import cz.mendelu.pef.xsvobo.projekt.R
+import java.io.File
+
+fun File.toUri(): Uri {
+    return Uri.fromFile(this)
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardListScreen(
@@ -79,6 +90,8 @@ fun CardListScreen(
 
     val viewModel = hiltViewModel<CardListScreenViewModel>()
     val state = viewModel.cardListScreenUIState.collectAsStateWithLifecycle()
+
+    val setIconUrl by viewModel.setIconUrl.collectAsState()
 
     LaunchedEffect(id) {
         viewModel.loadSet(id)
@@ -126,20 +139,28 @@ fun CardListScreen(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "")
             }
         },
-        modifier = Modifier.fillMaxSize().padding()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding()
     ) {
         CardListScreenContent(
             paddingValues = it,
             cards = cards,
             navigationRouter = navigationRouter,
             setData = setData,
-            actions = viewModel
+            actions = viewModel,
+            setIconUrl = setIconUrl,
+            onIconSelected = { uri ->
+                viewModel.updateIcon(uri)
+            }
         )
     }
 }
 
 @Composable
 fun CardListScreenContent(
+    setIconUrl: String?,
+    onIconSelected: (Uri) -> Unit,
     paddingValues: PaddingValues,
     cards: List<Card>,
     navigationRouter: INavigationRouter,
@@ -147,45 +168,62 @@ fun CardListScreenContent(
     actions: CardListScreenActions
 ) {
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    val pickImageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-        selectedImageUri = uri
-    }
+    val pickImageLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            selectedImageUri = uri
+            selectedImageUri?.let { onIconSelected(it) }
+        }
+    val context = LocalContext.current
+    val imageFile = setIconUrl?.let { File(context.filesDir, it) }
 
+
+    Log.d("imageFile?.toUri()", "" + imageFile?.toUri())
+    Log.d("setIconUrl", "" + setIconUrl)
     Column(
-        modifier = Modifier.fillMaxSize().background(Color.LightGray).padding(paddingValues),
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.LightGray)
+            .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(16.dp).background(Color.LightGray),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .background(Color.LightGray),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(modifier = Modifier.background(color = Color.White).padding(16.dp)) {
+            Box(
+                modifier = Modifier
+                    .background(color = Color.White)
+                    .padding(16.dp)
+            ) {
                 Text(text = stringResource(id = R.string.cards) + ": ${cards.size}")
             }
 
-            Box(
-                modifier = Modifier.size(120.dp).clip(CircleShape).background(Color.Black).clickable {
-                    pickImageLauncher.launch("image/*")
-                }
-            ) {
-                if (selectedImageUri == null) {
-                    Text(
-                        text = stringResource(id = R.string.select_picture),
-                        modifier = Modifier.align(Alignment.Center)
-                    )
-                } else {
-                    selectedImageUri?.let {
-                        Image(
-                            painter = rememberImagePainter(it),
-                            contentDescription = "",
-                            modifier = Modifier.fillMaxSize().align(Alignment.Center),
-                            contentScale = ContentScale.Crop
-                        )
-                    }
-                }
-            }
+            Spacer(modifier = Modifier.width(40.dp))
+
+            AsyncImage(
+                model = selectedImageUri ?: imageFile?.toUri(),
+                contentDescription = "Profile Image",
+                placeholder = painterResource(R.drawable.placeholder),
+                modifier = Modifier
+                    .size(150.dp)
+                    .clip(CircleShape)
+                    .clickable { pickImageLauncher.launch("image/*") }
+                    .padding(8.dp),
+                contentScale = ContentScale.Crop
+            )
+            Log.d("selectedImageUri", "" + selectedImageUri)
+            Log.d("imageFile", "" + imageFile?.toUri().toString())
+            Log.d("setIconUrl", "" + setIconUrl)
+
+
+
+
+            Spacer(modifier = Modifier.width(5.dp))
 
             OutlinedTextField(
                 value = setData.set.name,
@@ -203,7 +241,11 @@ fun CardListScreenContent(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Box(modifier = Modifier.background(color = Color.White).padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .background(color = Color.White)
+                .padding(16.dp)
+        ) {
             Text(text = stringResource(id = R.string.set_generated_code))
         }
 
@@ -224,7 +266,11 @@ fun CardListRow(
     actions: CardListScreenActions
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().clickable {}.padding(16.dp).background(Color.White),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {}
+            .padding(16.dp)
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -232,9 +278,14 @@ fun CardListRow(
             Column {
                 Text(
                     text = card.name.substring(0, 1),
-                    modifier = Modifier.padding(16.dp).drawBehind {
-                        drawCircle(color = Color.hsl(230F, 0.89F, 0.64F), radius = size.maxDimension)
-                    },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .drawBehind {
+                            drawCircle(
+                                color = Color.hsl(230F, 0.89F, 0.64F),
+                                radius = size.maxDimension
+                            )
+                        },
                     color = Color.White
                 )
             }

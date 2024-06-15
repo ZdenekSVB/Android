@@ -9,11 +9,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -36,8 +38,7 @@ import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCardScreen(
-    navigationRouter: INavigationRouter,
-    id: Long?
+    navigationRouter: INavigationRouter, id: Long?
 ) {
 
 
@@ -70,18 +71,16 @@ fun AddCardScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navigationRouter.returnBack()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                    }
+            TopAppBar(navigationIcon = {
+                IconButton(onClick = {
+                    navigationRouter.returnBack()
+                }) {
+                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                }
 
-                },
-                title = {
-                    Text(text = stringResource(id = R.string.add_card))
-                })
+            }, title = {
+                Text(text = stringResource(id = R.string.add_card))
+            })
         },
     ) {
 
@@ -115,49 +114,46 @@ fun AddCardScreenContent(
             .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    )
-    {
-
-        TextField(
-            label = { Text(text = stringResource(id = R.string.question)) },
-            value = cardData.card.question + "",
-            onValueChange = {
-                actions.cardQuestionChanged(it)
-            },
-            isError = cardData.cardTextError != null,
-            supportingText = {
-                if (cardData.cardTextError != null){
-                    Text(text = cardData.cardTextError!!)
-                }
-            }
-
-        )
-        TextField(
-            label = { Text(text = stringResource(id = R.string.answer)) },
-            value = cardData.card.rightAnswer + "",
-            onValueChange = {
-                actions.cardRightAnswerChanged(it)
-            },
-            isError = cardData.cardTextError != null,
-            supportingText = {
-                if (cardData.cardTextError != null){
-                    Text(text = cardData.cardTextError!!)
-                }
-            }
-        )
-
-        Button(
-            onClick = {
-                actions.saveCard()
-            },
-            colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Black,
-                contentColor = Color.White
-            )
-        ) {
-            Text(text = stringResource(id = R.string.save))
+    ) {
+        OutlinedTextField(value = cardData.card.name, onValueChange = {
+            cardData.card.name = it
+            actions.cardTextChanged(it)
         }
+        )
     }
 
+    TextField(label = { Text(text = stringResource(id = R.string.question)) },
+        value = cardData.card.question + "",
+        onValueChange = {
+            actions.cardQuestionChanged(it)
+        },
+        isError = cardData.cardTextError != null,
+        supportingText = {
+            if (cardData.cardTextError != null) {
+                Text(text = cardData.cardTextError!!)
+            }
+        }
 
+    )
+    TextField(label = { Text(text = stringResource(id = R.string.answer)) },
+        value = cardData.card.rightAnswer + "",
+        onValueChange = {
+            actions.cardRightAnswerChanged(it)
+        },
+        isError = cardData.cardTextError != null,
+        supportingText = {
+            if (cardData.cardTextError != null) {
+                Text(text = cardData.cardTextError!!)
+            }
+        })
+
+    Button(
+        onClick = {
+            actions.saveCard()
+        }, colors = ButtonDefaults.buttonColors(
+            containerColor = Color.Black, contentColor = Color.White
+        )
+    ) {
+        Text(text = stringResource(id = R.string.save))
+    }
 }

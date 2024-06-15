@@ -12,10 +12,6 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navController.navigate(Destination.SetListScreen.route)
     }
 
-    override fun navigateToCodeSetScreen(id: Long?) {
-        navController.navigate(Destination.CodeSetScreen.route)
-    }
-
     override fun navigateToCardListScreen(id: Long) {
         navController.navigate(Destination.CardListScreen.route + "/" + id)
     }
