@@ -23,13 +23,14 @@ interface SetsDao {
     suspend fun getSet(id: Long): Set
 
     @Query("SELECT * FROM sets ORDER BY latest DESC LIMIT 3")
-     fun getLatestSet(): Flow<List<Set>>
+    fun getLatestSet(): Flow<List<Set>>
 
     @Query("UPDATE sets SET icon = :iconURL WHERE id = :id")
     suspend fun updateSetIcon(id: Long, iconURL: String)
 
     @Query("SELECT COUNT(*) FROM sets WHERE id = :id")
     suspend fun getCardsCount(id: Long): Int
+
     @Delete
     suspend fun delete(set: Set): Int
 }

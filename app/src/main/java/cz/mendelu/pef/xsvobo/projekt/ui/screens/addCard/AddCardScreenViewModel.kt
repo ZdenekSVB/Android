@@ -15,11 +15,10 @@ class AddCardScreenViewModel @Inject constructor(
     private val repositoryCards: ILocalCardsRepository
 ) : ViewModel(), AddCardScreenActions {
 
-
     private var cardData: AddCardScreenData = AddCardScreenData()
 
     private val _addCardScreenUIState: MutableStateFlow<AddCardScreenUIState> =
-        MutableStateFlow(value = AddCardScreenUIState.Loading())
+        MutableStateFlow(value = AddCardScreenUIState.Loading)
 
     val addCardUIState = _addCardScreenUIState.asStateFlow()
 
@@ -36,6 +35,7 @@ class AddCardScreenViewModel @Inject constructor(
             AddCardScreenUIState.CardDataChanged(cardData)
         }
     }
+
     override fun cardRightAnswerChanged(text: String) {
         cardData.card.rightAnswer = text
         _addCardScreenUIState.update {
@@ -48,7 +48,7 @@ class AddCardScreenViewModel @Inject constructor(
             viewModelScope.launch {
                 repositoryCards.update(cardData.card)
                 _addCardScreenUIState.update {
-                    AddCardScreenUIState.CardSaved()
+                    AddCardScreenUIState.CardSaved
                 }
             }
         } else {
@@ -59,8 +59,9 @@ class AddCardScreenViewModel @Inject constructor(
         }
 
     }
-    override fun loadCard(id: Long?){
-        if (id != null){
+
+    override fun loadCard(id: Long?) {
+        if (id != null) {
             viewModelScope.launch {
                 cardData.card = repositoryCards.getCard(id)
                 _addCardScreenUIState.update {

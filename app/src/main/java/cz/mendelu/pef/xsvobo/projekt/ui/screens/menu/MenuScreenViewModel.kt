@@ -1,10 +1,8 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.menu
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -36,7 +34,6 @@ class MenuScreenViewModel @Inject constructor(private val repositorySet: ILocalS
         viewModelScope.launch {
             repositorySet.getLatestSet().collect {
                 _menuScreenUIState.value = MenuScreenUIState.Success(it)
-                Log.d("ListSize",""+it.size)
             }
         }
     }

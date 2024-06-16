@@ -96,8 +96,9 @@ dependencies {
 
 
     implementation("androidx.datastore:datastore-preferences:1.1.1")
-    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("androidx.core:core-splashscreen:1.0.1")
+    //mimo Android SDK ani od Google knihovny
+    implementation("io.coil-kt:coil-compose:2.6.0")
     implementation("co.yml:ycharts:2.1.0")
 
 }

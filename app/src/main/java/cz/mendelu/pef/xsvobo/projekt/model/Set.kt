@@ -1,6 +1,5 @@
 package cz.mendelu.pef.xsvobo.projekt.model
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 @Entity(tableName = "sets")

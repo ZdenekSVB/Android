@@ -31,4 +31,5 @@
     <string name="question">Otázka</string>
     <string name="answer">Odpověď</string>
     <string name="save">Uložit</string>
+    <string name="card_name">Karta</string>
 </resources>

@@ -6,7 +6,6 @@ import javax.inject.Inject
 
 class LocalCardsRepositoryImpl @Inject constructor(private val dao: CardsDao) :
     ILocalCardsRepository {
-
     override suspend fun insert(card: Card): Long {
         return dao.insert(card)
     }

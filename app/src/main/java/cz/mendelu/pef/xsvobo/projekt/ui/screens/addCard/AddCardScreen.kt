@@ -1,6 +1,5 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.addCard
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,7 +38,6 @@ import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 fun AddCardScreen(
     navigationRouter: INavigationRouter, id: Long?
 ) {
-
 
     val viewModel = hiltViewModel<AddCardScreenViewModel>()
 
@@ -75,7 +72,7 @@ fun AddCardScreen(
                 IconButton(onClick = {
                     navigationRouter.returnBack()
                 }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
                 }
 
             }, title = {
@@ -86,11 +83,9 @@ fun AddCardScreen(
 
         AddCardScreenContent(
             paddingValues = it,
-            navigationRouter = navigationRouter,
             actions = viewModel,
             cardData = data
         )
-
 
     }
 
@@ -101,16 +96,14 @@ fun AddCardScreen(
 @Composable
 fun AddCardScreenContent(
     paddingValues: PaddingValues,
-    navigationRouter: INavigationRouter,
     actions: AddCardScreenActions,
     cardData: AddCardScreenData
 ) {
 
-
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.LightGray) // Set the background color to gray
+            .background(Color.LightGray)
             .padding(paddingValues),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -118,42 +111,41 @@ fun AddCardScreenContent(
         OutlinedTextField(value = cardData.card.name, onValueChange = {
             cardData.card.name = it
             actions.cardTextChanged(it)
-        }
-        )
-
-    TextField(label = { Text(text = stringResource(id = R.string.question)) },
-        value = cardData.card.question + "",
-        onValueChange = {
-            actions.cardQuestionChanged(it)
-        },
-        isError = cardData.cardTextError != null,
-        supportingText = {
-            if (cardData.cardTextError != null) {
-                Text(text = cardData.cardTextError!!)
-            }
-        }
-
-    )
-    TextField(label = { Text(text = stringResource(id = R.string.answer)) },
-        value = cardData.card.rightAnswer + "",
-        onValueChange = {
-            actions.cardRightAnswerChanged(it)
-        },
-        isError = cardData.cardTextError != null,
-        supportingText = {
-            if (cardData.cardTextError != null) {
-                Text(text = cardData.cardTextError!!)
-            }
         })
 
-    Button(
-        onClick = {
-            actions.saveCard()
-        }, colors = ButtonDefaults.buttonColors(
-            containerColor = Color.Black, contentColor = Color.White
+        TextField(label = { Text(text = stringResource(id = R.string.question)) },
+            value = cardData.card.question.toString(),
+            onValueChange = {
+                actions.cardQuestionChanged(it)
+            },
+            isError = cardData.cardTextError != null,
+            supportingText = {
+                if (cardData.cardTextError != null) {
+                    Text(text = cardData.cardTextError!!)
+                }
+            }
+
         )
-    ) {
-        Text(text = stringResource(id = R.string.save))
-    }
+        TextField(label = { Text(text = stringResource(id = R.string.answer)) },
+            value = cardData.card.rightAnswer.toString(),
+            onValueChange = {
+                actions.cardRightAnswerChanged(it)
+            },
+            isError = cardData.cardTextError != null,
+            supportingText = {
+                if (cardData.cardTextError != null) {
+                    Text(text = cardData.cardTextError!!)
+                }
+            })
+
+        Button(
+            onClick = {
+                actions.saveCard()
+            }, colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Black, contentColor = Color.White
+            )
+        ) {
+            Text(text = stringResource(id = R.string.save))
+        }
     }
 }

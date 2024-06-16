@@ -11,10 +11,9 @@ import kotlinx.coroutines.flow.map
 val Context.dataStore by preferencesDataStore(name = "set_image")
 
 class SetPreferences(private val context: Context) {
-
     companion object {
         val USER_ID_KEY = longPreferencesKey("set_id")
-        fun IconUrlKey(setId: Long) = stringPreferencesKey("profile_image_url_$setId")
+        fun iconUrl(setId: Long) = stringPreferencesKey("profile_image_url_$setId")
     }
 
     suspend fun saveSetId(setId: Long) {
@@ -29,18 +28,17 @@ class SetPreferences(private val context: Context) {
 
     suspend fun saveIconUrl(setId: Long, setIconUrl: String) {
         context.dataStore.edit { preferences ->
-            preferences[IconUrlKey(setId)] = setIconUrl
+            preferences[iconUrl(setId)] = setIconUrl
         }
     }
 
     fun getIconUrl(setId: Long): Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[IconUrlKey(setId)] ?: null // Ensure to handle null case appropriately
+        preferences[iconUrl(setId)] ?: null // Ensure to handle null case appropriately
     }
-
 
     suspend fun clearIconUrl(setId: Long) {
         context.dataStore.edit { preferences ->
-            preferences.remove(IconUrlKey(setId))
+            preferences.remove(iconUrl(setId))
         }
     }
 }

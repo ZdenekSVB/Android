@@ -30,4 +30,6 @@
     <string name="question">Question</string>
     <string name="answer">Answer</string>
     <string name="save">Save</string>
+    <string name="card_name">Card</string>
+    <string name="app_info">App Info</string>
 </resources>

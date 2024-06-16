@@ -8,7 +8,6 @@ interface ILocalSetsRepository {
     suspend fun insert(set: Set): Long
     suspend fun update(set: Set)
     suspend fun getSet(id: Long): Set
-
     suspend fun updateSetIcon(id: Long, iconURL: String)
     suspend fun getCardsCount(id: Long): Int
     fun getLatestSet(): Flow<List<Set>>

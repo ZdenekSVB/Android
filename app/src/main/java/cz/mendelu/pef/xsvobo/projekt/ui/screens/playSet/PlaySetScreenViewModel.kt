@@ -1,18 +1,12 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.playSet
 
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
+import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
 import cz.mendelu.pef.xsvobo.projekt.model.Card
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenUIState
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.playSet.*
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +15,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ResultsScreenViewModel @Inject constructor(
-    private val repositoryCards: ILocalCardsRepository
+class PlaySetScreenViewModel @Inject constructor(
+    private val repositoryCards: ILocalCardsRepository,
+    private val repositorySets: ILocalSetsRepository
 ) : ViewModel(), PlaySetScreenActions {
+
+    private var setData: SetListScreenData = SetListScreenData()
 
     var cards: MutableList<Card> = mutableListOf()
 
@@ -43,6 +40,11 @@ class ResultsScreenViewModel @Inject constructor(
 
     override fun loadSet(id: Long) {
         viewModelScope.launch {
+            setData.set = repositorySets.getSet(id)
+            _playSetScreenUIState.value = PlaySetScreenUIState.LoadSet(setData)
+
+        }
+        viewModelScope.launch {
             repositoryCards.getCardsBySetId(id).collect { cardsList ->
                 cards = cardsList.toMutableList()
                 if (cards.isNotEmpty()) {
@@ -57,12 +59,10 @@ class ResultsScreenViewModel @Inject constructor(
         if (cardData.index < cards.size - 1) {
             cardData.index += 1
             cardData.card = cards[cardData.index]
-            Log.d("IF Index/Size", "${cardData.index+1}/${cards.size}")
             _playSetScreenUIState.update {
                 PlaySetScreenUIState.Nextcard(cardData)
             }
         } else {
-            Log.d("ELSE Index/Size", "${cardData.index+1}/${cards.size}")
             _playSetScreenUIState.update {
                 PlaySetScreenUIState.Nextcard(cardData)
             }
@@ -71,7 +71,6 @@ class ResultsScreenViewModel @Inject constructor(
 
     override fun incrementCorrectCount() {
         cardData.correctCount++
-        Log.d("Count", "" + cardData.correctCount)
         _playSetScreenUIState.update {
             PlaySetScreenUIState.Nextcard(cardData)
         }

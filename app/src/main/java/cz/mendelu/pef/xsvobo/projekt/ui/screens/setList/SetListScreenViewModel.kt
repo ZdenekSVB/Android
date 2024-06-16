@@ -2,23 +2,17 @@ package cz.mendelu.pef.xsvobo.projekt.ui.screens.setList
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
 import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
 import cz.mendelu.pef.xsvobo.projekt.datastore.SetPreferences
-import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
-import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.io.File
@@ -29,7 +23,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SetListScreenViewModel @Inject constructor(
-    private val repositoryCards: ILocalCardsRepository,
     private val repositorySets: ILocalSetsRepository,
     private val setPreferences: SetPreferences,
     @ApplicationContext private val context: Context
@@ -59,11 +52,11 @@ class SetListScreenViewModel @Inject constructor(
     }
     override fun createSet() {
         viewModelScope.launch {
-            if (setData.set.id == null) {  // Ensure setData.set is not null before accessing id
+            if (setData.set.id == null) {
                 setData.set.name = "Set"
                 val setId = repositorySets.insert(setData.set)
                 setData.set = repositorySets.getSet(setId)
-                setData.set.id?.let { setId ->  // Use safe call (?.) to ensure setData.set is not null
+                setData.set.id?.let { setId ->
                     setPreferences.saveSetId(setId)
                 }
                 _setListScreenUIState.value = SetListScreenUIState.Success(sets)
@@ -74,13 +67,12 @@ class SetListScreenViewModel @Inject constructor(
     override fun deleteSet(setId: Long) {
         viewModelScope.launch {
             val setToDelete = repositorySets.getSet(setId)
-            if (setToDelete != null) {  // Ensure setToDelete is not null before deleting
+            if (setToDelete != null) {
                 val numberOfDeleted = repositorySets.delete(setToDelete)
                 if (numberOfDeleted > 0) {
                     _setListScreenUIState.update {
                         SetListScreenUIState.SetDeleted()
                     }
-                    // Clear icon URL associated with this set ID
                     setPreferences.clearIconUrl(setId)
                 }
             }
@@ -103,17 +95,6 @@ class SetListScreenViewModel @Inject constructor(
             setPreferences.saveIconUrl(setId, fileName)
         }
     }
-
-    fun getIconUrl(setId: Long): StateFlow<String?> {
-        val iconUrlFlow = MutableStateFlow<String?>(null)
-        viewModelScope.launch {
-            setPreferences.getIconUrl(setId).collect {
-                iconUrlFlow.value = it
-            }
-        }
-        return iconUrlFlow.asStateFlow()
-    }
-
 
     private fun saveImageToInternalStorage(uri: Uri): String {
         val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(Date())

@@ -18,11 +18,3 @@ data class Card(var name: String){
     var setsId: Long? = null
 
 }
-/*
-@Entity(tableName = "sets")
-data class Set(var name: String){
-
-    @PrimaryKey(autoGenerate = true)
-    var id: Long? = null
-
- */

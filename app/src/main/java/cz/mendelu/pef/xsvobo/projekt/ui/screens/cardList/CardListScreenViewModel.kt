@@ -2,7 +2,6 @@ package cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList
 
 import android.content.Context
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
@@ -52,8 +51,6 @@ class CardListScreenViewModel @Inject constructor(
             if (set != null) {
                 _setIconUrl.value = set.id?.let { setPreferences.getIconUrl(it).first() }
             } else {
-                Log.e("CardListScreenViewModel", "Set with id $setId not found")
-                // Handle the case where the set is null
             }
         }
     }
@@ -75,8 +72,7 @@ class CardListScreenViewModel @Inject constructor(
 
     override fun addCard(id: Long) {
         viewModelScope.launch {
-            if (setId != 0L) { // Ensure setId is valid before accessing set.id
-                // Use setId here
+            if (setId != 0L) {
                 cardData.card.setsId = id
                 cardData.card.name = "Card"
                 repositoryCards.insert(cardData.card)
@@ -84,8 +80,6 @@ class CardListScreenViewModel @Inject constructor(
                 repositorySets.update(setData.set)
                 _cardListScreenUIState.value = CardListScreenUIState.Success(cards)
             } else {
-                // Handle the case where setId is not valid
-                Log.e("CardListScreenViewModel", "setId is not valid")
             }
         }
     }

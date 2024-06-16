@@ -1,15 +1,10 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.setList
 
-import android.net.Uri
-import android.util.Log
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,8 +23,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.MaterialTheme.typography
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -37,7 +30,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -60,12 +52,10 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import cz.mendelu.pef.xsvobo.projekt.R
-import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 import kotlinx.coroutines.launch
 import java.io.File
-import java.time.format.TextStyle
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -82,7 +72,7 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
             }
 
             is SetListScreenUIState.Success -> {
-                sets =it.sets
+                sets = it.sets
             }
 
             is SetListScreenUIState.SetDeleted -> {
@@ -94,32 +84,23 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
 
     val snackbarHostState = SnackbarHostState()
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = {
-                        navigationRouter.returnBack()
-                    }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
-                    }
-                },
-                title = {
-                    Text(text = stringResource(id = R.string.set_list_title))
-                }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.createSet()
-                },
-                content = { Icon(imageVector = Icons.Default.Add, contentDescription = "") }
-            )
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .padding()
+    Scaffold(topBar = {
+        TopAppBar(navigationIcon = {
+            IconButton(onClick = {
+                navigationRouter.returnBack()
+            }) {
+                Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+            }
+        }, title = {
+            Text(text = stringResource(id = R.string.set_list_title))
+        })
+    }, floatingActionButton = {
+        FloatingActionButton(onClick = {
+            viewModel.createSet()
+        }, content = { Icon(imageVector = Icons.Default.Add, contentDescription = "") })
+    }, modifier = Modifier
+        .fillMaxSize()
+        .padding()
     ) {
         Column(
             modifier = Modifier
@@ -129,7 +110,6 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
         ) {
             SetListContent(
                 sets = sets,
-                setData = setData,
                 navigationRouter = navigationRouter,
                 viewModel = viewModel,
                 snackbarHostState = snackbarHostState
@@ -138,8 +118,7 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
     }
 
     SnackbarHost(
-        hostState = snackbarHostState,
-        modifier = Modifier
+        hostState = snackbarHostState, modifier = Modifier
     ) {
         Snackbar {
             Text(text = "Cannot play empty set")
@@ -150,7 +129,6 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
 @Composable
 fun SetListContent(
     sets: List<Set>,
-    setData: SetListScreenData,
     navigationRouter: INavigationRouter,
     viewModel: SetListScreenViewModel,
     snackbarHostState: SnackbarHostState
@@ -171,6 +149,7 @@ fun SetListContent(
         }
     }
 }
+
 @Composable
 fun SetListRow(
     setIconUrl: String?,
@@ -194,10 +173,8 @@ fun SetListRow(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Column {
-            Log.d("SetIcon", "" + set.icon)
             if (set.icon == null || set.icon!!.isEmpty()) {
-                Box(
-                    contentAlignment = Alignment.Center,
+                Box(contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .size(iconSize)
                         .drawBehind {
@@ -205,14 +182,12 @@ fun SetListRow(
                                 color = Color.hsl(230F, 0.89F, 0.64F),
                                 radius = this.size.minDimension / 2
                             )
-                        }
-                ) {
+                        }) {
                     Text(
                         text = set.name.substring(0, 1),
                         color = Color.White,
                         style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            fontSize = 24.sp, fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -231,7 +206,7 @@ fun SetListRow(
         }
         Column {
             Text(
-                text = if (set.name != "Set") "${set.name}" else stringResource(id = R.string.set_name)
+                text = if (set.name != "Set") set.name else stringResource(id = R.string.set_name)
             )
         }
         Column {
@@ -253,11 +228,9 @@ fun SetListRow(
                 IconButton(onClick = {
                     if (set.cardsCount <= 0) {
                         coroutineScope.launch {
-                            Log.d("Returned", "Set: ${set.cardsCount}")
                             snackbarHostState.showSnackbar("Cannot play empty set")
                         }
                     } else {
-                        Log.d("Returned", "Set: ${set.cardsCount}")
                         set.id?.let { setId ->
                             navigationRouter.navigateToPlaySetScreen(setId)
                         }

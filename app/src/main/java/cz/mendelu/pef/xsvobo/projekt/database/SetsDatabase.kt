@@ -12,13 +12,11 @@ import cz.mendelu.pef.xsvobo.projekt.model.Set
 
 @Database(entities = [Set::class, Card::class], version = 8, exportSchema = true)
 abstract class SetsDatabase : RoomDatabase() {
-
     abstract fun setsDao(): SetsDao
     abstract fun cardsDao(): CardsDao
 
     companion object {
         private var INSTANCE: SetsDatabase? = null
-
         fun getDatabase(context: Context): SetsDatabase {
             if (INSTANCE == null) {
                 synchronized(SetsDatabase::class.java) {

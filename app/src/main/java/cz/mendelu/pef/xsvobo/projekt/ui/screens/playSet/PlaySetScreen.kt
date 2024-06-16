@@ -1,10 +1,9 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.playSet
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,10 +16,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
+
+    var setData by remember { mutableStateOf(SetListScreenData()) }
 
     var cardData by remember {
         mutableStateOf(PlaySetScreenData())
@@ -28,7 +30,7 @@ fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
 
     val cards: MutableList<Card> = remember { mutableListOf() }
 
-    val viewModel = hiltViewModel<ResultsScreenViewModel>()
+    val viewModel = hiltViewModel<PlaySetScreenViewModel>()
 
     val state = viewModel.playSetUIState.collectAsStateWithLifecycle()
 
@@ -38,18 +40,24 @@ fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
                 is PlaySetScreenUIState.Loading -> {
                     viewModel.loadSet(id)
                 }
+
                 is PlaySetScreenUIState.Success -> {
                     if (cards.isEmpty()) {
                         cards.addAll(it.cards)
                     }
                     cardData.card = it.cards[cardData.index]
                 }
+
                 is PlaySetScreenUIState.CardAnswerChanged -> {
-                    Log.d("CardAnswerChanged", "Answer:${it.data.card.answer}")
                     cardData = it.data
                 }
+
                 is PlaySetScreenUIState.Nextcard -> {
                     cardData = it.data
+                }
+
+                is PlaySetScreenUIState.LoadSet -> {
+                    setData = it.data
                 }
             }
         }
@@ -61,10 +69,10 @@ fun PlaySetScreen(navigationRouter: INavigationRouter, id: Long) {
                 IconButton(onClick = {
                     navigationRouter.returnBack()
                 }) {
-                    Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                    Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
                 }
             }, title = {
-                    Text(text = stringResource(id = R.string.set_name)+" ${id}")
+                Text(text = setData.set.name)
             })
         },
     ) { paddingValues ->
@@ -111,12 +119,11 @@ fun PlaySetScreenContent(
         )
         Button(
             onClick = {
-                Log.d("Next", "rightAnswer " + cardData.card.rightAnswer + " | answer "+ cardData.card.answer)
                 if (cardData.card.answer == cardData.card.rightAnswer) {
                     viewModel.incrementCorrectCount()
                 }
                 if (cardData.index == cards.size - 1) {
-                    navigationRouter.navigateToResultsScreen(id,cardData.correctCount)
+                    navigationRouter.navigateToResultsScreen(id, cardData.correctCount)
                 } else {
                     viewModel.nextCard()
                 }

@@ -1,21 +1,17 @@
 package cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList
 
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -31,7 +27,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import cz.mendelu.pef.xsvobo.projekt.R
@@ -40,12 +35,8 @@ import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenData
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import kotlinx.coroutines.launch
 import java.io.File
 
-fun File.toUri(): Uri {
-    return Uri.fromFile(this)
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -68,21 +59,17 @@ fun CardListScreen(
     state.value.let {
         when (it) {
             is CardListScreenUIState.Loading -> {
-                Log.d("CardListScreen", "Loading")
             }
 
             is CardListScreenUIState.Success -> {
                 cards = it.cards
-                Log.d("CardListScreen", "Success with ${cards.size} cards")
             }
 
             is CardListScreenUIState.SetNameChanged -> {
                 setData = it.data
-                Log.d("CardListScreen", "SetNameChanged")
             }
 
             is CardListScreenUIState.CardDeleted -> {
-                Log.d("CardListScreen", "CardDeleted")
                 viewModel.loadSet(id)
             }
         }
@@ -93,7 +80,7 @@ fun CardListScreen(
             TopAppBar(
                 navigationIcon = {
                     IconButton(onClick = { navigationRouter.returnBack() }) {
-                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "")
+                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
                     }
                 },
                 title = { Text(text = stringResource(id = R.string.card_list_title)) }
@@ -101,7 +88,6 @@ fun CardListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                Log.d("CardListScreen", "FAB clicked")
                 setData.set.id?.let { viewModel.addCard(it) }
             }) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = "")
@@ -144,8 +130,6 @@ fun CardListScreenContent(
     val imageFile = setIconUrl?.let { File(context.filesDir, it) }
 
 
-    Log.d("imageFile?.toUri()", "" + imageFile?.toUri())
-    Log.d("setIconUrl", "" + setIconUrl)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -183,9 +167,7 @@ fun CardListScreenContent(
                     .padding(8.dp),
                 contentScale = ContentScale.Crop
             )
-            Log.d("selectedImageUri", "" + selectedImageUri)
-            Log.d("imageFile", "" + imageFile?.toUri().toString())
-            Log.d("setIconUrl", "" + setIconUrl)
+
 
             Spacer(modifier = Modifier.width(5.dp))
 
@@ -201,16 +183,6 @@ fun CardListScreenContent(
                     }
                 }
             )
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Box(
-            modifier = Modifier
-                .background(color = Color.White)
-                .padding(16.dp)
-        ) {
-            Text(text = stringResource(id = R.string.set_generated_code))
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -254,7 +226,8 @@ fun CardListRow(
                 )
             }
             Column {
-                Text(text = "${card.name} ${card.id}")
+                Text(
+                    text = if (card.name != "Card") card.name else stringResource(id = R.string.card_name))
             }
         }
         Row {
