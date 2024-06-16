@@ -32,6 +32,7 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import cz.mendelu.pef.xsvobo.projekt.R
 
 @RequiresApi(Build.VERSION_CODES.P)
@@ -93,7 +94,12 @@ fun ResultsScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = stringResource(id = R.string.database_version) + ": $DBversion")
+        Text(
+            text = stringResource(id = R.string.database_version) + ": $DBversion",
+            modifier = Modifier
+                .background(Color.White)
+                .padding(8.dp)
+        )
 
         packageInfo?.let {
             val appName = it.applicationInfo.loadLabel(context.packageManager).toString()
@@ -104,14 +110,49 @@ fun ResultsScreenContent(
             val installTime = viewModel.getFormattedInstallTime(context, it)
             val appSize = viewModel.getAppSize(it)
 
-            Text(text = stringResource(id = R.string.app_name) + ": $appName")
-            Text(text = stringResource(id = R.string.version_name) + ": $versionName")
-            Text(text = stringResource(id = R.string.minsdk_version) + ": $minSdkVersion")
-            Text(text = stringResource(id = R.string.targetsdk_version) + ": $targetSdkVersion")
-            Text(text = stringResource(id = R.string.install_time) + ": $installTime")
-            Text(text = stringResource(id = R.string.app_size) + ": $appSize bytes")
+            Text(
+                text = stringResource(id = R.string.app_name) + ": $appName",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.version_name) + ": $versionName",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.minsdk_version) + ": $minSdkVersion",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.targetsdk_version) + ": $targetSdkVersion",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.install_time) + ": $installTime",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
+            Text(
+                text = stringResource(id = R.string.app_size) + ": $appSize bytes",
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
         } ?: run {
-            Text(text = stringResource(id = R.string.app_info_not_available))
+            Text(
+                text = stringResource(id = R.string.app_info_not_available),
+                modifier = Modifier
+                    .background(Color.White)
+                    .padding(8.dp)
+            )
         }
     }
 }

@@ -4,7 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,6 +19,8 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import cz.mendelu.pef.xsvobo.projekt.R
@@ -82,9 +87,7 @@ fun AddCardScreen(
     ) {
 
         AddCardScreenContent(
-            paddingValues = it,
-            actions = viewModel,
-            cardData = data
+            paddingValues = it, actions = viewModel, cardData = data
         )
 
     }
@@ -95,9 +98,7 @@ fun AddCardScreen(
 
 @Composable
 fun AddCardScreenContent(
-    paddingValues: PaddingValues,
-    actions: AddCardScreenActions,
-    cardData: AddCardScreenData
+    paddingValues: PaddingValues, actions: AddCardScreenActions, cardData: AddCardScreenData
 ) {
 
     Column(
@@ -108,12 +109,17 @@ fun AddCardScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        OutlinedTextField(value = cardData.card.name, onValueChange = {
-            cardData.card.name = it
-            actions.cardTextChanged(it)
-        })
-
-        TextField(label = { Text(text = stringResource(id = R.string.question)) },
+        TextField(
+            label = { Text(text = stringResource(id = R.string.card_name_name)) },
+            value = cardData.card.name,
+            onValueChange = {
+                cardData.card.name = it
+                actions.cardTextChanged(it)
+            },
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        TextField(
+            label = { Text(text = stringResource(id = R.string.question)) },
             value = cardData.card.question.toString(),
             onValueChange = {
                 actions.cardQuestionChanged(it)
@@ -123,10 +129,11 @@ fun AddCardScreenContent(
                 if (cardData.cardTextError != null) {
                     Text(text = cardData.cardTextError!!)
                 }
-            }
-
+            },
         )
-        TextField(label = { Text(text = stringResource(id = R.string.answer)) },
+        Spacer(modifier = Modifier.height(16.dp))
+        TextField(
+            label = { Text(text = stringResource(id = R.string.answer)) },
             value = cardData.card.rightAnswer.toString(),
             onValueChange = {
                 actions.cardRightAnswerChanged(it)
@@ -136,7 +143,9 @@ fun AddCardScreenContent(
                 if (cardData.cardTextError != null) {
                     Text(text = cardData.cardTextError!!)
                 }
-            })
+            }
+
+        )
 
         Button(
             onClick = {

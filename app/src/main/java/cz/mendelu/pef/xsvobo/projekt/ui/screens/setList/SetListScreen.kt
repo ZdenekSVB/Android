@@ -6,10 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -23,6 +25,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
@@ -46,6 +49,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -150,6 +154,7 @@ fun SetListContent(
     }
 }
 
+
 @Composable
 fun SetListRow(
     setIconUrl: String?,
@@ -160,85 +165,94 @@ fun SetListRow(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val iconSize = 48.dp
-
     val context = LocalContext.current
     val imageFile = setIconUrl?.let { File(context.filesDir, it) }
 
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .background(Color.White)
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            if (set.icon == null || set.icon!!.isEmpty()) {
-                Box(contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(iconSize)
-                        .drawBehind {
-                            drawCircle(
-                                color = Color.hsl(230F, 0.89F, 0.64F),
-                                radius = this.size.minDimension / 2
-                            )
-                        }) {
-                    Text(
-                        text = set.name.substring(0, 1),
-                        color = Color.White,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 24.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
-            } else {
-                AsyncImage(
-                    model = imageFile?.toUri(),
-                    contentDescription = "Profile Image",
-                    placeholder = painterResource(R.drawable.placeholder),
-                    modifier = Modifier
-                        .size(iconSize)
-                        .clip(CircleShape)
-                        .padding(8.dp),
-                    contentScale = ContentScale.Crop
+
+        if (set.icon == null || set.icon!!.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape)
+                    .background(Color.hsl(230F, 0.89F, 0.64F))
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = set.name.take(1),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
+        } else {
+            AsyncImage(
+                model = imageFile?.toUri(),
+                contentDescription = "Set Icon",
+                placeholder = painterResource(R.drawable.placeholder),
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
+            )
+
         }
-        Column {
-            Text(
-                text = if (set.name != "Set") set.name else stringResource(id = R.string.set_name)
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(text = set.name.takeUnless { it == "Set" }
+                ?: stringResource(id = R.string.set_name),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+        }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        IconButton(onClick = {
+            set.id?.let { setId ->
+                viewModel.deleteSet(setId)
+            }
+        }) {
+            Icon(
+                imageVector = Icons.Default.Delete, contentDescription = "Delete Set"
             )
         }
-        Column {
-            Row {
-                IconButton(onClick = {
-                    set.id?.let { setId ->
-                        viewModel.deleteSet(setId)
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Delete, contentDescription = "")
+
+        IconButton(onClick = {
+            set.id?.let { setId ->
+                navigationRouter.navigateToCardListScreen(setId)
+            }
+        }) {
+            Icon(
+                imageVector = Icons.Default.Edit, contentDescription = "Edit Set"
+            )
+        }
+
+        IconButton(onClick = {
+            if (set.cardsCount <= 0) {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar("Cannot play empty set")
                 }
-                IconButton(onClick = {
-                    set.id?.let { setId ->
-                        navigationRouter.navigateToCardListScreen(setId)
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.Edit, contentDescription = "")
-                }
-                IconButton(onClick = {
-                    if (set.cardsCount <= 0) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar("Cannot play empty set")
-                        }
-                    } else {
-                        set.id?.let { setId ->
-                            navigationRouter.navigateToPlaySetScreen(setId)
-                        }
-                    }
-                }) {
-                    Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
+            } else {
+                set.id?.let { setId ->
+                    navigationRouter.navigateToPlaySetScreen(setId)
                 }
             }
+        }) {
+            Icon(
+                imageVector = Icons.Default.PlayArrow, contentDescription = "Play Set"
+            )
         }
     }
 }

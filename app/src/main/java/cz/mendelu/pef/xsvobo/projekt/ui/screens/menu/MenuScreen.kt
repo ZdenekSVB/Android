@@ -12,6 +12,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -19,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +34,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
@@ -96,7 +99,7 @@ fun MenuScreenContent(
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Icon(
-                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_emoji_emotions_24),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.baseline_web_stories_24),
                     contentDescription = "",
                     tint = Color.White
                 )
@@ -163,48 +166,52 @@ fun LastSetRow(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .background(Color.White)
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column {
-            if (set.icon == null || set.icon!!.isEmpty()) {
-                Box(contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(iconSize)
-                        .drawBehind {
-                            drawCircle(
-                                color = Color.hsl(230F, 0.89F, 0.64F),
-                                radius = this.size.minDimension / 2
-                            )
-                        }) {
-                    Text(
-                        text = set.name.substring(0, 1),
-                        color = Color.White,
-                        style = androidx.compose.ui.text.TextStyle(
-                            fontSize = 24.sp, fontWeight = FontWeight.Bold
-                        )
-                    )
-                }
-            } else {
-                AsyncImage(
-                    model = imageFile?.toUri(),
-                    contentDescription = "",
-                    placeholder = painterResource(R.drawable.placeholder),
-                    modifier = Modifier
-                        .size(iconSize)
-                        .clip(CircleShape)
-                        .padding(8.dp),
-                    contentScale = ContentScale.Crop
+
+        if (set.icon == null || set.icon!!.isEmpty()) {
+            Box(
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape)
+                    .background(Color.hsl(230F, 0.89F, 0.64F))
+                    .padding(8.dp)
+            ) {
+                Text(
+                    text = set.name.take(1),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-        }
-        Column {
-            Text(
-                text = if (set.name != "Set") set.name else stringResource(id = R.string.set_name)
+        } else {
+            AsyncImage(
+                model = imageFile?.toUri(),
+                contentDescription = "Set Icon",
+                placeholder = painterResource(R.drawable.placeholder),
+                modifier = Modifier
+                    .size(iconSize)
+                    .clip(CircleShape),
+                contentScale = ContentScale.FillBounds
             )
+
         }
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(text = set.name.takeUnless { it == "Set" }
+                ?: stringResource(id = R.string.set_name),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
+        }
+
         Column {
             IconButton(onClick = {
                 navigationRouter.navigateToPlaySetScreen(set.id)

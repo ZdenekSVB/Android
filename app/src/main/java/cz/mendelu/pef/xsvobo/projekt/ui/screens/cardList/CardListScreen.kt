@@ -26,7 +26,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import cz.mendelu.pef.xsvobo.projekt.R
@@ -41,8 +43,7 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CardListScreen(
-    navigationRouter: INavigationRouter,
-    id: Long
+    navigationRouter: INavigationRouter, id: Long
 ) {
     var setData by remember { mutableStateOf(SetListScreenData()) }
     var cards by remember { mutableStateOf<List<Card>>(emptyList()) }
@@ -75,30 +76,25 @@ fun CardListScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                navigationIcon = {
-                    IconButton(onClick = { navigationRouter.returnBack() }) {
-                        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "")
-                    }
-                },
-                title = { Text(text = stringResource(id = R.string.card_list_title)) }
-            )
-        },
-        floatingActionButton = {
-            FloatingActionButton(onClick = {
-                setData.set.id?.let { viewModel.addCard(it) }
-            }) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = "")
+    Scaffold(topBar = {
+        TopAppBar(navigationIcon = {
+            IconButton(onClick = { navigationRouter.returnBack() }) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = ""
+                )
             }
-        },
-        modifier = Modifier
-            .fillMaxSize()
-            .padding()
+        }, title = { Text(text = stringResource(id = R.string.card_list_title)) })
+    }, floatingActionButton = {
+        FloatingActionButton(onClick = {
+            setData.set.id?.let { viewModel.addCard(it) }
+        }) {
+            Icon(imageVector = Icons.Default.Add, contentDescription = "")
+        }
+    }, modifier = Modifier
+        .fillMaxSize()
+        .padding()
     ) {
-        CardListScreenContent(
-            paddingValues = it,
+        CardListScreenContent(paddingValues = it,
             cards = cards,
             navigationRouter = navigationRouter,
             setData = setData,
@@ -106,10 +102,10 @@ fun CardListScreen(
             setIconUrl = setIconUrl,
             onIconSelected = { uri ->
                 viewModel.updateIcon(uri)
-            }
-        )
+            })
     }
 }
+
 @Composable
 fun CardListScreenContent(
     setIconUrl: String?,
@@ -128,7 +124,7 @@ fun CardListScreenContent(
         }
     val context = LocalContext.current
     val imageFile = setIconUrl?.let { File(context.filesDir, it) }
-
+    val iconSize = 68.dp
 
     Column(
         modifier = Modifier
@@ -156,33 +152,52 @@ fun CardListScreenContent(
 
             Spacer(modifier = Modifier.width(40.dp))
 
-            AsyncImage(
-                model = imageFile?.toUri(),
-                contentDescription = "Profile Image",
-                placeholder = painterResource(R.drawable.placeholder),
-                modifier = Modifier
-                    .size(150.dp)
-                    .clip(CircleShape)
-                    .clickable { pickImageLauncher.launch("image/*") }
-                    .padding(8.dp),
-                contentScale = ContentScale.Crop
-            )
+            if (setData.set.icon == null && selectedImageUri==null) {
+                Box(
+                    modifier = Modifier
+                        .size(iconSize)
+                        .clip(CircleShape)
+                        .background(Color.hsl(230F, 0.89F, 0.64F))
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.select_picture),
+                        color = Color.White,
+                        modifier = Modifier.align(Alignment.Center)
+                            .clickable { pickImageLauncher.launch("image/*") }
+                        ,
+                        fontSize = 15.sp
+                    )
+                }
+            } else {
+                AsyncImage(
+                    model = imageFile?.toUri(),
+                    contentDescription = "Set Icon",
+                    placeholder = painterResource(R.drawable.placeholder),
+                    modifier = Modifier
+                        .size(iconSize)
+                        .clip(CircleShape)
+                        .clickable { pickImageLauncher.launch("image/*") }
+                    ,
+                    contentScale = ContentScale.FillBounds
+                )
 
+            }
 
             Spacer(modifier = Modifier.width(5.dp))
 
-            OutlinedTextField(
-                value = setData.set.name,
-                onValueChange = {
-                    setData.set.name = it
-                    actions.setTextChanged(it)
-                },
+            TextField(value = setData.set.name, onValueChange = {
+                setData.set.name = it
+                actions.setTextChanged(it)
+            }, modifier = Modifier
+                .weight(1f) // Take remaining space
+                .padding(horizontal = 8.dp)
+                .background(color = Color.White), // White background
                 leadingIcon = {
                     IconButton(onClick = { actions.saveSetName() }) {
                         Icon(imageVector = Icons.Default.CheckCircle, contentDescription = "")
                     }
-                }
-            )
+                })
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -197,38 +212,43 @@ fun CardListScreenContent(
 
 @Composable
 fun CardListRow(
-    card: Card,
-    navigationRouter: INavigationRouter,
-    actions: CardListScreenActions
+    card: Card, navigationRouter: INavigationRouter, actions: CardListScreenActions
 ) {
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {}
-            .padding(16.dp)
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(vertical = 8.dp, horizontal = 16.dp)
+            .background(Color.White)
+            .padding(vertical = 8.dp, horizontal = 16.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Column {
+
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(Color.hsl(230F, 0.89F, 0.64F))
+                    .padding(8.dp)
+            ) {
                 Text(
-                    text = card.name.substring(0, 1),
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .drawBehind {
-                            drawCircle(
-                                color = Color.hsl(230F, 0.89F, 0.64F),
-                                radius = size.maxDimension
-                            )
-                        },
-                    color = Color.White
+                    text = card.name.take(1),
+                    color = Color.White,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.align(Alignment.Center)
                 )
             }
-            Column {
-                Text(
-                    text = if (card.name != "Card") card.name else stringResource(id = R.string.card_name))
-            }
+
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(text = if (card.name != "Card") card.name else stringResource(id = R.string.card_name),
+                style = MaterialTheme.typography.bodyLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis)
         }
         Row {
             IconButton(onClick = { card.id?.let { actions.deleteCard(it) } }) {
@@ -238,5 +258,7 @@ fun CardListRow(
                 Icon(imageVector = Icons.Default.Edit, contentDescription = "")
             }
         }
+        }
+
     }
-}
+
