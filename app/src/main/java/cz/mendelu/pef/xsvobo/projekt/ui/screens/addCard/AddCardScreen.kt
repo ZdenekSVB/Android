@@ -120,7 +120,6 @@ fun AddCardScreenContent(
             actions.cardTextChanged(it)
         }
         )
-    }
 
     TextField(label = { Text(text = stringResource(id = R.string.question)) },
         value = cardData.card.question + "",
@@ -155,5 +154,6 @@ fun AddCardScreenContent(
         )
     ) {
         Text(text = stringResource(id = R.string.save))
+    }
     }
 }

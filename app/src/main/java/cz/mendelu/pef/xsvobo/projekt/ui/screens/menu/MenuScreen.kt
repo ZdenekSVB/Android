@@ -2,9 +2,10 @@ package cz.mendelu.pef.xsvobo.projekt.ui.screens.menu
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Button
@@ -16,31 +17,38 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil.compose.AsyncImage
 import cz.mendelu.pef.xsvobo.projekt.R
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
+import cz.mendelu.pef.xsvobo.projekt.ui.screens.setList.SetListScreenViewModel
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MenuScreen(navigationRouter: INavigationRouter) {
     val viewModel = hiltViewModel<MenuScreenViewModel>()
-    val state = viewModel.menuScreenUIState.collectAsStateWithLifecycle()
+    val state = viewModel.menuScreenUIState.collectAsState()
 
     // Ensure latest sets are loaded when MenuScreen is recomposed
     LaunchedEffect(key1 = Unit) {
@@ -66,13 +74,15 @@ fun MenuScreen(navigationRouter: INavigationRouter) {
         MenuScreenContent(
             paddingValues = it,
             sets = (state.value as? MenuScreenUIState.Success)?.sets ?: emptyList(),
-            navigationRouter = navigationRouter
+            navigationRouter = navigationRouter,
+            viewModel = viewModel
         )
     }
 }
 
 @Composable
 fun MenuScreenContent(
+    viewModel: MenuScreenViewModel,
     paddingValues: PaddingValues,
     sets: List<Set>,
     navigationRouter: INavigationRouter
@@ -85,6 +95,7 @@ fun MenuScreenContent(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Box with emoji and text
         Box(
             modifier = Modifier
                 .background(Color.Black)
@@ -102,6 +113,8 @@ fun MenuScreenContent(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Button to show sets
         Button(
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(
@@ -114,7 +127,10 @@ fun MenuScreenContent(
         ) {
             Text(text = stringResource(id = R.string.show_sets))
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Button for app info
         Button(
             modifier = Modifier,
             colors = ButtonDefaults.buttonColors(
@@ -127,7 +143,10 @@ fun MenuScreenContent(
         ) {
             Text(text = stringResource(id = R.string.app_info_button))
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        // Last played set section title
         Box(
             modifier = Modifier
                 .background(color = Color.White)
@@ -135,19 +154,23 @@ fun MenuScreenContent(
         ) {
             Text(text = stringResource(id = R.string.last_played_set))
         }
+
         Spacer(modifier = Modifier.height(16.dp))
+
+        val setIconUrls by viewModel.setIconUrls.collectAsState()
+
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            sets.forEach {
-                item {
-                    LastSetRow(
-                        set = it,
-                        onClick = {
-                            navigationRouter.navigateToPlaySetScreen(it.id)
-                        }
-                    )
-                }
+            items(sets) { set ->
+                val iconUrl = setIconUrls[set.id]
+                LastSetRow(
+                    set = set,
+                    setIconUrl = iconUrl,
+                    onClick = {
+                        navigationRouter.navigateToPlaySetScreen(set.id)
+                    }
+                )
             }
         }
     }
@@ -155,46 +178,69 @@ fun MenuScreenContent(
 
 @Composable
 fun LastSetRow(
+    setIconUrl: String?,
     set: Set,
     onClick: () -> Unit
+
 ) {
-    val iconSize = 48.dp  // Define a constant size for the circle
-if(set.cardsCount>=1 && set.latest>0){
+    val coroutineScope = rememberCoroutineScope()
+    val iconSize = 48.dp
+
+    val context = LocalContext.current
+    val imageFile = setIconUrl?.let { File(context.filesDir, it) }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
             .padding(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 8.dp)
             .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier
-                .size(iconSize)
-                .drawBehind {
-                    drawCircle(
-                        color = Color.hsl(230F, 0.89F, 0.64F),
-                        radius = this.size.minDimension / 2
+        Column {
+            Log.d("SetIcon", "" + set.icon)
+            if (set.icon == null || set.icon!!.isEmpty()) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(iconSize)
+                        .drawBehind {
+                            drawCircle(
+                                color = Color.hsl(230F, 0.89F, 0.64F),
+                                radius = this.size.minDimension / 2
+                            )
+                        }
+                ) {
+                    Text(
+                        text = set.name.substring(0, 1),
+                        color = Color.White,
+                        style = androidx.compose.ui.text.TextStyle(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
                 }
-        ) {
-            Text(
-                text = set.name.substring(0, 1),
-                color = Color.White,
-                style = TextStyle(
-                    fontSize = 24.sp,  // Adjust font size as needed
-                    fontWeight = FontWeight.Bold
+            } else {
+                AsyncImage(
+                    model = imageFile?.toUri(),
+                    contentDescription = "Profile Image",
+                    placeholder = painterResource(R.drawable.placeholder),
+                    modifier = Modifier
+                        .size(iconSize)
+                        .clip(CircleShape)
+                        .padding(8.dp),
+                    contentScale = ContentScale.Crop
                 )
+            }
+        }
+        Column {
+            Text(
+                text = if (set.name != "Set") "${set.name}" else stringResource(id = R.string.set_name)
             )
         }
-        Spacer(modifier = Modifier.width(8.dp))  // Add some space between the circle and the set name
-        Column {
-            Text(text = set.name)
-        }
-        Spacer(modifier = Modifier.weight(1f))  // Add a spacer to push the icon to the right
+        // Play button
         Column {
             Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")
         }
     }
-}}
+}
