@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import cz.mendelu.pef.xsvobo.projekt.database.card.ILocalCardsRepository
 import cz.mendelu.pef.xsvobo.projekt.database.set.ILocalSetsRepository
 import cz.mendelu.pef.xsvobo.projekt.datastore.SetPreferences
+import cz.mendelu.pef.xsvobo.projekt.model.Card
+import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.ui.screens.cardList.CardListScreenUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -33,6 +35,8 @@ class SetListScreenViewModel @Inject constructor(
     @ApplicationContext private val context: Context
 ) : ViewModel(), SetListScreenActions {
 
+    var sets: MutableList<Set> = mutableListOf()
+
     val setListScreenUIState: MutableState<SetListScreenUIState> = mutableStateOf(
         SetListScreenUIState.Loading()
     )
@@ -45,60 +49,52 @@ class SetListScreenViewModel @Inject constructor(
     private val _setIconUrls: MutableStateFlow<Map<Long, String?>> = MutableStateFlow(emptyMap())
     val setIconUrls: StateFlow<Map<Long, String?>> = _setIconUrls
 
-    private val _cardListScreenUIState: MutableStateFlow<CardListScreenUIState> =
-        MutableStateFlow(CardListScreenUIState.Loading())
-    val cardListScreenUIState = _cardListScreenUIState.asStateFlow()
-
-    private var setId: Long = 0L
-
     init {
         viewModelScope.launch {
-            val sets = repositorySets.getAll().first()  // Fetch all sets from the repository
-            val iconMap = sets.associate { it.id!! to it.icon }  // Create a map of setId to icon
-            _setIconUrls.value = iconMap  // Update the state with the icon map
+            repositorySets.getAll().collect { sets ->
+                val iconMap = sets.associate { it.id!! to it.icon }
+                _setIconUrls.value = iconMap
+            }
         }
     }
-
-
-
     override fun createSet() {
-        var setId:Long
         viewModelScope.launch {
-            if (setData.set.id == null) {
-
+            if (setData.set.id == null) {  // Ensure setData.set is not null before accessing id
                 setData.set.name = "Set"
-                setId=repositorySets.insert(setData.set)
-                setData.set=repositorySets.getSet(setId)
-                setData.set.id?.let { userId ->
-                    setPreferences.saveSetId(userId)
+                val setId = repositorySets.insert(setData.set)
+                setData.set = repositorySets.getSet(setId)
+                setData.set.id?.let { setId ->  // Use safe call (?.) to ensure setData.set is not null
+                    setPreferences.saveSetId(setId)
                 }
+                _setListScreenUIState.value = SetListScreenUIState.Success(sets)
             }
         }
     }
 
     override fun deleteSet(setId: Long) {
         viewModelScope.launch {
-            val numberOfDeleted = repositorySets.delete(repositorySets.getSet(setId))
-            if (numberOfDeleted > 0) {
-                _setListScreenUIState.update {
-                    SetListScreenUIState.SetDeleted()
+            val setToDelete = repositorySets.getSet(setId)
+            if (setToDelete != null) {  // Ensure setToDelete is not null before deleting
+                val numberOfDeleted = repositorySets.delete(setToDelete)
+                if (numberOfDeleted > 0) {
+                    _setListScreenUIState.update {
+                        SetListScreenUIState.SetDeleted()
+                    }
+                    // Clear icon URL associated with this set ID
+                    setPreferences.clearIconUrl(setId)
                 }
             }
         }
     }
 
-
-
     fun loadSets() {
         viewModelScope.launch {
-            repositorySets.getAll().collect {
-                setListScreenUIState.value = SetListScreenUIState.Success(it)
+            repositorySets.getAll().collect { sets ->
+                setListScreenUIState.value = SetListScreenUIState.Success(sets)
             }
         }
     }
 
-
-    // Update the updateIcon method
     override fun updateIcon(uri: Uri, setId: Long) {
         viewModelScope.launch {
             val fileName = saveImageToInternalStorage(uri)
@@ -108,6 +104,15 @@ class SetListScreenViewModel @Inject constructor(
         }
     }
 
+    fun getIconUrl(setId: Long): StateFlow<String?> {
+        val iconUrlFlow = MutableStateFlow<String?>(null)
+        viewModelScope.launch {
+            setPreferences.getIconUrl(setId).collect {
+                iconUrlFlow.value = it
+            }
+        }
+        return iconUrlFlow.asStateFlow()
+    }
 
 
     private fun saveImageToInternalStorage(uri: Uri): String {

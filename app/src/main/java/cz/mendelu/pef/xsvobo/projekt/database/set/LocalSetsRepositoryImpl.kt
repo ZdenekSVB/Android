@@ -1,5 +1,6 @@
 package cz.mendelu.pef.xsvobo.projekt.database.set
 
+import android.util.Log
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -24,9 +25,15 @@ class LocalSetsRepositoryImpl @Inject constructor(private val dao: SetsDao) : IL
 
     override suspend fun updateSetIcon(setId: Long, iconPath: String) {
         val set = dao.getSet(setId)
-        set.icon = iconPath
-        dao.update(set)
+        if (set != null) {
+            set.icon = iconPath
+            dao.update(set)
+        } else {
+            Log.e("LocalSetsRepositoryImpl", "Set with id $setId not found")
+            // Handle the case where the Set is null, maybe throw an exception or log an error
+        }
     }
+
 
     override suspend fun getCardsCount(id: Long): Int {
         return dao.getCardsCount(id)

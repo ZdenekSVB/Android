@@ -37,6 +37,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -59,6 +60,7 @@ import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import cz.mendelu.pef.xsvobo.projekt.R
+import cz.mendelu.pef.xsvobo.projekt.model.Card
 import cz.mendelu.pef.xsvobo.projekt.model.Set
 import cz.mendelu.pef.xsvobo.projekt.navigation.INavigationRouter
 import kotlinx.coroutines.launch
@@ -68,9 +70,10 @@ import java.time.format.TextStyle
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SetListScreen(navigationRouter: INavigationRouter) {
-    val sets: MutableList<Set> = mutableListOf()
+    var sets by remember { mutableStateOf<List<Set>>(emptyList()) }
     val viewModel = hiltViewModel<SetListScreenViewModel>()
     var setData by remember { mutableStateOf(SetListScreenData()) }
+
 
     viewModel.setListScreenUIState.value.let {
         when (it) {
@@ -79,7 +82,7 @@ fun SetListScreen(navigationRouter: INavigationRouter) {
             }
 
             is SetListScreenUIState.Success -> {
-                sets.addAll(it.sets)
+                sets =it.sets
             }
 
             is SetListScreenUIState.SetDeleted -> {
@@ -153,7 +156,6 @@ fun SetListContent(
     snackbarHostState: SnackbarHostState
 ) {
     val setIconUrls by viewModel.setIconUrls.collectAsState()
-
     LazyColumn(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -235,12 +237,16 @@ fun SetListRow(
         Column {
             Row {
                 IconButton(onClick = {
-                    set.id?.let { viewModel.deleteSet(it) }
+                    set.id?.let { setId ->
+                        viewModel.deleteSet(setId)
+                    }
                 }) {
                     Icon(imageVector = Icons.Default.Delete, contentDescription = "")
                 }
                 IconButton(onClick = {
-                    navigationRouter.navigateToCardListScreen(set.id!!)
+                    set.id?.let { setId ->
+                        navigationRouter.navigateToCardListScreen(setId)
+                    }
                 }) {
                     Icon(imageVector = Icons.Default.Edit, contentDescription = "")
                 }
@@ -252,7 +258,9 @@ fun SetListRow(
                         }
                     } else {
                         Log.d("Returned", "Set: ${set.cardsCount}")
-                        navigationRouter.navigateToPlaySetScreen(set.id!!)
+                        set.id?.let { setId ->
+                            navigationRouter.navigateToPlaySetScreen(setId)
+                        }
                     }
                 }) {
                     Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "")

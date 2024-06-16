@@ -36,43 +36,60 @@ class CardListScreenViewModel @Inject constructor(
     private var setData: SetListScreenData = SetListScreenData()
 
     private val _setIconUrl: MutableStateFlow<String?> = MutableStateFlow(null)
-    val setIconUrl: StateFlow<String?> = _setIconUrl
+    val setIconUrl: StateFlow<String?> = _setIconUrl.asStateFlow()
 
     private val _cardListScreenUIState: MutableStateFlow<CardListScreenUIState> =
         MutableStateFlow(CardListScreenUIState.Loading())
-    val cardListScreenUIState = _cardListScreenUIState.asStateFlow()
+    val cardListScreenUIState: StateFlow<CardListScreenUIState> =
+        _cardListScreenUIState.asStateFlow()
 
     private var setId: Long = 0L
-    init {
+
+    fun initialize(id: Long) {
+        setId = id
         viewModelScope.launch {
-            setId = setPreferences.setId.first() ?: 0L
-            if (setId != 0L) {
-                val set = repositorySets.getSet(setId)
-                _setIconUrl.value = set.icon
+            val set = repositorySets.getSet(setId)
+            if (set != null) {
+                _setIconUrl.value = set.id?.let { setPreferences.getIconUrl(it).first() }
+            } else {
+                Log.e("CardListScreenViewModel", "Set with id $setId not found")
+                // Handle the case where the set is null
+            }
+        }
+    }
+
+    fun loadSet(id: Long) {
+        initialize(id)
+        viewModelScope.launch {
+            setData.set = repositorySets.getSet(id)
+            _setIconUrl.value = setPreferences.getIconUrl(id).first()
+            _cardListScreenUIState.value = CardListScreenUIState.SetNameChanged(setData)
+        }
+        viewModelScope.launch {
+            repositoryCards.getCardsBySetId(id).collect {
+                cards = it.toMutableList()
+                _cardListScreenUIState.value = CardListScreenUIState.Success(cards)
             }
         }
     }
 
     override fun addCard(id: Long) {
         viewModelScope.launch {
-            Log.d("CardViewModel", "addCard called")
-            if (cardData.card.id == null) {
+            if (setId != 0L) { // Ensure setId is valid before accessing set.id
+                // Use setId here
                 cardData.card.setsId = id
                 cardData.card.name = "Card"
-                Log.d(
-                    "CardViewModel", "Inserting card: ${cardData.card.setsId} + ${cardData.card.id}"
-                )
-
                 repositoryCards.insert(cardData.card)
-
                 setData.set.cardsCount += 1
                 repositorySets.update(setData.set)
-
-                _cardListScreenUIState.value =
-                    CardListScreenUIState.Success(cards)  // Update the state to trigger recomposition
+                _cardListScreenUIState.value = CardListScreenUIState.Success(cards)
+            } else {
+                // Handle the case where setId is not valid
+                Log.e("CardListScreenViewModel", "setId is not valid")
             }
         }
     }
+
 
     override fun setTextChanged(text: String) {
         setData.set.name = text
@@ -120,20 +137,6 @@ class CardListScreenViewModel @Inject constructor(
     }
 
 
-    fun loadSet(id: Long) {
-        Log.d("loadSet", "ID: $id")
-        viewModelScope.launch {
-            setData.set = repositorySets.getSet(id)
-            _cardListScreenUIState.value = CardListScreenUIState.SetNameChanged(setData)
-        }
-        viewModelScope.launch {
-            repositoryCards.getCardsBySetId(id).collect {
-                cards = it.toMutableList()
-                _cardListScreenUIState.value = CardListScreenUIState.Success(cards)
-            }
-        }
-    }
-
     override fun deleteCard(id: Long) {
         viewModelScope.launch {
             val numberOfDeleted = repositoryCards.delete(repositoryCards.getCard(id))
@@ -142,5 +145,4 @@ class CardListScreenViewModel @Inject constructor(
             }
         }
     }
-
 }

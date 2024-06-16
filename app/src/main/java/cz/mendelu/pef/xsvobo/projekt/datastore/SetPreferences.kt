@@ -14,7 +14,7 @@ class SetPreferences(private val context: Context) {
 
     companion object {
         val USER_ID_KEY = longPreferencesKey("set_id")
-        fun profileImageUrlKey(setId: Long) = stringPreferencesKey("profile_image_url_$setId")
+        fun IconUrlKey(setId: Long) = stringPreferencesKey("profile_image_url_$setId")
     }
 
     suspend fun saveSetId(setId: Long) {
@@ -27,19 +27,20 @@ class SetPreferences(private val context: Context) {
         preferences[USER_ID_KEY]
     }
 
-    suspend fun saveIconUrl(setId: Long, profileImageUrl: String) {
+    suspend fun saveIconUrl(setId: Long, setIconUrl: String) {
         context.dataStore.edit { preferences ->
-            preferences[profileImageUrlKey(setId)] = profileImageUrl
+            preferences[IconUrlKey(setId)] = setIconUrl
         }
     }
 
     fun getIconUrl(setId: Long): Flow<String?> = context.dataStore.data.map { preferences ->
-        preferences[profileImageUrlKey(setId)]
+        preferences[IconUrlKey(setId)] ?: null // Ensure to handle null case appropriately
     }
+
 
     suspend fun clearIconUrl(setId: Long) {
         context.dataStore.edit { preferences ->
-            preferences.remove(profileImageUrlKey(setId))
+            preferences.remove(IconUrlKey(setId))
         }
     }
 }
