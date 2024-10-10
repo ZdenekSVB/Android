@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -49,6 +50,7 @@ fun ListOfPetsScreen(
 
     BaseScreen(
         topBarText = stringResource(R.string.list_of_pets),
+        showLoading = state.value is ListOfPetsScreenUIState.Loading
     ) {
         ListOfPetsScreenContent(
             paddingValues = it,
@@ -66,7 +68,9 @@ fun ListOfPetsScreenContent(
 LazyColumn(modifier = Modifier.padding(paddingValues)) {
     items(pets){
         Row {
-            Text(text=it.name.toString())
+            Surface(onClick = { it.id?.let { it1 -> navigation.navigateToPetDetailScreen(it1) } }) {
+                Text(text=it.name.toString())
+            }
         }
     }
 

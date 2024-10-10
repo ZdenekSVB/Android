@@ -28,9 +28,15 @@ class ListOfPetsViewModel @Inject constructor(private val repository: IPetsRemot
          }
 
          when(result){
-             is CommunicationResult.ConnectionError -> {}
-             is CommunicationResult.Error  -> {}
-             is CommunicationResult.Exception -> {}
+             is CommunicationResult.ConnectionError -> {
+                 _uiState.update { ListOfPetsScreenUIState.Error(ListOfPetsScreenError(R.string.no_internet_connection)) }
+             }
+             is CommunicationResult.Error  -> {
+
+             }
+             is CommunicationResult.Exception -> {
+
+             }
              is CommunicationResult.Success -> {
                  _uiState.update { ListOfPetsScreenUIState.DataLoaded(result.data) }
              }
