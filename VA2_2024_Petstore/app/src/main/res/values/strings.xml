@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">VA2_2024_Petstore</string>
-    <string name="failed_to_load_pets">Failed to load pets</string>
-    <string name="no_internet_connection">No internet connection</string>
-    <string name="back">Back</string>
-    <string name="list_of_pets">List of pets</string>
-    <string name="failed_to_load_pet">Failed to load pet</string>
-    <string name="pet_detail">Pet detail</string>
-</resources>
