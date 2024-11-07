@@ -27,6 +27,11 @@ fun MainScreen(
     val viewModel = hiltViewModel<MainScreenViewModel>()
     val user by viewModel.currentUser.collectAsState()
 
+    // Zavolání funkce pro generování uživatele při inicializaci
+    LaunchedEffect(Unit) {
+        viewModel.generateNewRandomUser() // Vygeneruje uživatele při načtení obrazovky
+    }
+
     MainScreenContent(
         paddingValues = PaddingValues(16.dp),
         navigation = navigation,
@@ -35,6 +40,7 @@ fun MainScreen(
         onRandomUserClick = { viewModel.generateNewRandomUser() }
     )
 }
+
 
 @Composable
 fun MainScreenContent(
