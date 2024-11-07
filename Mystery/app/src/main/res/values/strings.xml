@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">Mystery</string>    
-    <string name="failed_to_load_mysteries">Failed to load mysteries</string>
-    <string name="no_internet_connection">No internet connection</string>
-    <string name="back">Back</string>
-    <string name="list_of_mysteries">List of mysteries</string>
-    <string name="failed_to_load_mystery">Failed to load mystery</string>
-    <string name="mystery_detail">mystery detail</string>
-</resources>
