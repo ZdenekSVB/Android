@@ -13,6 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
@@ -40,7 +41,6 @@ fun MainScreen(
         onRandomUserClick = { viewModel.generateNewRandomUser() }
     )
 }
-
 
 @Composable
 fun MainScreenContent(
@@ -95,13 +95,15 @@ fun MainScreenContent(
                 text = "Age: ${user.results[0].dob.age}",
                 modifier = Modifier.padding(vertical = 4.dp)
             )
+
+            // Zvětšení obrázku a přidání mezery od okraje
             Image(
                 painter = rememberAsyncImagePainter(user.results[0].picture.large),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(128.dp)
-                    .padding(vertical = 8.dp)
-                    .align(Alignment.CenterHorizontally)
+                    .size(200.dp)  // Zvětšení obrázku
+                    .padding(16.dp)  // Přidání mezery od okraje
+                    .align(Alignment.CenterHorizontally)  // Vycentrování obrázku
             )
         }
 
