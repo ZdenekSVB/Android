@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -6,6 +8,8 @@ plugins {
     alias(libs.plugins.com.google.devtools.ksp)
 }
 
+val properties = Properties()
+properties.load(project.rootProject.file("local.properties").reader())
 android {
     namespace = "cz.pef.mendelu.examtemplate2024"
     compileSdk = 35
@@ -30,6 +34,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "BASE_URL", properties.getProperty("baseurldevel"))
+        }
+        debug {
+            buildConfigField("String", "BASE_URL", properties.getProperty("baseurlproduction"))
         }
     }
     compileOptions {
@@ -41,6 +49,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
