@@ -1,42 +1,9 @@
 <resources>
-    <string name="app_name">Continuous1</string>
+    <string name="app_name">VA2_2024_Petstore</string>
     <string name="failed_to_load_pets">Failed to load pets</string>
     <string name="no_internet_connection">No internet connection</string>
     <string name="back">Back</string>
     <string name="list_of_pets">List of pets</string>
-    <string name="failed_to_load_user">Failed to load user</string>
+    <string name="failed_to_load_pet">Failed to load pet</string>
     <string name="pet_detail">Pet detail</string>
-
-    <!-- Registration Screen Strings -->
-    <string name="username">Username</string>
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="email">Email</string>
-    <string name="password">Password</string>
-    <string name="phone">Phone</string>
-    <string name="register">Register</string>
-    <string name="already_have_account">Already have an account? Log in</string>
-
-    <!-- Error Messages -->
-    <string name="error_invalid_username">Username must contain only letters and numbers.</string>
-    <string name="error_invalid_first_name">First name must contain only letters.</string>
-    <string name="error_invalid_last_name">Last name must contain only letters.</string>
-    <string name="error_invalid_email">Enter a valid email address.</string>
-    <string name="error_empty_password">Password cannot be empty.</string>
-    <string name="error_invalid_phone">Phone number must contain only digits.</string>
-    <string name="error_title">Input Error</string>
-    <string name="error_registration_failed">Input Error</string>
-    <string name="error_login_failed">Input Error</string>
-    <string name="ok">OK</string>
-
-    <!-- General and Error Strings -->
-    <string name="delete_icon_description">Delete Pet Icon</string>
-    <string name="default_pet_name">N/A</string>
-    <string name="status_unknown">Unknown Status</string>
-    <string name="tags_label">Tags:</string>
-    <string name="unnamed_tag">Unnamed Tag</string>
-    <string name="no_tags">No tags available</string>
-    <string name="photos_label">Photos:</string>
-    <string name="pet_image_description">Pet Image</string>
-    <string name="loading_pet_details">Loading pet details...</string>
 </resources>

@@ -1,26 +1,31 @@
 [versions]
-agp = "8.5.1"
+agp = "8.5.2"
+coilCompose = "3.0.3"
 kotlin = "1.9.0"
-coreKtx = "1.15.0"
+coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
-activityCompose = "1.9.3"
+lifecycleRuntimeKtx = "2.8.6"
+activityCompose = "1.9.2"
 composeBom = "2024.04.01"
 
 hilt_v = "2.46"
 hilt-compose_v = "1.0.0"
+mapsCompose = "3.1.1"
 retrofit_v = "2.9.0"
 logging_v = "4.9.3"
 moshi_v = "1.14.0"
 navigation_v = "2.7.5"
 ksp-version = "1.9.0-1.0.13"
 
-coil_version = "2.5.0"
+lifecycle = "2.8.6"
+playServicesMaps = "19.0.0"
+
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -39,6 +44,7 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose_v" }
 hilt-kapt = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt_v" }
 
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit_v" }
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit_v" }
 retrofit-okhtt3 = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging_v" }
@@ -52,13 +58,13 @@ moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi_v" 
 moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi_v" }
 moshi-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi_v" }
 
-coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil_version" }
-
+lifecycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle"}
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt_v" }
 com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp-version" }
+

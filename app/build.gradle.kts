@@ -2,24 +2,33 @@ import java.util.Properties
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.jetbrains.kotlin.android)
     kotlin("kapt")
     alias(libs.plugins.com.google.dagger.hilt.android)
     alias(libs.plugins.com.google.devtools.ksp)
+
 }
 
 val properties = Properties()
 properties.load(project.rootProject.file("local.properties").reader())
+
 android {
-    namespace = "cz.pef.mendelu.examtemplate2024"
-    compileSdk = 35
+
+    val versionMajor = 1
+    val versionMinor = 0
+    val versionPatch = 0
+    val myVersionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+    val myVersionName = "${versionMajor}.${versionMinor}.${versionPatch}"
+
+    namespace = "cz.pef.project"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "cz.pef.mendelu.examtemplate2024"
-        minSdk = 29
-        targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        applicationId = "cz.pef.project"
+        minSdk = 26
+        targetSdk = 34
+        versionCode = myVersionCode
+        versionName = myVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -71,6 +80,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.play.services.maps)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -92,11 +102,15 @@ dependencies {
     implementation(libs.moshi.kotlin)
     ksp(libs.moshi.codegen)
 
+    implementation(libs.lifecycle)
+
     // Navigation
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ktx)
     implementation(libs.navigation.compose)
 
+    implementation(libs.coil.compose)
 
-    implementation(libs.coil)
+    implementation(libs.maps.compose)
+
 }
