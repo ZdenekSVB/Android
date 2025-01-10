@@ -22,6 +22,7 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -89,24 +90,36 @@ fun RegistrationScreen(navigation: INavigationRouter) {
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
-
-                    // Tlačítko pro registraci
-                    Button(
-                        onClick = { viewModel.register() },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Register")
-                    }
-
+                    RegistrationButton(
+                        viewModel = viewModel,
+                        navigation = navigation)
                     Spacer(modifier = Modifier.height(8.dp))
 
                     // TextButton pro login
-                    TextButton(onClick = { /* Navigate to Login */ }) {
+                    TextButton(onClick = { navigation.navigateToLogin() }) {
                         Text("Already have an account? Login")
                     }
                 }
             }
         )
+    }
+}
+@Composable
+fun RegistrationButton(
+    viewModel: RegistrationViewModel,
+    navigation: INavigationRouter
+) {
+    val context = LocalContext.current  // Get the context here, inside the composable
+
+    Button(
+        onClick = {
+            viewModel.register(context) {
+                navigation.navigateToGardenOverviewScreen()
+            }
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Text("Register")
     }
 }
 

@@ -1,5 +1,7 @@
 package cz.pef.project.ui.screens.garden_overview
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,8 +18,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
@@ -37,23 +41,34 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.communication.Plant
+import cz.pef.project.datastore.getLoginState
 import cz.pef.project.navigation.INavigationRouter
+import kotlinx.coroutines.flow.first
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GardenOverviewScreen(navigation: INavigationRouter) {
+    // Use LocalContext.current here
+    val context = LocalContext.current
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
     val uiState = viewModel.uiState
     val darkTheme = true // Nastavení dark mode
 
+    // Načtení uživatelského jména
+    LaunchedEffect(Unit) {
+        val username = getLoginState(context).first().second
+        Log.d("GardenOverviewScreen", "Logged in user: $username")
+    }
     MaterialTheme(
         colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
     ) {
@@ -62,12 +77,12 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                 TopAppBar(
                     title = { Text("AI Garden Helper") },
                     navigationIcon = {
-                        IconButton(onClick = { /* Open drawer */ }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
+                        IconButton(onClick = { navigation.returnBack() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     },
                     actions = {
-                        IconButton(onClick = { /* Open user settings */ }) {
+                        IconButton(onClick = { navigation.navigateToUserSettingsScreen() }) {
                             Icon(Icons.Default.AccountCircle, contentDescription = "User Settings")
                         }
                     }
@@ -115,6 +130,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
         )
     }
 }
+
 
 @Composable
 fun PlantCard(plant: Plant, onClick: () -> Unit) {

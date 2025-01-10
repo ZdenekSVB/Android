@@ -1,7 +1,15 @@
 package cz.pef.project.ui.screens.registration
 
+import android.content.Context
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import cz.pef.project.datastore.UserPreferences
+import cz.pef.project.datastore.dataStore
+import kotlinx.coroutines.launch
 
 class RegistrationViewModel : ViewModel() {
     private val _uiState = mutableStateOf(RegistrationUiState())
@@ -39,8 +47,25 @@ class RegistrationViewModel : ViewModel() {
         _uiState.value = uiState.copy(password = "")
     }
 
-    fun register() {
-        // Logika pro registraci
+
+    fun register(context: Context, onSuccess: () -> Unit) {
+        // Validace vstupů
+        if (uiState.firstName.isBlank() || uiState.lastName.isBlank() || uiState.userName.isBlank() || uiState.password.isBlank()) {
+            Log.d("Registration", "Some fields are empty!")
+            return
+        }
+
+        // Simulace ukládání dat
+        Log.d("Registration", "User registered: ${uiState.userName}")
+
+        // Uložení uživatele do DataStore
+        viewModelScope.launch {
+            context.dataStore.edit { preferences ->
+                preferences[UserPreferences.IS_LOGGED_IN] = true
+                preferences[UserPreferences.USERNAME] = uiState.userName
+            }
+            onSuccess() // Přesměrování po úspěšné registraci
+        }
     }
 
     private fun validateFirstName(name: String): String? {

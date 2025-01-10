@@ -16,8 +16,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.navigation.INavigationRouter
-import cz.pef.project.ui.elements.FlowerNavBar
-import cz.pef.project.ui.elements.FlowerTopAppBar
+import cz.pef.project.ui.elements.FlowerAppBar
+import cz.pef.project.ui.elements.FlowerNavigationBar
 
 @Composable
 fun FlowerPicturesScreen(navigation: INavigationRouter) {
@@ -25,15 +25,14 @@ fun FlowerPicturesScreen(navigation: INavigationRouter) {
     val uiState = viewModel.uiState.collectAsState().value
 
     Scaffold(
-        topBar = { FlowerTopAppBar(title = "Pictures") },
-        bottomBar = {
-            FlowerNavBar(
-                onNavigate = { /* TODO: Implement navigation */ },
-                selectedItem = "Pictures"
-            )
-        }
+        topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
+        bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Map") },
     ) { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+        ) {
             when {
                 uiState.pictures.isEmpty() -> {
                     Text(
@@ -63,7 +62,10 @@ fun FlowerPicturesScreen(navigation: INavigationRouter) {
                                         .height(200.dp)
                                 )
                                 Spacer(modifier = Modifier.height(8.dp))
-                                Text(text = picture.name, style = MaterialTheme.typography.bodyMedium)
+                                Text(
+                                    text = picture.name,
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
                             }
                         }
                     }

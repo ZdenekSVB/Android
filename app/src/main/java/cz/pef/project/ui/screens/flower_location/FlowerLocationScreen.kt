@@ -17,9 +17,9 @@ import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import cz.pef.project.navigation.INavigationRouter
-import cz.pef.project.ui.elements.FlowerNavBar
-import cz.pef.project.ui.elements.FlowerTopAppBar
-import cz.pef.project.ui.elements.FlowerMapMarker
+import cz.pef.project.ui.elements.FlowerAppBar
+import cz.pef.project.ui.elements.FlowerNavigationBar
+
 
 @Composable
 fun FlowerLocationScreen(navigation: INavigationRouter) {
@@ -30,14 +30,10 @@ fun FlowerLocationScreen(navigation: INavigationRouter) {
     val cameraPositionState = rememberCameraPositionState {
         position = CameraPosition.fromLatLngZoom(uiState.value.location, 10f)
     }
+
     Scaffold(
-        topBar = { FlowerTopAppBar(title = "Location") },
-        bottomBar = {
-            FlowerNavBar(
-                onNavigate = { /* Navigate to other screens */ },
-                selectedItem = "Location"
-            )
-        }
+        topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
+        bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Map") },
     ) { padding ->
         Box(
             modifier = Modifier

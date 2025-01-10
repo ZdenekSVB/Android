@@ -9,7 +9,12 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     override fun navigateToGardenOverviewScreen() {
         navigateIfResumed(Destination.GardenOverviewScreen.route)
     }
-
+    override fun navigateToRegistration() {
+        navigateIfResumed(Destination.RegistrationScreen.route)
+    }
+    override fun navigateToLogin() {
+        navigateIfResumed(Destination.LoginScreen.route)
+    }
     override fun navigateToFlowerAiScreen() {
         navigateIfResumed(Destination.FlowerAiScreen.route)
     }

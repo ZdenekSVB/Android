@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Menu
@@ -26,6 +27,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,8 +44,8 @@ import cz.pef.project.ui.screens.flower_description.FlowerDescriptionViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UserSettingsScreen(navigation: INavigationRouter) {
-    val viewModel = hiltViewModel<UserSettingsViewModel>()
-    val uiState = viewModel.uiState
+    val viewModel: UserSettingsViewModel = hiltViewModel()
+    val uiState by viewModel.uiState.collectAsState()
     val darkTheme = true // Nastavení dark mode
 
     MaterialTheme(
@@ -54,13 +56,8 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                 TopAppBar(
                     title = { Text("AI Garden Helper") },
                     navigationIcon = {
-                        IconButton(onClick = { /* Open drawer */ }) {
-                            Icon(Icons.Default.Menu, contentDescription = "Menu")
-                        }
-                    },
-                    actions = {
-                        IconButton(onClick = { /* Open user settings */ }) {
-                            Icon(Icons.Default.AccountCircle, contentDescription = "User Settings")
+                        IconButton(onClick = { navigation.returnBack() }) {
+                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                         }
                     }
                 )
@@ -74,21 +71,23 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    // Zobrazení uživatelských údajů
+                    Text(text = if (uiState.isLoggedIn) "Logged In" else "Logged Out")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
                     UserDetailRow(label = "First Name", value = uiState.firstName)
                     UserDetailRow(label = "Last Name", value = uiState.lastName)
                     UserDetailRow(label = "User Name", value = uiState.userName)
-                    UserDetailRow(label = "Password", value = "********") // Skrytí hesla
+                    UserDetailRow(label = "Password", value = "********") // Skrýt heslo
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    // Edit Button
                     Button(onClick = { viewModel.showEditDialog() }) {
                         Text("Edit")
                     }
+
                 }
 
-                // Dialog pro úpravu
                 if (uiState.isEditDialogVisible) {
                     EditUserDialog(
                         firstName = uiState.firstName,
@@ -102,6 +101,7 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                         }
                     )
                 }
+
             }
         )
     }
@@ -140,6 +140,7 @@ fun EditUserDialog(
     var newLastName by remember { mutableStateOf(lastName) }
     var newUserName by remember { mutableStateOf(userName) }
     var newPassword by remember { mutableStateOf(password) }
+    var passwordVisible by remember { mutableStateOf(false) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -165,7 +166,15 @@ fun EditUserDialog(
                     value = newPassword,
                     onValueChange = { newPassword = it },
                     label = { Text("Password") },
-                    visualTransformation = PasswordVisualTransformation()
+                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    trailingIcon = {
+                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                            Icon(
+                                imageVector = if (passwordVisible) Icons.Default.Clear else Icons.Default.AccountCircle,
+                                contentDescription = if (passwordVisible) "Hide Password" else "Show Password"
+                            )
+                        }
+                    }
                 )
             }
         },
