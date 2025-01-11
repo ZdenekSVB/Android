@@ -51,7 +51,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.communication.Plant
-import cz.pef.project.datastore.getLoginState
+import cz.pef.project.datastore.DataStoreManager
 import cz.pef.project.navigation.INavigationRouter
 import kotlinx.coroutines.flow.first
 
@@ -63,10 +63,11 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
     val uiState = viewModel.uiState
     val darkTheme = true // Nastavení dark mode
+    val dataStore = DataStoreManager(context)
 
     // Načtení uživatelského jména
     LaunchedEffect(Unit) {
-        val username = getLoginState(context).first().second
+        val username =  dataStore.getLoginState().first().second
         Log.d("GardenOverviewScreen", "Logged in user: $username")
     }
     MaterialTheme(

@@ -1,5 +1,6 @@
 package cz.pef.project.ui.screens.login
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -34,6 +35,7 @@ import cz.pef.project.ui.screens.registration.RegistrationViewModel
 fun LoginScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<LoginViewModel>()
     val uiState = viewModel.uiState
+    val context = LocalContext.current
     val darkTheme = true // Nastavení dark mode
 
     MaterialTheme(
@@ -105,13 +107,17 @@ fun LoginButton(
     viewModel: LoginViewModel,
     navigation: INavigationRouter
 ) {
-    val context = LocalContext.current  // Get the context here, inside the composable
-
+    val context = LocalContext.current
     Button(
         onClick = {
-            viewModel.login(context) {
-                navigation.navigateToGardenOverviewScreen()
-            }
+            viewModel.login(
+                context = context,
+                onSuccess = { navigation.navigateToGardenOverviewScreen() },
+                onError = { errorMessage ->
+                    // Show error message to user
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                }
+            )
         },
         modifier = Modifier.fillMaxWidth()
     ) {

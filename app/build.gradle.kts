@@ -114,4 +114,11 @@ dependencies {
     implementation(libs.maps.compose)
 
     implementation(libs.datastore.preferences)
+
+    implementation(libs.room.ktx)
+    implementation(libs.room.viewmodel)
+    implementation(libs.room.lifecycle)
+    implementation(libs.room.runtime)
+    ksp(libs.room.compiler.kapt)
+
 }
