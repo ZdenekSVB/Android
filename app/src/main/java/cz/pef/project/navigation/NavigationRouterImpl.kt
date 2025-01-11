@@ -2,33 +2,38 @@ package cz.pef.project.navigation
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
+import cz.pef.project.communication.Plant
 
 class NavigationRouterImpl(private val navController: NavController) : INavigationRouter {
+
     override fun getNavController(): NavController = navController
 
     override fun navigateToGardenOverviewScreen() {
         navigateIfResumed(Destination.GardenOverviewScreen.route)
     }
+
     override fun navigateToRegistration() {
         navigateIfResumed(Destination.RegistrationScreen.route)
     }
+
     override fun navigateToLogin() {
         navigateIfResumed(Destination.LoginScreen.route)
     }
-    override fun navigateToFlowerAiScreen() {
-        navigateIfResumed(Destination.FlowerAiScreen.route)
+
+    override fun navigateToFlowerAiScreen(id: Int) {
+        navigateIfResumed(Destination.FlowerAiScreen.route.replace("{id}", id.toString()))
     }
 
-    override fun navigateToFlowerDescriptionScreen() {
-        navigateIfResumed(Destination.FlowerDescriptionScreen.route)
+    override fun navigateToFlowerDescriptionScreen(id: Int) {
+        navigateIfResumed(Destination.FlowerDescriptionScreen.route.replace("{id}", id.toString()))
     }
 
-    override fun navigateToFlowerMapScreen() {
-        navigateIfResumed(Destination.FlowerMapScreen.route)
+    override fun navigateToFlowerLocationScreen(id: Int) {
+        navigateIfResumed(Destination.FlowerLocationScreen.route.replace("{id}", id.toString()))
     }
 
-    override fun navigateToFlowerPicturesScreen() {
-        navigateIfResumed(Destination.FlowerPicturesScreen.route)
+    override fun navigateToFlowerPicturesScreen(id: Int) {
+        navigateIfResumed(Destination.FlowerPicturesScreen.route.replace("{id}", id.toString()))
     }
 
     override fun navigateToUserSettingsScreen() {

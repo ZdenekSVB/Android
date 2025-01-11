@@ -30,12 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import cz.pef.project.communication.Plant
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
 
 @Composable
-fun FlowerDescriptionScreen(navigation: INavigationRouter) {
+fun FlowerDescriptionScreen(navigation: INavigationRouter,id: Int) {
     val viewModel = hiltViewModel<FlowerDescriptionViewModel>()
     val uiState = viewModel.uiState
 
@@ -43,8 +44,8 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter) {
         colorScheme = if (true) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
-            topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
-            bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Map") },
+            topBar = { FlowerAppBar(title = "Description", navigation = navigation) },
+            bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Description",id=id) },
             content = { padding ->
                 Column(
                     modifier = Modifier

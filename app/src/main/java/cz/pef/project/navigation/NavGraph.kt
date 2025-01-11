@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import cz.pef.project.communication.Plant
 import cz.pef.project.ui.screens.flower_ai.FlowerAiScreen
 import cz.pef.project.ui.screens.flower_description.FlowerDescriptionScreen
 import cz.pef.project.ui.screens.flower_location.FlowerLocationScreen
@@ -43,21 +44,34 @@ fun NavGraph(
             GardenOverviewScreen(navigation = navigation)
         }
 
-        composable(Destination.FlowerAiScreen.route) {
-            FlowerAiScreen(navigation = navigation)
+        composable(Destination.FlowerPicturesScreen.route, arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )) {
+            val id = it.arguments?.getInt("id")
+            FlowerPicturesScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerDescriptionScreen.route) {
-           FlowerDescriptionScreen(navigation = navigation)
+        composable(Destination.FlowerDescriptionScreen.route, arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )) {
+            val id = it.arguments?.getInt("id")
+            FlowerDescriptionScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerMapScreen.route) {
-            FlowerLocationScreen(navigation = navigation)
+        composable(Destination.FlowerAiScreen.route, arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )) {
+            val id = it.arguments?.getInt("id")
+            FlowerAiScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerPicturesScreen.route) {
-            FlowerPicturesScreen(navigation = navigation)
+        composable(Destination.FlowerLocationScreen.route, arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )) {
+            val id = it.arguments?.getInt("id")
+            FlowerLocationScreen(navigation = navigation, id = id ?: -1)
         }
+
 
         composable(Destination.UserSettingsScreen.route) {
             UserSettingsScreen(navigation = navigation)

@@ -24,12 +24,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.rememberAsyncImagePainter
+import cz.pef.project.communication.Plant
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
 
 @Composable
-fun FlowerAiScreen(navigation: INavigationRouter) {
+fun FlowerAiScreen(navigation: INavigationRouter,id: Int) {
     val viewModel = hiltViewModel<FlowerAiViewModel>()
     val uiState = viewModel.uiState
     val darkTheme = true // Nastavení dark mode
@@ -38,8 +39,8 @@ fun FlowerAiScreen(navigation: INavigationRouter) {
         colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
-            topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
-            bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Map") },
+            topBar = { FlowerAppBar(title = "AI", navigation = navigation) },
+            bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "AI",id=id) },
             content = { padding ->
                 Column(
                     modifier = Modifier

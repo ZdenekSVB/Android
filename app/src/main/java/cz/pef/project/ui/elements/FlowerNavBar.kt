@@ -15,38 +15,40 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import cz.pef.project.R
+import cz.pef.project.communication.Plant
 import cz.pef.project.navigation.INavigationRouter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FlowerNavigationBar(
     navigation: INavigationRouter,
-    selectedItem: String
+    selectedItem: String,
+    id: Int
 ) {
     NavigationBar {
         NavigationBarItem(
             icon = { Icon(Icons.Default.Info, contentDescription = "Description") },
             label = { Text("Description") },
             selected = selectedItem == "Description",
-            onClick = { navigation.navigateToFlowerDescriptionScreen() }
+            onClick = { navigation.navigateToFlowerDescriptionScreen(id) }
         )
         NavigationBarItem(
             icon = { Icon(painter = painterResource(id = R.drawable.baseline_image_24), contentDescription = "Pictures") },
             label = { Text("Pictures") },
             selected = selectedItem == "Pictures",
-            onClick = { navigation.navigateToFlowerPicturesScreen() }
+            onClick = { navigation.navigateToFlowerPicturesScreen(id) }
         )
         NavigationBarItem(
             icon = { Icon(painter = painterResource(id = R.drawable.baseline_emoji_emotions_24), contentDescription = "AI") },
             label = { Text("AI") },
             selected = selectedItem == "AI",
-            onClick = { navigation.navigateToFlowerAiScreen() }
+            onClick = { navigation.navigateToFlowerAiScreen(id) }
         )
         NavigationBarItem(
-            icon = { Icon(Icons.Default.LocationOn, contentDescription = "Map") },
+            icon = { Icon(Icons.Default.LocationOn, contentDescription = "Location") },
             label = { Text("Map") },
             selected = selectedItem == "Map",
-            onClick = { navigation.navigateToFlowerMapScreen() }
+            onClick = { navigation.navigateToFlowerLocationScreen(id) }
         )
     }
 }

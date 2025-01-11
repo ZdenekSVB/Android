@@ -25,9 +25,8 @@ data class PlantEntity(
 
 fun PlantEntity.toPlant(): Plant {
     return Plant(
-        id = userId,
+        id = id,
         name = this.name,
-        description = this.description,
         imageUrl = "",
         isHealthy = true
     )

@@ -16,13 +16,14 @@ import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.Marker
 import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
+import cz.pef.project.communication.Plant
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
 
 
 @Composable
-fun FlowerLocationScreen(navigation: INavigationRouter) {
+fun FlowerLocationScreen(navigation: INavigationRouter,id: Int) {
     val viewModel = hiltViewModel<FlowerLocationViewModel>()
     val uiState = viewModel.uiState.collectAsState()
 
@@ -33,7 +34,7 @@ fun FlowerLocationScreen(navigation: INavigationRouter) {
 
     Scaffold(
         topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
-        bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Map") },
+        bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Location",id=id) },
     ) { padding ->
         Box(
             modifier = Modifier

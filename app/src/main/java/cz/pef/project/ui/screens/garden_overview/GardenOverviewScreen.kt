@@ -72,7 +72,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
     val uiState by viewModel.uiState.collectAsState()
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
-    val dataStore = hiltViewModel<GardenOverviewViewModel>().dataStoreManager
+    val dataStore = viewModel.dataStoreManager
 
     // Fetch user data and load plants
     LaunchedEffect(Unit) {
@@ -115,7 +115,13 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                             placeholder = { Text("Search") },
                             modifier = Modifier.weight(1f),
                             trailingIcon = {
-                                Icon(Icons.Default.Search, contentDescription = "Search")
+                                if (uiState.searchQuery.isNotEmpty()) {
+                                    IconButton(onClick = { viewModel.updateSearchQuery("") }) {
+                                        Icon(Icons.Default.Clear, contentDescription = "Clear")
+                                    }
+                                } else {
+                                    Icon(Icons.Default.Search, contentDescription = "Search")
+                                }
                             }
                         )
                     }
@@ -134,14 +140,13 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                         .padding(8.dp),
                     contentPadding = PaddingValues(bottom = 72.dp) // Space for BottomAppBar
                 ) {
-                    items(uiState.filteredPlants) { plant -> // Použijte filteredPlants
+                    items(uiState.filteredPlants) { plant ->
                         PlantCard(
                             plant = plant,
-                            onClick = { /* Navigate to plant details */ }
+                            onClick = { navigation.navigateToFlowerDescriptionScreen(plant.id) }
                         )
                     }
                 }
-
             }
         )
 
@@ -154,11 +159,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                         val username = dataStore.getLoginState().firstOrNull()?.second
                         if (!username.isNullOrEmpty()) {
                             val userId = dataStore.getUserId(username)
-                            if (userId != null) {
-                                viewModel.addPlant(userId, name, description, plantedDate)
-                            } else {
-                                Log.e("GardenOverviewScreen", "User ID is null")
-                            }
+                            viewModel.addPlant(userId, name, description, plantedDate)
                         } else {
                             Log.e("GardenOverviewScreen", "Username is null or empty")
                         }
@@ -169,6 +170,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
         }
     }
 }
+
 
 @Composable
 fun PlantCard(plant: Plant, onClick: () -> Unit) {
@@ -195,7 +197,7 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
                     text = plant.name, style = MaterialTheme.typography.titleMedium
                 )
                 Text(
-                    text = plant.description,
+                    text = plant.imageUrl,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -208,6 +210,7 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun AddPlantDialog(

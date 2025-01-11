@@ -44,7 +44,7 @@ class GardenOverviewViewModel @Inject constructor(
 
     private fun filterPlants(query: String) {
         val filtered = uiState.value.plants.filter {
-            it.name.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
+            it.name.contains(query, ignoreCase = true)
         }
         _uiState.value = uiState.value.copy(filteredPlants = filtered)
     }
