@@ -96,11 +96,15 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                         password = uiState.password,
                         onDismiss = { viewModel.hideEditDialog() },
                         onSave = { firstName, lastName, userName, password ->
-                            viewModel.updateUserDetails(firstName, lastName, userName, password)
-                            viewModel.hideEditDialog()
-                        }
+                            viewModel.validateAndSaveUserDetails(firstName, lastName, userName, password)
+                        },
+                        firstNameError = uiState.firstNameError,
+                        lastNameError = uiState.lastNameError,
+                        userNameError = uiState.userNameError,
+                        passwordError = uiState.passwordError
                     )
                 }
+
 
             }
         )
@@ -126,7 +130,6 @@ fun UserDetailRow(label: String, value: String) {
         )
     }
 }
-
 @Composable
 fun EditUserDialog(
     firstName: String,
@@ -134,7 +137,11 @@ fun EditUserDialog(
     userName: String,
     password: String,
     onDismiss: () -> Unit,
-    onSave: (String, String, String, String) -> Unit
+    onSave: (String, String, String, String) -> Unit,
+    firstNameError: String?,
+    lastNameError: String?,
+    userNameError: String?,
+    passwordError: String?
 ) {
     var newFirstName by remember { mutableStateOf(firstName) }
     var newLastName by remember { mutableStateOf(lastName) }
@@ -150,22 +157,35 @@ fun EditUserDialog(
                 OutlinedTextField(
                     value = newFirstName,
                     onValueChange = { newFirstName = it },
-                    label = { Text("First Name") }
+                    label = { Text("First Name") },
+                    isError = firstNameError != null
                 )
+                if (firstNameError != null) {
+                    Text(firstNameError, color = MaterialTheme.colorScheme.error)
+                }
                 OutlinedTextField(
                     value = newLastName,
                     onValueChange = { newLastName = it },
-                    label = { Text("Last Name") }
+                    label = { Text("Last Name") },
+                    isError = lastNameError != null
                 )
+                if (lastNameError != null) {
+                    Text(lastNameError, color = MaterialTheme.colorScheme.error)
+                }
                 OutlinedTextField(
                     value = newUserName,
                     onValueChange = { newUserName = it },
-                    label = { Text("User Name") }
+                    label = { Text("User Name") },
+                    isError = userNameError != null
                 )
+                if (userNameError != null) {
+                    Text(userNameError, color = MaterialTheme.colorScheme.error)
+                }
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
                     label = { Text("Password") },
+                    isError = passwordError != null,
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
@@ -176,10 +196,15 @@ fun EditUserDialog(
                         }
                     }
                 )
+                if (passwordError != null) {
+                    Text(passwordError, color = MaterialTheme.colorScheme.error)
+                }
             }
         },
         confirmButton = {
-            Button(onClick = { onSave(newFirstName, newLastName, newUserName, newPassword) }) {
+            Button(onClick = {
+                onSave(newFirstName, newLastName, newUserName, newPassword)
+            }) {
                 Text("Save")
             }
         },

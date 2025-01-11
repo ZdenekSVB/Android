@@ -3,6 +3,7 @@ package cz.pef.project.DB
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import cz.pef.project.communication.Plant
 
 @Entity(
     tableName = "plants",
@@ -21,3 +22,13 @@ data class PlantEntity(
     val plantedDate: String,
     val deathDate: String?
 )
+
+fun PlantEntity.toPlant(): Plant {
+    return Plant(
+        id = userId,
+        name = this.name,
+        description = this.description,
+        imageUrl = "",
+        isHealthy = true
+    )
+}

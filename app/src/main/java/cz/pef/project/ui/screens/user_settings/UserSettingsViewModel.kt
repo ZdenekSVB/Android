@@ -20,12 +20,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
     application: Application,
+    private val datastore: DataStoreManager, // Inject DataStoreManager
     private val userDao: UserDao // Přidání UserDao
 ) : ViewModel() {
 
     private val context = application
 
-    private val userPreferencesFlow = DataStoreManager(context).getLoginState()
+    private val userPreferencesFlow = datastore.getLoginState()
     private val _uiState = MutableStateFlow(UserSettingsUiState())
     val uiState: StateFlow<UserSettingsUiState> = _uiState
     init {
@@ -67,7 +68,7 @@ class UserSettingsViewModel @Inject constructor(
                     userDao.updateUser(updatedUser)
 
                     // Aktualizace DataStore
-                    DataStoreManager(context).saveLoginState(true, updatedUser.userName)
+                    datastore.saveLoginState(true, updatedUser.userName)
 
                     _uiState.value = _uiState.value.copy(
                         firstName = firstName,
@@ -80,6 +81,21 @@ class UserSettingsViewModel @Inject constructor(
             }
         }
     }
+    private fun validateFirstName(name: String): String? {
+        return if (name.isBlank()) "First name cannot be empty" else null
+    }
+
+    private fun validateLastName(name: String): String? {
+        return if (name.isBlank()) "Last name cannot be empty" else null
+    }
+
+    private fun validateUserName(userName: String): String? {
+        return if (userName.length < 5) "User name must be at least 5 characters" else null
+    }
+
+    private fun validatePassword(password: String): String? {
+        return if (password.length < 8) "Password must be at least 8 characters" else null
+    }
 
     fun validateAndSaveUserDetails(
         firstName: String,
@@ -87,17 +103,21 @@ class UserSettingsViewModel @Inject constructor(
         userName: String,
         password: String
     ) {
-        val errors = mutableListOf<String>()
-        if (firstName.isBlank()) errors.add("First name cannot be empty")
-        if (lastName.isBlank()) errors.add("Last name cannot be empty")
-        if (userName.isBlank()) errors.add("User name cannot be empty")
-        if (password.isBlank()) errors.add("Password cannot be empty")
+        val firstNameError = validateFirstName(firstName)
+        val lastNameError = validateLastName(lastName)
+        val userNameError = validateUserName(userName)
+        val passwordError = validatePassword(password)
 
-        if (errors.isEmpty()) {
+        if (firstNameError == null && lastNameError == null && userNameError == null && passwordError == null) {
             updateUserDetails(firstName, lastName, userName, password)
         } else {
-            // Zobrazit chyby v UI
-            println("Errors: $errors")
+            // Nastavit chyby do UI state
+            _uiState.value = _uiState.value.copy(
+                firstNameError = firstNameError,
+                lastNameError = lastNameError,
+                userNameError = userNameError,
+                passwordError = passwordError
+            )
         }
     }
 

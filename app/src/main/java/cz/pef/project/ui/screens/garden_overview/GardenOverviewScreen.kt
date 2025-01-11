@@ -1,4 +1,4 @@
-package cz.pef.project.ui.screens.garden_overview
+import cz.pef.project.ui.screens.garden_overview.GardenOverviewViewModel
 
 import android.content.Context
 import android.util.Log
@@ -36,40 +36,56 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewModelScope
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.communication.Plant
 import cz.pef.project.datastore.DataStoreManager
 import cz.pef.project.navigation.INavigationRouter
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GardenOverviewScreen(navigation: INavigationRouter) {
-    // Use LocalContext.current here
+    val darkTheme = true
     val context = LocalContext.current
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
-    val uiState = viewModel.uiState
-    val darkTheme = true // Nastavení dark mode
-    val dataStore = DataStoreManager(context)
+    val uiState by viewModel.uiState.collectAsState()
+    val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
+    val dataStore = hiltViewModel<GardenOverviewViewModel>().dataStoreManager
 
-    // Načtení uživatelského jména
+    // Fetch user data and load plants
     LaunchedEffect(Unit) {
-        val username =  dataStore.getLoginState().first().second
-        Log.d("GardenOverviewScreen", "Logged in user: $username")
+        val loginState = dataStore.getLoginState().firstOrNull()
+        val username = loginState?.second
+        if (!username.isNullOrEmpty()) {
+            val userId = dataStore.getUserId(username) ?: return@LaunchedEffect
+            viewModel.loadPlants(userId)
+        } else {
+            Log.e("GardenOverviewScreen", "Username is null or empty")
+        }
     }
+
     MaterialTheme(
         colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
     ) {
@@ -102,15 +118,13 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                                 Icon(Icons.Default.Search, contentDescription = "Search")
                             }
                         )
-                    },
-                    floatingActionButton = {
-                        FloatingActionButton(
-                            onClick = { /* Add new plant */ }
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add Plant")
-                        }
                     }
                 )
+            },
+            floatingActionButton = {
+                FloatingActionButton(onClick = { setShowDialog(true) }) {
+                    Icon(Icons.Default.Add, contentDescription = "Add Plant")
+                }
             },
             content = { padding ->
                 LazyColumn(
@@ -120,18 +134,41 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                         .padding(8.dp),
                     contentPadding = PaddingValues(bottom = 72.dp) // Space for BottomAppBar
                 ) {
-                    items(uiState.plants) { plant ->
+                    items(uiState.filteredPlants) { plant -> // Použijte filteredPlants
                         PlantCard(
                             plant = plant,
                             onClick = { /* Navigate to plant details */ }
                         )
                     }
                 }
+
             }
         )
+
+        // Add Plant Dialog
+        if (showDialog) {
+            AddPlantDialog(
+                onDismiss = { setShowDialog(false) },
+                onAdd = { name, description, plantedDate ->
+                    viewModel.viewModelScope.launch {
+                        val username = dataStore.getLoginState().firstOrNull()?.second
+                        if (!username.isNullOrEmpty()) {
+                            val userId = dataStore.getUserId(username)
+                            if (userId != null) {
+                                viewModel.addPlant(userId, name, description, plantedDate)
+                            } else {
+                                Log.e("GardenOverviewScreen", "User ID is null")
+                            }
+                        } else {
+                            Log.e("GardenOverviewScreen", "Username is null or empty")
+                        }
+                        setShowDialog(false)
+                    }
+                }
+            )
+        }
     }
 }
-
 
 @Composable
 fun PlantCard(plant: Plant, onClick: () -> Unit) {
@@ -143,8 +180,7 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
-            modifier = Modifier.padding(8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
                 painter = rememberAsyncImagePainter(plant.imageUrl),
@@ -156,8 +192,7 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
             Spacer(modifier = Modifier.width(8.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = plant.name,
-                    style = MaterialTheme.typography.titleMedium
+                    text = plant.name, style = MaterialTheme.typography.titleMedium
                 )
                 Text(
                     text = plant.description,
@@ -169,6 +204,50 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = if (plant.isHealthy) Color.Green else Color.Red
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun AddPlantDialog(
+    onDismiss: () -> Unit, onAdd: (name: String, description: String, plantedDate: String) -> Unit
+) {
+    val name = remember { mutableStateOf("") }
+    val description = remember { mutableStateOf("") }
+    val plantedDate = remember { mutableStateOf("") }
+
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = MaterialTheme.shapes.medium, color = MaterialTheme.colorScheme.surface
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text("Add New Plant", style = MaterialTheme.typography.titleLarge)
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = name.value,
+                    onValueChange = { name.value = it },
+                    label = { Text("Name") })
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = description.value,
+                    onValueChange = { description.value = it },
+                    label = { Text("Description") })
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(value = plantedDate.value,
+                    onValueChange = { plantedDate.value = it },
+                    label = { Text("Planted Date") })
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(horizontalArrangement = Arrangement.End) {
+                    Button(onClick = onDismiss) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Button(onClick = {
+                        onAdd(name.value, description.value, plantedDate.value)
+                        onDismiss()
+                    }) {
+                        Text("Add")
+                    }
+                }
             }
         }
     }

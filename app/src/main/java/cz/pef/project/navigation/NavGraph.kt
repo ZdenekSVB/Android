@@ -1,5 +1,6 @@
 package cz.pef.project.navigation
 
+import GardenOverviewScreen
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -13,7 +14,6 @@ import cz.pef.project.ui.screens.flower_ai.FlowerAiScreen
 import cz.pef.project.ui.screens.flower_description.FlowerDescriptionScreen
 import cz.pef.project.ui.screens.flower_location.FlowerLocationScreen
 import cz.pef.project.ui.screens.flower_pictures.FlowerPicturesScreen
-import cz.pef.project.ui.screens.garden_overview.GardenOverviewScreen
 import cz.pef.project.ui.screens.login.LoginScreen
 import cz.pef.project.ui.screens.registration.RegistrationScreen
 import cz.pef.project.ui.screens.user_settings.UserSettingsScreen
