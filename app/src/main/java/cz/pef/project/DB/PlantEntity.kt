@@ -2,6 +2,7 @@ package cz.pef.project.DB
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import cz.pef.project.communication.Plant
 
@@ -12,7 +13,8 @@ import cz.pef.project.communication.Plant
         parentColumns = ["id"],
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
-    )]
+    )],
+    indices = [Index(value = ["userId"])]
 )
 data class PlantEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -21,8 +23,8 @@ data class PlantEntity(
     var description: String?,
     var plantedDate: String?,
     var deathDate: String?,
-    var latitude: Double = 50.00, // Nové pole pro zeměpisnou šířku
-    var longitude: Double = 14.00 // Nové pole pro zeměpisnou délku
+    var latitude: Double = 50.00, // New field for latitude
+    var longitude: Double = 14.00 // New field for longitude
 )
 
 fun PlantEntity.toPlant(): Plant {

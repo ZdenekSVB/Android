@@ -5,33 +5,94 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.pef.project.DB.PictureEntity
 import cz.pef.project.communication.Picture
+import cz.pef.project.dao.UserDao
+import cz.pef.project.datastore.DataStoreManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class FlowerPicturesViewModel : ViewModel() {
+@HiltViewModel
+class FlowerPicturesViewModel @Inject constructor(
+    private val pictureDao: UserDao,
+    val dataStoreManager: DataStoreManager
+) : ViewModel() {
     private val _uiState = MutableStateFlow(FlowerPicturesUiState())
     val uiState: StateFlow<FlowerPicturesUiState> get() = _uiState
 
-    init {
-        // Načítání obrázků při inicializaci
+
+
+    fun loadPicturesFromDatabase(plantId: Int) {
         viewModelScope.launch {
-            loadPictures(
-                listOf(
-                    Picture("https://example.com/image1.jpg", "Flower 1"),
-                    Picture("https://example.com/image2.jpg", "Flower 2"),
-                    Picture("https://example.com/image3.jpg", "Flower 3")
-                )
-            )
+            try {
+                val pictures = pictureDao.getPicturesByPlantId(plantId = plantId) // Replace with the actual plant ID if needed.
+                val pictureList = pictures.map { Picture(url = it.url, name = it.name) }
+                _uiState.value = _uiState.value.copy(pictures = pictureList)
+            } catch (e: Exception) {
+                setError(e)
+            }
         }
     }
 
-    private fun loadPictures(pictures: List<Picture>) {
-        _uiState.value = FlowerPicturesUiState(pictures = pictures)
+    fun addPictureToPlant(pictureUri: String, plantId: Int) {
+        viewModelScope.launch {
+            try {
+                // Create and save a new picture entity
+                val newPictureEntity = PictureEntity(
+                    plantId = plantId,
+                    url = pictureUri,
+                    name = "Picture ${System.currentTimeMillis()}"
+                )
+                pictureDao.insertPicture(newPictureEntity)
+
+                // Update UI state
+                val newPicture = Picture(url = pictureUri, name = newPictureEntity.name)
+                _uiState.value = _uiState.value.copy(
+                    pictures = _uiState.value.pictures + newPicture
+                )
+            } catch (e: Exception) {
+                setError(e)
+            }
+        }
     }
 
     fun setError(error: Throwable) {
         _uiState.value = _uiState.value.copy(error = error)
     }
+
+    fun updatePictureName(pictureUrl: String, newName: String) {
+        viewModelScope.launch {
+            try {
+                val pictureEntity = pictureDao.getPictureByUrl(pictureUrl)
+                if (pictureEntity != null) {
+                    val updatedPicture = pictureEntity.copy(name = newName)
+                    pictureDao.updatePicture(updatedPicture)
+
+                    val updatedPictures = _uiState.value.pictures.map {
+                        if (it.url == pictureUrl) it.copy(name = newName) else it
+                    }
+                    _uiState.value = _uiState.value.copy(pictures = updatedPictures)
+                }
+            } catch (e: Exception) {
+                setError(e)
+            }
+        }
+    }
+
+    fun deletePicture(pictureUrl: String) {
+        viewModelScope.launch {
+            try {
+                pictureDao.deletePictureByUrl(pictureUrl)
+
+                val updatedPictures = _uiState.value.pictures.filterNot { it.url == pictureUrl }
+                _uiState.value = _uiState.value.copy(pictures = updatedPictures)
+            } catch (e: Exception) {
+                setError(e)
+            }
+        }
+    }
+
 }

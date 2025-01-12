@@ -2,6 +2,7 @@ package cz.pef.project.dao
 
 import android.util.Log
 import androidx.room.*
+import cz.pef.project.DB.PictureEntity
 import cz.pef.project.DB.PlantEntity
 import cz.pef.project.DB.UserEntity
 
@@ -48,4 +49,19 @@ interface UserDao {
 
     @Query("SELECT * FROM plants WHERE id = :plantId")
     suspend fun getPlantById(plantId: Int): PlantEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPicture(picture: PictureEntity)
+
+    @Query("SELECT * FROM pictures WHERE plantId = :plantId")
+    suspend fun getPicturesByPlantId(plantId: Int): List<PictureEntity>
+
+    @Query("SELECT * FROM pictures WHERE url = :url")
+    suspend fun getPictureByUrl(url: String): PictureEntity?
+
+    @Update
+    suspend fun updatePicture(picture: PictureEntity)
+
+    @Query("DELETE FROM pictures WHERE url = :url")
+    suspend fun deletePictureByUrl(url: String)
 }
