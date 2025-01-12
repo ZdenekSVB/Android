@@ -14,4 +14,6 @@ sealed class Destination(
     object FlowerLocationScreen : Destination(route = "plant/{id}/location")
     object FlowerPicturesScreen : Destination(route = "plant/{id}/pictures")
 
+    object LoadingScreenMap : Destination(route = "plant/{id}/loading/location")
+
 }

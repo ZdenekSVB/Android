@@ -11,7 +11,7 @@ import cz.pef.project.ui.theme.basicMargin
 
 @Composable
 fun LoadingScreen(
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ){
     Box(modifier = modifier.fillMaxSize()) {
         CircularProgressIndicator(

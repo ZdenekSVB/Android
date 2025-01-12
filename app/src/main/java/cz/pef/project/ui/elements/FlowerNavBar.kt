@@ -13,6 +13,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import cz.pef.project.R
 import cz.pef.project.communication.Plant
@@ -48,7 +49,7 @@ fun FlowerNavigationBar(
             icon = { Icon(Icons.Default.LocationOn, contentDescription = "Location") },
             label = { Text("Map") },
             selected = selectedItem == "Map",
-            onClick = { navigation.navigateToFlowerLocationScreen(id) }
+            onClick = { navigation.navigateToLoadingScreenMap(id) }
         )
     }
 }

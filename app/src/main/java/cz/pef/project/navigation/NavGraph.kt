@@ -11,6 +11,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import cz.pef.project.communication.Plant
+import cz.pef.project.ui.elements.LoadingScreenMap
 import cz.pef.project.ui.screens.flower_ai.FlowerAiScreen
 import cz.pef.project.ui.screens.flower_description.FlowerDescriptionScreen
 import cz.pef.project.ui.screens.flower_location.FlowerLocationScreen
@@ -70,6 +71,13 @@ fun NavGraph(
         )) {
             val id = it.arguments?.getInt("id")
             FlowerLocationScreen(navigation = navigation, id = id ?: -1)
+        }
+
+        composable(Destination.LoadingScreenMap.route, arguments = listOf(
+            navArgument("id") { type = NavType.IntType }
+        )) {
+            val id = it.arguments?.getInt("id")
+            LoadingScreenMap(navigation = navigation, id = id ?: -1)
         }
 
 

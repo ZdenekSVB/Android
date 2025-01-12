@@ -12,6 +12,7 @@ interface INavigationRouter {
     fun navigateToGardenOverviewScreen()
     fun navigateToUserSettingsScreen()
 
+    fun navigateToLoadingScreenMap(id: Int)
     fun navigateToFlowerAiScreen(id: Int)
     fun navigateToFlowerDescriptionScreen(id: Int)
     fun navigateToFlowerLocationScreen(id: Int)

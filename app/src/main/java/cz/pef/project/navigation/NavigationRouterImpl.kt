@@ -36,6 +36,10 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
         navigateIfResumed(Destination.FlowerPicturesScreen.route.replace("{id}", id.toString()))
     }
 
+    override fun navigateToLoadingScreenMap(id: Int) {
+        navigateIfResumed(Destination.LoadingScreenMap.route.replace("{id}", id.toString()))
+    }
+
     override fun navigateToUserSettingsScreen() {
         navigateIfResumed(Destination.UserSettingsScreen.route)
     }
