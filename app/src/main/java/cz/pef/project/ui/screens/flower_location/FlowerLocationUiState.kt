@@ -6,7 +6,7 @@ import cz.pef.project.communication.Feature
 
 data class FlowerLocationUiState(
     val id: Int = 0,
-    val location: LatLng = LatLng(50.0, 14.0),
+    val location: LatLng? = null,
     val gardenCenters: List<Feature> = emptyList(),
     val selectedPlant: PlantEntity? = null,
     val error: Error? = null,

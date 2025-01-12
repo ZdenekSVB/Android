@@ -45,40 +45,31 @@ class FlowerLocationViewModel @Inject constructor(
                 if (plant != null) {
                     _uiState.value = _uiState.value.copy(
                         selectedPlant = plant,
-                        location = LatLng(plant.latitude, plant.longitude) // Aktualizace pozice
+                        location = LatLng(plant.latitude, plant.longitude)
                     )
-                } else {
-                    _uiState.value = _uiState.value.copy(error = Error("Plant not found"))
                 }
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(error = Error("Failed to load plant details: ${e.message}"))
+                Log.e("FlowerLocationViewModel", "Failed to load plant details", e)
             }
         }
     }
 
-    fun updateLocation(newLocation: LatLng) {
-        _uiState.value = _uiState.value.copy(location = newLocation)
-    }
 
-
-    fun saveLocation(plantId: Int) {
+    fun updatePlantLocation(plantId: Int, newLocation: LatLng) {
         viewModelScope.launch {
             try {
+                plantDao.updatePlantLocation(plantId, newLocation.latitude, newLocation.longitude)
+                Log.d("FlowerLocationViewModel", "Location updated for plantId $plantId: $newLocation")
 
-                Log.d("ABC saveFun",uiState.value.location.latitude.toString()+" "+uiState.value.location.longitude.toString())
-
-                val location = _uiState.value.location
-                plantDao.updatePlantLocation(
-                    plantId = plantId,
-                    latitude = location.latitude,
-                    longitude = location.longitude
-                )
+                // Načtení aktuálních detailů rostliny
+                loadPlantDetails(plantId)
             } catch (e: Exception) {
-                _uiState.value = _uiState.value.copy(cException = e)
+                Log.e("FlowerLocationViewModel", "Failed to update plant location", e)
             }
         }
     }
 
 
-    // Další logika pro aktualizaci lokaci
+
+
 }
