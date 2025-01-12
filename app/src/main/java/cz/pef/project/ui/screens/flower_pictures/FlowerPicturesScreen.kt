@@ -1,5 +1,6 @@
 package cz.pef.project.ui.screens.flower_pictures
 
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -50,11 +51,20 @@ import cz.pef.project.ui.elements.FlowerNavigationBar
 fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerPicturesViewModel>()
     val uiState = viewModel.uiState.collectAsState().value
-    val imageLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-        uri?.let {
-            viewModel.addPictureToPlant(it.toString(), id)
+    val context = LocalContext.current
+    val imageLauncher =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            uri?.let {
+                viewModel.addPictureToPlant(
+                    pictureUri = uri.toString(),
+                    plantId = id,
+                    onError = { errorMessage ->
+                        // Show error message to user
+                        Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                    }
+                )
+            }
         }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.loadPicturesFromDatabase(id)
@@ -117,6 +127,7 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
         }
     }
 }
+
 @Composable
 fun PictureItem(
     picture: Picture,
@@ -125,17 +136,23 @@ fun PictureItem(
 ) {
     var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(picture.name) }
+    var showImageDialog by remember { mutableStateOf(false) } // Stav pro zobrazení zvětšeného obrázku
 
     Box(
         modifier = Modifier
             .aspectRatio(1f)
             .padding(8.dp)
     ) {
+        // Obrázek
         Image(
             painter = rememberAsyncImagePainter(picture.url),
             contentDescription = picture.name,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .clickable { showImageDialog = true } // Kliknutím zobrazit dialog
         )
+
+        // Změna názvu a stav pro editaci
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -144,59 +161,68 @@ fun PictureItem(
                 .padding(8.dp)
         ) {
             if (isEditing) {
-                Column {
-                    BasicTextField(
-                        value = editedName,
-                        onValueChange = { editedName = it },
-                        textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(
-                            text = "Cancel",
-                            style = TextStyle(color = Color.Red, fontSize = 12.sp),
-                            modifier = Modifier
-                                .clickable { isEditing = false }
-                                .padding(4.dp)
-                        )
-                        Text(
-                            text = "Save",
-                            style = TextStyle(color = Color.Green, fontSize = 12.sp),
-                            modifier = Modifier
-                                .clickable {
-                                    onNameChange(editedName)
-                                    isEditing = false
-                                }
-                                .padding(4.dp)
-                        )
-                    }
-                }
+                BasicTextField(
+                    value = editedName,
+                    onValueChange = { editedName = it },
+                    textStyle = TextStyle(color = Color.White, fontSize = 14.sp),
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Text(
+                    text = "Save",
+                    style = TextStyle(color = Color.Green, fontSize = 12.sp),
+                    modifier = Modifier
+                        .clickable {
+                            onNameChange(editedName)
+                            isEditing = false
+                        }
+                        .padding(top = 8.dp)
+                        .align(Alignment.BottomEnd)
+                )
             } else {
                 Text(
                     text = picture.name,
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { isEditing = true } // Kliknutím přepnout do režimu editace
+                        .padding(4.dp),
                     maxLines = 1
                 )
             }
         }
-        Row(
+
+        // Ikona pro smazání
+        IconButton(
+            onClick = onDelete,
             modifier = Modifier
-                .fillMaxWidth()
                 .align(Alignment.TopEnd)
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.End
+                .padding(8.dp)
         ) {
-            IconButton(onClick = { isEditing = true }) {
-                Icon(Icons.Default.Edit, contentDescription = "Edit", tint = Color.White)
-            }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
-            }
+            Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+        }
+
+        // Dialog pro zobrazení zvětšeného obrázku
+        if (showImageDialog) {
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { showImageDialog = false },
+                text = {
+                    Image(
+                        painter = rememberAsyncImagePainter(picture.url),
+                        contentDescription = "Zoomed Picture",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                },
+                confirmButton = {
+                    Text(
+                        text = "Close",
+                        modifier = Modifier
+                            .clickable { showImageDialog = false }
+                            .padding(8.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
         }
     }
 }

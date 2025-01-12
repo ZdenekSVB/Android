@@ -37,9 +37,18 @@ class FlowerPicturesViewModel @Inject constructor(
         }
     }
 
-    fun addPictureToPlant(pictureUri: String, plantId: Int) {
+    fun addPictureToPlant(pictureUri: String, plantId: Int, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
+                // Check if the picture URI already exists for the given plant
+                val existingPicture = pictureDao.getPictureByUriAndPlantId(pictureUri, plantId)
+
+                if (existingPicture != null) {
+                    // If the picture already exists, you can either return or notify the
+                    onError("Photo is already added in gallery")
+                    return@launch
+                }
+
                 // Create and save a new picture entity
                 val newPictureEntity = PictureEntity(
                     plantId = plantId,
@@ -53,11 +62,11 @@ class FlowerPicturesViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     pictures = _uiState.value.pictures + newPicture
                 )
-            } catch (e: Exception) {
-                setError(e)
+            } catch (e: Exception) {onError("Couldnt add photo")
             }
         }
     }
+
 
     fun setError(error: Throwable) {
         _uiState.value = _uiState.value.copy(error = error)

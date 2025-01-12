@@ -64,4 +64,8 @@ interface UserDao {
 
     @Query("DELETE FROM pictures WHERE url = :url")
     suspend fun deletePictureByUrl(url: String)
+
+    @Query("SELECT * FROM pictures WHERE url = :uri AND plantId = :plantId LIMIT 1")
+    suspend fun getPictureByUriAndPlantId(uri: String, plantId: Int): PictureEntity?
+
 }
