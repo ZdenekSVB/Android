@@ -1,5 +1,6 @@
 package cz.pef.project.dao
 
+import android.util.Log
 import androidx.room.*
 import cz.pef.project.DB.PlantEntity
 import cz.pef.project.DB.UserEntity
@@ -36,4 +37,16 @@ interface UserDao {
 
     @Query("SELECT id FROM users WHERE userName = :userName")
     suspend fun getUserIdByUsername(userName: String): Int?
+
+    @Query("SELECT * FROM plants WHERE name = :plantName")
+    suspend fun getPlantByName(plantName: String): PlantEntity?
+
+    @Query("UPDATE plants SET latitude = :latitude, longitude = :longitude WHERE id = :plantId")
+    suspend fun updatePlantLocation(plantId: Int, latitude: Double, longitude: Double) {
+        Log.d("DAO", "Updating plant $plantId with lat: $latitude, lng: $longitude")
+    }
+
+
+    @Query("SELECT * FROM plants WHERE id = :plantId")
+    suspend fun getPlantById(plantId: Int): PlantEntity?
 }

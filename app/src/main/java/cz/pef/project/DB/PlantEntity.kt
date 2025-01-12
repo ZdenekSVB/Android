@@ -17,10 +17,12 @@ import cz.pef.project.communication.Plant
 data class PlantEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val userId: Int,
-    val name: String,
-    val description: String,
-    val plantedDate: String,
-    val deathDate: String?
+    var name: String,
+    var description: String?,
+    var plantedDate: String?,
+    var deathDate: String?,
+    var latitude: Double = 50.00, // Nové pole pro zeměpisnou šířku
+    var longitude: Double = 14.00 // Nové pole pro zeměpisnou délku
 )
 
 fun PlantEntity.toPlant(): Plant {

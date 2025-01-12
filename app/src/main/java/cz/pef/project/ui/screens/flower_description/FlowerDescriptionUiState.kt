@@ -1,18 +1,16 @@
 package cz.pef.project.ui.screens.flower_description
 
 data class FlowerDescriptionUiState(
-    val name: String = "Sunflower",
+    val id: Int = 0,
+    val name: String? = null,
+    val description: String? = null,
     val plantDate: String? = null,
     val deathDate: String? = null,
-    val description: String = "This is a beautiful flower.",
-    val healthResults: List<HealthResult> = listOf(
-        HealthResult(1, "Healthy"),
-        HealthResult(2, "Needs Water"),
-        HealthResult(3, "Good Condition")
-    ),
     val isEditNameDialogVisible: Boolean = false,
-    val isEditDatesDialogVisible: Boolean = false
+    val isEditDatesDialogVisible: Boolean = false,
+    val isEditingDescription: Boolean = false // Nový stav pro režim editace
 )
+
 
 data class HealthResult(
     val number: Int,

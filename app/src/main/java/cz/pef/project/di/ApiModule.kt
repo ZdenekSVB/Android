@@ -1,6 +1,6 @@
 package cz.pef.project.di
 
-import cz.pef.project.communication.PetsAPI
+import cz.pef.project.communication.GardenAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,8 +14,8 @@ object ApiModule {
 
     @Provides
     @Singleton
-    fun providePetsAPI(retrofit: Retrofit): PetsAPI {
-        return retrofit.create(PetsAPI::class.java)
+    fun provideGardenAPI(retrofit: Retrofit): GardenAPI {
+        return retrofit.create(GardenAPI::class.java)
     }
 
 }

@@ -25,16 +25,12 @@ class GardenOverviewViewModel @Inject constructor(
     val uiState: StateFlow<GardenOverviewUiState> get() = _uiState
 
     private val _searchQuery = MutableStateFlow("")
-    val searchQuery: StateFlow<String> get() = _searchQuery
 
     init {
         // Debounce search query to optimize filtering
         viewModelScope.launch {
-            _searchQuery
-                .debounce(300) // Adjust debounce time as needed
-                .collect { query ->
-                    filterPlants(query)
-                }
+            _searchQuery.collect { query -> filterPlants(query) }
+
         }
     }
 
@@ -42,22 +38,29 @@ class GardenOverviewViewModel @Inject constructor(
         _searchQuery.value = query
     }
 
+
     private fun filterPlants(query: String) {
         val filtered = uiState.value.plants.filter {
             it.name.contains(query, ignoreCase = true)
         }
-        _uiState.value = uiState.value.copy(filteredPlants = filtered)
+        _uiState.value = uiState.value.copy(
+            searchQuery = query, // Synchronizace searchQuery v uiState
+            filteredPlants = filtered
+        )
     }
 
-    fun addPlant(userId: Int, name: String, description: String, plantedDate: String) {
+
+    fun addPlant(userId: Int, name: String) {
         viewModelScope.launch {
             try {
                 val newPlant = PlantEntity(
                     userId = userId,
                     name = name,
-                    description = description,
-                    plantedDate = plantedDate,
-                    deathDate = null
+                    description = null,
+                    plantedDate = null,
+                    deathDate = null,
+                    latitude = 50.00,
+                    longitude = 14.00
                 )
                 plantDao.insertPlant(newPlant)
                 loadPlants(userId) // Reload plants after insertion

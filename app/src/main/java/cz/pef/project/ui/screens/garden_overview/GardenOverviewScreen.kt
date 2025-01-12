@@ -110,8 +110,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                     modifier = Modifier.fillMaxWidth(),
                     actions = {
                         OutlinedTextField(
-                            value = uiState.searchQuery,
-                            onValueChange = { viewModel.updateSearchQuery(it) },
+                            value = uiState.searchQuery, // Hodnota propojena se stavem
+                            onValueChange = { viewModel.updateSearchQuery(it) }, // Aktualizace hodnoty ve ViewModelu
                             placeholder = { Text("Search") },
                             modifier = Modifier.weight(1f),
                             trailingIcon = {
@@ -154,12 +154,12 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
         if (showDialog) {
             AddPlantDialog(
                 onDismiss = { setShowDialog(false) },
-                onAdd = { name, description, plantedDate ->
+                onAdd = { name->
                     viewModel.viewModelScope.launch {
                         val username = dataStore.getLoginState().firstOrNull()?.second
                         if (!username.isNullOrEmpty()) {
                             val userId = dataStore.getUserId(username)
-                            viewModel.addPlant(userId, name, description, plantedDate)
+                            viewModel.addPlant(userId, name)
                         } else {
                             Log.e("GardenOverviewScreen", "Username is null or empty")
                         }
@@ -170,6 +170,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
         }
     }
 }
+
 
 
 @Composable
@@ -214,11 +215,9 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
 
 @Composable
 fun AddPlantDialog(
-    onDismiss: () -> Unit, onAdd: (name: String, description: String, plantedDate: String) -> Unit
+    onDismiss: () -> Unit, onAdd: (name: String) -> Unit
 ) {
     val name = remember { mutableStateOf("") }
-    val description = remember { mutableStateOf("") }
-    val plantedDate = remember { mutableStateOf("") }
 
     Dialog(onDismissRequest = onDismiss) {
         Surface(
@@ -230,22 +229,13 @@ fun AddPlantDialog(
                 OutlinedTextField(value = name.value,
                     onValueChange = { name.value = it },
                     label = { Text("Name") })
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(value = description.value,
-                    onValueChange = { description.value = it },
-                    label = { Text("Description") })
-                Spacer(modifier = Modifier.height(8.dp))
-                OutlinedTextField(value = plantedDate.value,
-                    onValueChange = { plantedDate.value = it },
-                    label = { Text("Planted Date") })
-                Spacer(modifier = Modifier.height(16.dp))
                 Row(horizontalArrangement = Arrangement.End) {
                     Button(onClick = onDismiss) {
                         Text("Cancel")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     Button(onClick = {
-                        onAdd(name.value, description.value, plantedDate.value)
+                        onAdd(name.value)
                         onDismiss()
                     }) {
                         Text("Add")
