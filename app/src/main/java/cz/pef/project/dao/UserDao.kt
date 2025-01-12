@@ -41,10 +41,9 @@ interface UserDao {
     @Query("SELECT * FROM plants WHERE name = :plantName")
     suspend fun getPlantByName(plantName: String): PlantEntity?
 
+
     @Query("UPDATE plants SET latitude = :latitude, longitude = :longitude WHERE id = :plantId")
-    suspend fun updatePlantLocation(plantId: Int, latitude: Double, longitude: Double) {
-        Log.d("DAO", "Updating plant $plantId with lat: $latitude, lng: $longitude")
-    }
+    suspend fun updatePlantLocation(plantId: Int, latitude: Double, longitude: Double)
 
 
     @Query("SELECT * FROM plants WHERE id = :plantId")

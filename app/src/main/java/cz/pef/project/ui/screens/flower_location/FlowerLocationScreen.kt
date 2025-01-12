@@ -28,6 +28,10 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
         viewModel.loadPlantDetails(id)
     }
 
+    var markerState = rememberMarkerState(position = LatLng(0.00,0.00))
+
+
+
     MaterialTheme(colorScheme = darkColorScheme()) {
         Scaffold(
             topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
@@ -39,6 +43,8 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                     .padding(padding)
             ) {
                 if (uiState.value.location != null) {
+                    markerState=rememberMarkerState(position = uiState.value.location!!)
+
                     GoogleMap(
                         modifier = Modifier.fillMaxSize(),
                         cameraPositionState = rememberCameraPositionState {
@@ -46,7 +52,7 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                         }
                     ) {
                         Marker(
-                            state = rememberMarkerState(position = uiState.value.location!!),
+                            state = markerState,
                             title = "Selected Location",
                             snippet = "Drag to update location",
                             draggable = true,
@@ -75,8 +81,8 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                                     .padding(16.dp)
                             ) {
                                 Text(
-                                    text = "New Location:\nLat: ${uiState.value.location?.latitude}, " +
-                                            "Lng: ${uiState.value.location?.longitude}",
+                                    text = "New Location:\nLat: ${markerState.position.latitude}, " +
+                                            "Lng: ${markerState.position.longitude}",
                                     modifier = Modifier.align(Alignment.TopStart)
                                 )
                                 Button(
@@ -85,7 +91,7 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                                         if (plantId != null) {
                                             viewModel.updatePlantLocation(
                                                 plantId = plantId,
-                                                newLocation = uiState.value.location!!
+                                                newLocation = markerState.position
                                             )
                                         }
                                         isBottomSheetVisible = false

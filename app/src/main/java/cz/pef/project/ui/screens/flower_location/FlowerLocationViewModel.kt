@@ -54,7 +54,6 @@ class FlowerLocationViewModel @Inject constructor(
         }
     }
 
-
     fun updatePlantLocation(plantId: Int, newLocation: LatLng) {
         viewModelScope.launch {
             try {
@@ -68,6 +67,7 @@ class FlowerLocationViewModel @Inject constructor(
             }
         }
     }
+
 
 
 
