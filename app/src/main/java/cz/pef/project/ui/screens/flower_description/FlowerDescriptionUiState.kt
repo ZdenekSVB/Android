@@ -10,6 +10,7 @@ data class FlowerDescriptionUiState(
     val isEditDatesDialogVisible: Boolean = false,
     val isEditingDescription: Boolean = false,
     val results: List<HealthResult> = emptyList() // Přidání seznamu výsledků
+
 )
 
 

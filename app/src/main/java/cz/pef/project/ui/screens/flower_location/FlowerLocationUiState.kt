@@ -11,5 +11,6 @@ data class FlowerLocationUiState(
     val selectedPlant: PlantEntity? = null,
     val error: Error? = null,
     val exception: Throwable? = null,
-    val cException: Exception? = null
+    val cException: Exception? = null,
+
 )

@@ -28,9 +28,13 @@ class GardenOverviewViewModel @Inject constructor(
 
     private val _searchQuery = MutableStateFlow("")
 
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
+
     init {
         // Debounce search query to optimize filtering
         viewModelScope.launch {
+            observeThemePreference()
             _searchQuery.collect { query -> filterPlants(query) }
 
         }
@@ -98,6 +102,12 @@ class GardenOverviewViewModel @Inject constructor(
         return results
     }
 
-
+    private fun observeThemePreference() {
+        viewModelScope.launch {
+            dataStoreManager.darkModeFlow.collect { isDark ->
+                _isDarkTheme.value = isDark
+            }
+        }
+    }
 
 }

@@ -10,17 +10,18 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-// Singleton DataStore definition
+
 private val Context.dataStore by preferencesDataStore("user_preferences")
 
 object UserPreferences {
     val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
     val USERNAME = stringPreferencesKey("username")
+    val DARK_MODE = booleanPreferencesKey("dark_mode") // Přidání klíče pro dark mód
 }
 
 class DataStoreManager @Inject constructor(
     private val context: Context,
-    private val userDao: UserDao // Přidání UserDao pro přístup k databázi
+    private val userDao: UserDao
 ) {
     suspend fun getUserId(userName: String): Int {
         return userDao.getUserIdByUsername(userName) ?: throw IllegalArgumentException("User not found")
@@ -39,5 +40,17 @@ class DataStoreManager @Inject constructor(
             val userName = preferences[UserPreferences.USERNAME]
             isLoggedIn to userName
         }
+    }
+
+    // Uložení nastavení dark módu
+    suspend fun setDarkMode(isDarkMode: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[UserPreferences.DARK_MODE] = isDarkMode
+        }
+    }
+
+    // Čtení nastavení dark módu
+    val darkModeFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[UserPreferences.DARK_MODE] ?: false // Defaultně light mód
     }
 }

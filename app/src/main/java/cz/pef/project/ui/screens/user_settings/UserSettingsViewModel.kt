@@ -21,7 +21,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 class UserSettingsViewModel @Inject constructor(
     application: Application,
     private val datastore: DataStoreManager, // Inject DataStoreManager
-    private val userDao: UserDao // Přidání UserDao
+    private val userDao: UserDao // Inject UserDao
 ) : ViewModel() {
 
     private val context = application
@@ -29,8 +29,19 @@ class UserSettingsViewModel @Inject constructor(
     private val userPreferencesFlow = datastore.getLoginState()
     private val _uiState = MutableStateFlow(UserSettingsUiState())
     val uiState: StateFlow<UserSettingsUiState> = _uiState
+
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
+
+
     init {
+        // Initialize the dark mode preference early
         viewModelScope.launch {
+            datastore.darkModeFlow.collect { isDarkMode ->
+                _uiState.value = _uiState.value.copy(isDarkMode = isDarkMode)
+            }
+
+            // Collecting login state from DataStore
             userPreferencesFlow.collect { (isLoggedIn, userName) ->
                 val user = userName?.let { userDao.getUserByUserName(it) }
                 _uiState.value = _uiState.value.copy(
@@ -120,5 +131,19 @@ class UserSettingsViewModel @Inject constructor(
             )
         }
     }
+    fun toggleDarkMode() {
+        viewModelScope.launch {
+            val newMode = !_uiState.value.isDarkMode
+            datastore.setDarkMode(newMode) // Save the new dark mode preference
+            _uiState.value = _uiState.value.copy(isDarkMode = newMode) // Update UI state
+        }
+    }
 
+    private fun observeThemePreference() {
+        viewModelScope.launch {
+            datastore.darkModeFlow.collect { isDark ->
+                _isDarkTheme.value = isDark
+            }
+        }
+    }
 }

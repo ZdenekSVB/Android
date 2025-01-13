@@ -68,10 +68,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GardenOverviewScreen(navigation: INavigationRouter) {
-    val darkTheme = true
-    val context = LocalContext.current
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
     val uiState by viewModel.uiState.collectAsState()
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val dataStore = viewModel.dataStoreManager
 
@@ -88,7 +87,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
     }
 
     MaterialTheme(
-        colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
             topBar = {

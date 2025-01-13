@@ -23,7 +23,8 @@ class FlowerPicturesViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(FlowerPicturesUiState())
     val uiState: StateFlow<FlowerPicturesUiState> get() = _uiState
 
-
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
 
     fun loadPicturesFromDatabase(plantId: Int) {
         viewModelScope.launch {
@@ -100,6 +101,13 @@ class FlowerPicturesViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(pictures = updatedPictures)
             } catch (e: Exception) {
                 setError(e)
+            }
+        }
+    }
+    private fun observeThemePreference() {
+        viewModelScope.launch {
+            dataStoreManager.darkModeFlow.collect { isDark ->
+                _isDarkTheme.value = isDark
             }
         }
     }

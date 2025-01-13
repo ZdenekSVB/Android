@@ -46,10 +46,10 @@ import cz.pef.project.ui.screens.flower_description.FlowerDescriptionViewModel
 fun UserSettingsScreen(navigation: INavigationRouter) {
     val viewModel: UserSettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val darkTheme = true // Nastavení dark mode
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState()
 
     MaterialTheme(
-        colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
             topBar = {
@@ -71,6 +71,13 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Text(text = "Dark Mode: ${if (uiState.isDarkMode) "Enabled" else "Disabled"}")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(onClick = { viewModel.toggleDarkMode() }) {
+                        Text(if (uiState.isDarkMode) "Switch to Light Mode" else "Switch to Dark Mode")
+                    }
                     Text(text = if (uiState.isLoggedIn) "Logged In" else "Logged Out")
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -96,7 +103,12 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                         password = uiState.password,
                         onDismiss = { viewModel.hideEditDialog() },
                         onSave = { firstName, lastName, userName, password ->
-                            viewModel.validateAndSaveUserDetails(firstName, lastName, userName, password)
+                            viewModel.validateAndSaveUserDetails(
+                                firstName,
+                                lastName,
+                                userName,
+                                password
+                            )
                         },
                         firstNameError = uiState.firstNameError,
                         lastNameError = uiState.lastNameError,
@@ -130,6 +142,7 @@ fun UserDetailRow(label: String, value: String) {
         )
     }
 }
+
 @Composable
 fun EditUserDialog(
     firstName: String,

@@ -32,6 +32,9 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
     var isGardenBottomSheetVisible by remember { mutableStateOf(false) }
     var selectedGardenCenter by remember { mutableStateOf<Feature?>(null) }
 
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
+
+
     val context = LocalContext.current
 
     LaunchedEffect(id) {
@@ -40,7 +43,9 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
 
     var plantMarkerState = rememberMarkerState(position = LatLng(0.0, 0.0))
 
-    MaterialTheme(colorScheme = darkColorScheme()) {
+    MaterialTheme(
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
+    ) {
         Scaffold(
             topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
             bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Location", id = id) },

@@ -52,6 +52,10 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerPicturesViewModel>()
     val uiState = viewModel.uiState.collectAsState().value
     val context = LocalContext.current
+
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
+
+
     val imageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
@@ -71,7 +75,7 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
     }
 
     MaterialTheme(
-        colorScheme = darkColorScheme()
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
             topBar = { FlowerAppBar(title = "Pictures", navigation = navigation) },

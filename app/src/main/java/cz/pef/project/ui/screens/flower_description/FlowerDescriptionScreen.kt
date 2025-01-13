@@ -37,6 +37,7 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,13 +64,16 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
 
     val context = LocalContext.current
 
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
+
+
     LaunchedEffect(id) {
         viewModel.loadPlantDetails(id)
         viewModel.loadResultsForPlant(id)
     }
 
     MaterialTheme(
-        colorScheme = if (true) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
             topBar = { FlowerAppBar(title = "Description", navigation = navigation) },
@@ -196,7 +200,8 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                         val urlStart = result.description.indexOf("http")
                                         if (urlStart != -1) {
                                             val url = result.description.substring(urlStart)
-                                            val textBeforeUrl = result.description.substring(0, urlStart)
+                                            val textBeforeUrl =
+                                                result.description.substring(0, urlStart)
 
                                             append(textBeforeUrl)
 
@@ -220,9 +225,16 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                         text = annotatedDescription,
                                         style = MaterialTheme.typography.bodyMedium,
                                         onClick = { offset ->
-                                            annotatedDescription.getStringAnnotations("URL", start = offset, end = offset)
+                                            annotatedDescription.getStringAnnotations(
+                                                "URL",
+                                                start = offset,
+                                                end = offset
+                                            )
                                                 .firstOrNull()?.let { annotation ->
-                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                                    val intent = Intent(
+                                                        Intent.ACTION_VIEW,
+                                                        Uri.parse(annotation.item)
+                                                    )
                                                     context.startActivity(intent)
                                                 }
                                         }
@@ -231,7 +243,6 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                             }
                         }
                     }
-
 
 
                 }

@@ -43,8 +43,6 @@ import androidx.compose.ui.text.withStyle
 
 @Composable
 fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
-
-    
     val viewModel = hiltViewModel<FlowerAiViewModel>()
     val uiState = viewModel.uiState.value
 
@@ -168,5 +166,4 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
             }
         )
     }
-
 }

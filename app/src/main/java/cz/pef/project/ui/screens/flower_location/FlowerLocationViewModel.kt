@@ -7,6 +7,7 @@ import com.google.android.gms.maps.model.LatLng
 import cz.pef.project.communication.CommunicationResult
 import cz.pef.project.communication.GardenRemoteRepositoryImpl
 import cz.pef.project.dao.UserDao
+import cz.pef.project.datastore.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,10 +17,15 @@ import javax.inject.Inject
 @HiltViewModel
 class FlowerLocationViewModel @Inject constructor(
     private val gardenRemoteRepository: GardenRemoteRepositoryImpl,
-    private val plantDao: UserDao
+    private val plantDao: UserDao,
+    val dataStoreManager: DataStoreManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(FlowerLocationUiState())
     val uiState: StateFlow<FlowerLocationUiState> = _uiState
+
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
+
 
     init {
         loadGardenCenters()
@@ -70,6 +76,12 @@ class FlowerLocationViewModel @Inject constructor(
 
 
 
-
+    private fun observeThemePreference() {
+        viewModelScope.launch {
+            dataStoreManager.darkModeFlow.collect { isDark ->
+                _isDarkTheme.value = isDark
+            }
+        }
+    }
 
 }

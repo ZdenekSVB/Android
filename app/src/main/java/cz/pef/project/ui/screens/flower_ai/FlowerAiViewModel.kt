@@ -13,9 +13,12 @@ import android.graphics.BitmapFactory
 import cz.pef.project.DB.ResultEntity
 import cz.pef.project.ai.Recognition
 import cz.pef.project.dao.UserDao
+import cz.pef.project.datastore.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import org.tensorflow.lite.DataType
 import org.tensorflow.lite.Interpreter
 import org.tensorflow.lite.support.image.TensorImage
@@ -39,7 +42,8 @@ https://github.com/obeshor/Plant-Diseases-Detector/blob/master/GreenDoctor/app/s
 @HiltViewModel
 class FlowerAiViewModel @Inject constructor(
     application: Application,
-    private val userDao: UserDao // Přidání DAO
+    private val userDao: UserDao,
+    val dataStoreManager: DataStoreManager
 ) : ViewModel() {
 
     private val context = application
@@ -48,12 +52,16 @@ class FlowerAiViewModel @Inject constructor(
     private lateinit var interpreter: Interpreter
     private lateinit var interpreterDeferred: Deferred<Interpreter>
 
+    private val _isDarkTheme = MutableStateFlow(false)
+    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
+
     init {
         viewModelScope.launch {
             interpreterDeferred = async { loadModelFile("plant_disease_model.tflite") }
             interpreter = interpreterDeferred.await()
         }
     }
+
     private val labels = listOf(
         "Apple Apple Scab: https://en.wikipedia.org/wiki/Apple_scab",
         "Apple Black Rot: https://en.wikipedia.org/wiki/Apple_black_rot",
@@ -123,19 +131,32 @@ class FlowerAiViewModel @Inject constructor(
             }
             uiState.value.selectedImageUri?.let { uri ->
                 val tensorImage = preprocessImage(uri)
-                val outputBuffer = TensorBuffer.createFixedSize(intArrayOf(1, labels.size), DataType.FLOAT32)
+                val outputBuffer =
+                    TensorBuffer.createFixedSize(intArrayOf(1, labels.size), DataType.FLOAT32)
                 interpreter.run(tensorImage.buffer, outputBuffer.buffer.rewind())
 
                 val outputArray = outputBuffer.floatArray
                 val results = getSortedResult(outputArray)
 
-                // Uložení výsledků do stavu
-                uiState.value = uiState.value.copy(
-                    analysisResult = results.joinToString("\n") {
-                        val confidencePercentage = it.confidence * 100
-                        "${it.title} (Confidence: %.2f%)".format(confidencePercentage)
-                    }
-                )
+                if (results.isNotEmpty()) {
+                    uiState.value = uiState.value.copy(
+                        analysisResult = results.joinToString("\n") {
+                            val confidencePercentage = (it.confidence * 100).toString()
+                            "${it.title} ${"%.2f".format(confidencePercentage.toFloat())}%"
+                            /*
+                                                analysisResult = results.joinToString("\n") {
+                            val confidencePercentage = it.confidence * 100
+                            "${it.title} (Confidence: %.2f%)".format(confidencePercentage)
+                        }
+                    )
+                             */
+
+                        }
+                    )
+                } else {
+                    uiState.value = uiState.value.copy(analysisResult = "No results found.")
+                }
+
 
                 // Uložení do databáze
                 saveResultsToDatabase(plantId, results)
@@ -155,6 +176,7 @@ class FlowerAiViewModel @Inject constructor(
             userDao.insertResult(entity)
         }
     }
+
     private fun getSortedResult(outputArray: FloatArray): List<Recognition> {
         val pq = PriorityQueue(
             3, // Maximální počet výsledků
@@ -201,12 +223,16 @@ class FlowerAiViewModel @Inject constructor(
     }
 
 
-
-
-
     private fun loadBitmapFromUri(uri: Uri, context: Context): Bitmap {
         val inputStream = context.contentResolver.openInputStream(uri)
         return BitmapFactory.decodeStream(inputStream)
     }
 
+    private fun observeThemePreference() {
+        viewModelScope.launch {
+            dataStoreManager.darkModeFlow.collect { isDark ->
+                _isDarkTheme.value = isDark
+            }
+        }
+    }
 }

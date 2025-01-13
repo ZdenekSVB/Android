@@ -4,5 +4,5 @@ import cz.pef.project.communication.Picture
 
 data class FlowerPicturesUiState(
     val pictures: List<Picture> = emptyList(),
-    val error: Throwable? = null
+    val error: Throwable? = null,
 )
