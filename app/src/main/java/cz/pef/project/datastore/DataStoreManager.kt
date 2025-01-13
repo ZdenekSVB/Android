@@ -42,15 +42,15 @@ class DataStoreManager @Inject constructor(
         }
     }
 
-    // Uložení nastavení dark módu
+    // Uložení nastavení Dark Mode
     suspend fun setDarkMode(isDarkMode: Boolean) {
         context.dataStore.edit { preferences ->
             preferences[UserPreferences.DARK_MODE] = isDarkMode
         }
     }
 
-    // Čtení nastavení dark módu
+    // Načítání stavu Dark Mode
     val darkModeFlow: Flow<Boolean> = context.dataStore.data.map { preferences ->
-        preferences[UserPreferences.DARK_MODE] ?: false // Defaultně light mód
+        preferences[UserPreferences.DARK_MODE] ?: false // Defaultně Light Mode
     }
 }

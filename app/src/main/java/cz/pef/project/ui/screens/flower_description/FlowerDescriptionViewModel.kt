@@ -25,6 +25,12 @@ class FlowerDescriptionViewModel @Inject constructor(
     val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
 
 
+    init {
+        viewModelScope.launch {
+            observeThemePreference()
+        }
+    }
+
     fun showEditNameDialog() {
         _uiState.value = uiState.copy(isEditNameDialogVisible = true)
     }

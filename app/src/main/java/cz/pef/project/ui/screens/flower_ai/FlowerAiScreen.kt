@@ -38,6 +38,8 @@ import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.withStyle
 
@@ -45,6 +47,8 @@ import androidx.compose.ui.text.withStyle
 fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerAiViewModel>()
     val uiState = viewModel.uiState.value
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
+
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -54,7 +58,7 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
     val context = LocalContext.current
 
     MaterialTheme(
-        colorScheme = if (true) darkColorScheme() else lightColorScheme()
+        colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
             topBar = { FlowerAppBar(title = "AI", navigation = navigation) },

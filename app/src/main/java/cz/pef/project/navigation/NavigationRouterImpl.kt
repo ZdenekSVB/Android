@@ -45,8 +45,20 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
     }
 
     override fun returnBack() {
-        navController.popBackStack()
+        val currentRoute = navController.currentDestination?.route
+        if (currentRoute in listOf(
+                Destination.FlowerAiScreen.route,
+                Destination.FlowerLocationScreen.route,
+                Destination.FlowerDescriptionScreen.route,
+                Destination.FlowerPicturesScreen.route
+            )) {
+            navigateIfResumed(Destination.GardenOverviewScreen.route)
+        } else {
+            navController.popBackStack()
+        }
     }
+
+
 
     private fun navigateIfResumed(route: String) {
         if (navController.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {

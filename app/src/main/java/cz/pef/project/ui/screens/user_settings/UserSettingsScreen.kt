@@ -46,7 +46,7 @@ import cz.pef.project.ui.screens.flower_description.FlowerDescriptionViewModel
 fun UserSettingsScreen(navigation: INavigationRouter) {
     val viewModel: UserSettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsState()
-    val isDarkTheme by viewModel.isDarkTheme.collectAsState()
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState(initial = false)
 
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
@@ -71,12 +71,12 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(text = "Dark Mode: ${if (uiState.isDarkMode) "Enabled" else "Disabled"}")
+                    Text(text = "Dark Mode: ${if (isDarkTheme) "Enabled" else "Disabled"}")
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Button(onClick = { viewModel.toggleDarkMode() }) {
-                        Text(if (uiState.isDarkMode) "Switch to Light Mode" else "Switch to Dark Mode")
+                        Text(if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode")
                     }
                     Text(text = if (uiState.isLoggedIn) "Logged In" else "Logged Out")
 

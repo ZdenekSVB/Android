@@ -10,6 +10,5 @@ data class UserSettingsUiState(
     val firstNameError: String? = null,
     val lastNameError: String? = null,
     val userNameError: String? = null,
-    val passwordError: String? = null,
-    val isDarkMode: Boolean = false // Přidáno pro dark mód
+    val passwordError: String? = null
 )

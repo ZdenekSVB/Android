@@ -26,6 +26,14 @@ class FlowerPicturesViewModel @Inject constructor(
     private val _isDarkTheme = MutableStateFlow(false)
     val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
 
+    init {
+        viewModelScope.launch {
+            observeThemePreference()
+        }
+    }
+
+
+
     fun loadPicturesFromDatabase(plantId: Int) {
         viewModelScope.launch {
             try {

@@ -9,8 +9,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import cz.pef.project.communication.Plant
-import cz.pef.project.ui.elements.LoadingScreenMap
+import cz.pef.project.ui.screens.loading_screen.LoadingScreenMap
 import cz.pef.project.ui.screens.flower_ai.FlowerAiScreen
 import cz.pef.project.ui.screens.flower_description.FlowerDescriptionScreen
 import cz.pef.project.ui.screens.flower_location.FlowerLocationScreen

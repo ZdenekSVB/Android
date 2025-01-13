@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import cz.pef.project.dao.UserDao
 import cz.pef.project.datastore.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 
 
 @HiltViewModel
@@ -30,17 +32,16 @@ class UserSettingsViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UserSettingsUiState())
     val uiState: StateFlow<UserSettingsUiState> = _uiState
 
-    private val _isDarkTheme = MutableStateFlow(false)
-    val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
+    // Sledování temného režimu přímo z DataStore
+    val isDarkTheme: Flow<Boolean> = datastore.darkModeFlow
+
+    // Sledování stavu přihlášení a uživatelského jména přímo z DataStore
+    val loginState: Flow<Pair<Boolean, String?>> = datastore.getLoginState()
 
 
     init {
         // Initialize the dark mode preference early
         viewModelScope.launch {
-            datastore.darkModeFlow.collect { isDarkMode ->
-                _uiState.value = _uiState.value.copy(isDarkMode = isDarkMode)
-            }
-
             // Collecting login state from DataStore
             userPreferencesFlow.collect { (isLoggedIn, userName) ->
                 val user = userName?.let { userDao.getUserByUserName(it) }
@@ -131,19 +132,11 @@ class UserSettingsViewModel @Inject constructor(
             )
         }
     }
+
     fun toggleDarkMode() {
         viewModelScope.launch {
-            val newMode = !_uiState.value.isDarkMode
-            datastore.setDarkMode(newMode) // Save the new dark mode preference
-            _uiState.value = _uiState.value.copy(isDarkMode = newMode) // Update UI state
-        }
-    }
-
-    private fun observeThemePreference() {
-        viewModelScope.launch {
-            datastore.darkModeFlow.collect { isDark ->
-                _isDarkTheme.value = isDark
-            }
+            val currentMode = isDarkTheme.first()
+            datastore.setDarkMode(!currentMode)
         }
     }
 }

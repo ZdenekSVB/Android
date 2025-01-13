@@ -67,6 +67,7 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
     val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
 
 
+
     LaunchedEffect(id) {
         viewModel.loadPlantDetails(id)
         viewModel.loadResultsForPlant(id)

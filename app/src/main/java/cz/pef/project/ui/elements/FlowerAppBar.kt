@@ -24,7 +24,7 @@ fun FlowerAppBar(
     TopAppBar(
         title = { Text(title) },
         navigationIcon = {
-            IconButton(onClick = { navigation.returnBack() }) {
+            IconButton(onClick = { navigation.navigateToGardenOverviewScreen() }) {
                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
             }
         },

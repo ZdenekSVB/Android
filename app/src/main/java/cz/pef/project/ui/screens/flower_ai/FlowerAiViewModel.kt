@@ -57,6 +57,7 @@ class FlowerAiViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            observeThemePreference()
             interpreterDeferred = async { loadModelFile("plant_disease_model.tflite") }
             interpreter = interpreterDeferred.await()
         }

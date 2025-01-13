@@ -28,6 +28,9 @@ class FlowerLocationViewModel @Inject constructor(
 
 
     init {
+        viewModelScope.launch {
+            observeThemePreference()
+        }
         loadGardenCenters()
     }
 
@@ -37,13 +40,16 @@ class FlowerLocationViewModel @Inject constructor(
                 is CommunicationResult.Success -> {
                     _uiState.value = _uiState.value.copy(gardenCenters = result.data.features)
                 }
+
                 is CommunicationResult.Exception -> {
                     _uiState.value = _uiState.value.copy(exception = result.exception)
                 }
+
                 else -> {}
             }
         }
     }
+
     fun loadPlantDetails(plantId: Int) {
         viewModelScope.launch {
             try {
@@ -64,7 +70,10 @@ class FlowerLocationViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 plantDao.updatePlantLocation(plantId, newLocation.latitude, newLocation.longitude)
-                Log.d("FlowerLocationViewModel", "Location updated for plantId $plantId: $newLocation")
+                Log.d(
+                    "FlowerLocationViewModel",
+                    "Location updated for plantId $plantId: $newLocation"
+                )
 
                 // Načtení aktuálních detailů rostliny
                 loadPlantDetails(plantId)
@@ -73,7 +82,6 @@ class FlowerLocationViewModel @Inject constructor(
             }
         }
     }
-
 
 
     private fun observeThemePreference() {
