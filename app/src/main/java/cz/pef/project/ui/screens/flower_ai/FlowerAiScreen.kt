@@ -110,7 +110,7 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (uiState.analysisResult != null) {
+                    if (!uiState.analysisResult.isNullOrEmpty()) {
                         Text(
                             text = "Results:",
                             color = MaterialTheme.colorScheme.onSurface,
@@ -158,9 +158,14 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                             text = annotatedText,
                             style = TextStyle(color = MaterialTheme.colorScheme.onSurface),
                             onClick = { offset ->
-                                annotatedText.getStringAnnotations(tag = "URL", start = offset, end = offset)
+                                annotatedText.getStringAnnotations(
+                                    tag = "URL",
+                                    start = offset,
+                                    end = offset
+                                )
                                     .firstOrNull()?.let { annotation ->
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                        val intent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
                                         context.startActivity(intent)
                                     }
                             }

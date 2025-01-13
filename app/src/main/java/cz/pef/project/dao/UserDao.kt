@@ -47,10 +47,6 @@ interface UserDao {
     @Query("UPDATE plants SET latitude = :latitude, longitude = :longitude WHERE id = :plantId")
     suspend fun updatePlantLocation(plantId: Int, latitude: Double, longitude: Double)
 
-
-    @Query("SELECT * FROM plants WHERE id = :plantId")
-    suspend fun getPlantById(plantId: Int): PlantEntity?
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPicture(picture: PictureEntity)
 
@@ -78,4 +74,6 @@ interface UserDao {
     @Query("SELECT * FROM results WHERE plantId = :plantId ORDER BY id DESC LIMIT 1")
     suspend fun getLastResultByPlantId(plantId: Int): ResultEntity?
 
+    @Query("SELECT * FROM plants WHERE id = :plantId")
+    suspend fun getPlantById(plantId: Int): PlantEntity?
 }

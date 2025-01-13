@@ -179,12 +179,11 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                     }
                     Spacer(modifier = Modifier.height(16.dp))
 
-// LazyColumn pro zobrazení výsledků
                     LazyColumn(
                         modifier = Modifier.fillMaxWidth(),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        items(uiState.results) { result ->
+                        items(uiState.results.reversed()) { result -> // Reversing the list here
                             Card(
                                 modifier = Modifier.fillMaxWidth(),
                                 elevation = CardDefaults.cardElevation(4.dp)
@@ -244,6 +243,7 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                             }
                         }
                     }
+
 
 
                 }

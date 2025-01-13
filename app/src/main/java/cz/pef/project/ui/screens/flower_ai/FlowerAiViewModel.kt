@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import cz.pef.project.DB.ResultEntity
 import cz.pef.project.ai.Recognition
 import cz.pef.project.dao.UserDao
@@ -142,18 +143,12 @@ class FlowerAiViewModel @Inject constructor(
                 if (results.isNotEmpty()) {
                     uiState.value = uiState.value.copy(
                         analysisResult = results.joinToString("\n") {
-                            val confidencePercentage = (it.confidence * 100).toString()
-                            "${it.title} ${"%.2f".format(confidencePercentage.toFloat())}%"
-                            /*
-                                                analysisResult = results.joinToString("\n") {
                             val confidencePercentage = it.confidence * 100
-                            "${it.title} (Confidence: %.2f%)".format(confidencePercentage)
-                        }
-                    )
-                             */
+                            "${it.title} (Confidence: %.2f%%)".format(confidencePercentage)
 
                         }
                     )
+
                 } else {
                     uiState.value = uiState.value.copy(analysisResult = "No results found.")
                 }
@@ -166,9 +161,22 @@ class FlowerAiViewModel @Inject constructor(
     }
 
     private suspend fun saveResultsToDatabase(plantId: Int, results: List<Recognition>) {
-        for (result in results) {
-            val condition = result.title.substringBefore(":") // Název
-            val description = result.title.substringAfter(":").trim() // URL nebo popis
+        // Předpokládáme, že první výsledek z analýzy je nejrelevantnější
+        val bestResult = results.firstOrNull()
+        if (bestResult != null) {
+            val condition = bestResult.title.substringBefore(":").trim() // Název
+            val description = bestResult.title.substringAfter(":").trim() // URL nebo popis
+
+            // Aktualizace PlantEntity
+            val plant = userDao.getPlantById(plantId) // Získání kytky podle ID
+            if (plant != null) {
+                plant.lastCondition = condition
+                userDao.updatePlant(plant) // Uložení změn do databáze
+            } else {
+                Log.e("FlowerAiViewModel", "Plant with ID $plantId not found")
+            }
+
+            // Volitelně: Uložit podrobný výsledek analýzy do jiné tabulky, např. ResultEntity
             val entity = ResultEntity(
                 plantId = plantId,
                 condition = condition,
@@ -177,6 +185,7 @@ class FlowerAiViewModel @Inject constructor(
             userDao.insertResult(entity)
         }
     }
+
 
     private fun getSortedResult(outputArray: FloatArray): List<Recognition> {
         val pq = PriorityQueue(

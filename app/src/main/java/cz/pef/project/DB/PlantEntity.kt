@@ -21,6 +21,7 @@ data class PlantEntity(
     val userId: Int,
     var name: String,
     var description: String?,
+    var lastCondition: String?,
     var plantedDate: String?,
     var deathDate: String?,
     var latitude: Double = 50.00, // New field for latitude
@@ -31,7 +32,6 @@ fun PlantEntity.toPlant(): Plant {
     return Plant(
         id = id,
         name = this.name,
-        imageUrl = "",
-        isHealthy = true
+        lastCondition = this.lastCondition ?: "Unknown",
     )
 }

@@ -32,13 +32,16 @@ class GardenOverviewViewModel @Inject constructor(
     val isDarkTheme: StateFlow<Boolean> get() = _isDarkTheme
 
     init {
-        // Debounce search query to optimize filtering
         viewModelScope.launch {
-            observeThemePreference()
-            _searchQuery.collect { query -> filterPlants(query) }
-
+            try {
+                observeThemePreference()
+                _searchQuery.collect { query -> filterPlants(query) }
+            } catch (e: Exception) {
+                Log.e("GardenOverviewViewModel", "Error initializing ViewModel: ${e.message}", e)
+            }
         }
     }
+
 
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
@@ -56,13 +59,18 @@ class GardenOverviewViewModel @Inject constructor(
     }
 
 
-    fun addPlant(userId: Int, name: String) {
+    fun addPlant(userId: Int?, name: String) {
+        if (userId == null) {
+            Log.e("GardenOverviewViewModel", "Cannot add plant: userId is null")
+            return
+        }
         viewModelScope.launch {
             try {
                 val newPlant = PlantEntity(
                     userId = userId,
                     name = name,
                     description = null,
+                    lastCondition = null,
                     plantedDate = null,
                     deathDate = null,
                     latitude = 50.00,
@@ -71,36 +79,45 @@ class GardenOverviewViewModel @Inject constructor(
                 plantDao.insertPlant(newPlant)
                 loadPlants(userId) // Reload plants after insertion
             } catch (e: Exception) {
-                // Handle error (e.g., log it or show a message in the UI)
+                Log.e("GardenOverviewViewModel", "Error adding plant: ${e.message}", e)
             }
         }
     }
+
 
     fun loadPlants(userId: Int) {
         viewModelScope.launch {
             try {
                 val plants = plantDao.getPlantsByUserId(userId)
+                if (plants.isEmpty()) {
+                    Log.w("GardenOverviewViewModel", "No plants found for userId: $userId")
+                }
                 _uiState.value = _uiState.value.copy(
                     plants = plants.map { it.toPlant() },
                     filteredPlants = plants.map { it.toPlant() }
                 )
             } catch (e: Exception) {
-                Log.e("GardenOverviewViewModel", "Error loading plants: ${e.message}")
+                Log.e("GardenOverviewViewModel", "Error loading plants: ${e.message}", e)
             }
         }
     }
 
-    fun getResultsForPlant(plantId: Int): List<ResultEntity> {
-        var results: List<ResultEntity> = emptyList()
+
+    fun getResultForPlant(plantId: Int) {
         viewModelScope.launch {
             try {
-                results = plantDao.getResultsByPlantId(plantId)
+                val result = plantDao.getLastResultByPlantId(plantId)
+                if (result == null) {
+                    Log.w("GardenOverviewViewModel", "No result found for plantId: $plantId")
+                } else {
+                    Log.d("GardenOverviewViewModel", "Result for plantId: $plantId: $result")
+                }
             } catch (e: Exception) {
-                Log.e("GardenOverviewViewModel", "Error fetching results for plant $plantId: ${e.message}")
+                Log.e("GardenOverviewViewModel", "Error fetching results for plantId: $plantId", e)
             }
         }
-        return results
     }
+
 
     private fun observeThemePreference() {
         viewModelScope.launch {
@@ -109,5 +126,8 @@ class GardenOverviewViewModel @Inject constructor(
             }
         }
     }
+
+
+
 
 }

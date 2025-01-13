@@ -143,8 +143,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                     items(uiState.filteredPlants) { plant ->
                         PlantCard(
                             plant = plant,
-                            onClick = { navigation.navigateToFlowerDescriptionScreen(plant.id) },
-                            results =viewModel.getResultsForPlant(plant.id)// Metoda načtení výsledků
+                            onClick = { navigation.navigateToFlowerDescriptionScreen(plant.id) }
                         )
                     }
 
@@ -174,7 +173,15 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
 }
 
 @Composable
-fun PlantCard(plant: Plant, onClick: () -> Unit, results: List<ResultEntity>) {
+fun PlantCard(plant: Plant, onClick: () -> Unit) {
+    // Určení barvy na základě podmínky rostliny
+    val conditionColor = when {
+        plant.lastCondition.contains("Healthy", ignoreCase = true) -> Color.Green
+        plant.lastCondition.contains("Unknown", ignoreCase = true) -> Color.Gray
+        else -> Color.Red
+    }
+
+
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -183,45 +190,24 @@ fun PlantCard(plant: Plant, onClick: () -> Unit, results: List<ResultEntity>) {
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
-            modifier = Modifier.padding(8.dp), verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(8.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = rememberAsyncImagePainter(plant.imageUrl),
-                contentDescription = plant.name,
-                modifier = Modifier
-                    .size(64.dp)
-                    .clip(CircleShape)
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            Column(modifier = Modifier.weight(1f)) {
+            // Zobrazení textových informací
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(plant.name, style = MaterialTheme.typography.titleMedium)
+                // Zobrazení podmínky s barvou
                 Text(
-                    text = plant.name, style = MaterialTheme.typography.titleMedium
-                )
-                Text(
-                    text = plant.imageUrl,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-
-                // Získání posledního výsledku
-                val lastResult = results.lastOrNull { it.plantId == plant.id }
-                val conditionText = lastResult?.condition ?: "Unknown"
-                val conditionColor = if (conditionText.equals("healthy", ignoreCase = true)) {
-                    Color.Green
-                } else {
-                    Color.Red
-                }
-
-                Text(
-                    text = conditionText,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = conditionColor
+                    "Condition: ${plant.lastCondition}",
+                    color = conditionColor // Nastavení barvy podle podmínky
                 )
             }
         }
     }
 }
-
 
 
 @Composable
