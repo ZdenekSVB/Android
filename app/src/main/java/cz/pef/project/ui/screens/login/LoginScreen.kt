@@ -24,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -64,6 +65,7 @@ fun LoginScreen(navigation: INavigationRouter) {
                     value = uiState.userName,
                     error = uiState.userNameError,
                     onValueChange = { viewModel.updateUserName(it) },
+                    testTag = "UserNameLoginField",
                     onClear = { viewModel.clearUserName() })
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -75,14 +77,15 @@ fun LoginScreen(navigation: INavigationRouter) {
                     error = uiState.passwordError,
                     onValueChange = { viewModel.updatePassword(it) },
                     onClear = { viewModel.clearPassword() },
-                    isPassword = true
+                    isPassword = true,
+                    testTag = "PasswordLoginField"
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Login Button
                 LoginButton(
-                    viewModel = viewModel, navigation = navigation
+                    viewModel = viewModel, navigation = navigation, testTag = "LoginButton"
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -97,32 +100,14 @@ fun LoginScreen(navigation: INavigationRouter) {
 }
 
 @Composable
-fun LoginButton(
-    viewModel: LoginViewModel, navigation: INavigationRouter
-) {
-    val context = LocalContext.current
-    Button(
-        onClick = {
-            viewModel.login(context = context,
-                onSuccess = { navigation.navigateToGardenOverviewScreen() },
-                onError = { errorMessage ->
-                    // Show error message to user
-                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                })
-        }, modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(stringResource(id = R.string.login))
-    }
-}
-
-@Composable
 fun LoginField(
     label: String,
     value: String,
     error: String?,
     onValueChange: (String) -> Unit,
     onClear: () -> Unit,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    testTag: String
 ) {
     Column {
         OutlinedTextField(
@@ -130,7 +115,9 @@ fun LoginField(
             onValueChange = onValueChange,
             label = { Text(label) },
             isError = error != null,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag), // Přidání testovacího tagu
             trailingIcon = {
                 IconButton(onClick = onClear) {
                     Icon(
@@ -148,5 +135,28 @@ fun LoginField(
                 style = MaterialTheme.typography.bodySmall
             )
         }
+    }
+}
+
+@Composable
+fun LoginButton(
+    viewModel: LoginViewModel,
+    navigation: INavigationRouter,
+    testTag: String
+) {
+    val context = LocalContext.current
+    Button(
+        onClick = {
+            viewModel.login(context = context,
+                onSuccess = { navigation.navigateToGardenOverviewScreen() },
+                onError = { errorMessage ->
+                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
+                })
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag) // Přidání testovacího tagu
+    ) {
+        Text(stringResource(id = R.string.login))
     }
 }

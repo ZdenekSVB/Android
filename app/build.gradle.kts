@@ -82,7 +82,11 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.play.services.maps)
+    implementation(libs.core.ktx)
+    implementation(libs.androidx.junit.ktx)
+    implementation(libs.androidx.runner)
     testImplementation(libs.junit)
+    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -126,5 +130,23 @@ dependencies {
     implementation(libs.tensorflow.lite.support)
 
 
+    // Testovací knihovny
+    testImplementation(libs.junit)
+    testImplementation(libs.mockito.core)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Retrofit a Gson
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    // MockWebServer pro testování API
+    testImplementation(libs.mockwebserver)
+
+    // Další knihovny (pokud používáte AndroidX testy)
+    testImplementation(libs.mockk)
+
+    // Hilt testing
+    androidTestImplementation(libs.hilt.android.testing)
+    kaptAndroidTest(libs.hilt.android.compiler.v2511)
 
 }
