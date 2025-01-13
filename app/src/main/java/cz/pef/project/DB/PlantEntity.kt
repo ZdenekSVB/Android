@@ -7,14 +7,12 @@ import androidx.room.PrimaryKey
 import cz.pef.project.communication.Plant
 
 @Entity(
-    tableName = "plants",
-    foreignKeys = [ForeignKey(
+    tableName = "plants", foreignKeys = [ForeignKey(
         entity = UserEntity::class,
         parentColumns = ["id"],
         childColumns = ["userId"],
         onDelete = ForeignKey.CASCADE
-    )],
-    indices = [Index(value = ["userId"])]
+    )], indices = [Index(value = ["userId"])]
 )
 data class PlantEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

@@ -1,10 +1,7 @@
 package cz.pef.project.ui.screens.registration
 
 import android.content.Context
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.DB.UserEntity
@@ -17,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val userDao: UserDao,
-    private val dataStoreManager: DataStoreManager
+    private val userDao: UserDao, private val dataStoreManager: DataStoreManager
 ) : ViewModel() {
 
     private var _uiState = mutableStateOf(RegistrationUiState())
@@ -81,10 +77,7 @@ class RegistrationViewModel @Inject constructor(
     }
 
     private fun validateInputs(): Boolean {
-        return uiState.firstNameError == null &&
-                uiState.lastNameError == null &&
-                uiState.userNameError == null &&
-                uiState.passwordError == null
+        return uiState.firstNameError == null && uiState.lastNameError == null && uiState.userNameError == null && uiState.passwordError == null
     }
 
     private fun validateFirstName(name: String): String? {

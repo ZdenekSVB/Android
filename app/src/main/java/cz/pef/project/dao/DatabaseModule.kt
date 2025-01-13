@@ -18,9 +18,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
-            context,
-            AppDatabase::class.java,
-            "app_database"
+            context, AppDatabase::class.java, "app_database"
         ).build()
     }
 
@@ -33,8 +31,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDataStoreManager(
-        @ApplicationContext context: Context,
-        userDao: UserDao
+        @ApplicationContext context: Context, userDao: UserDao
     ): DataStoreManager {
         return DataStoreManager(context, userDao)
     }

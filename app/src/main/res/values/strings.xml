@@ -1,5 +1,143 @@
 <resources>
     <string name="app_name">AI Garden Helper</string>
+
     <string name="no_internet_connection">No internet connection</string>
+    <string name="user_settings">User Settings</string>
+
+    <string name="description">Description</string>
+    <string name="pictures">Pictures</string>
+    <string name="ai">AI</string>
+    <string name="map">Map</string>
+
+    <string name="selected_garden_center">
+        Selected Garden Center:\nName: %1$s \nDescription: %2$s \nAddress: %3$s
+    </string>
+
     <string name="back">Back</string>
+    <string name="close">Close</string>
+
+    <string name="select_image">Select Image</string>
+    <string name="analyze_image">Analyze Image</string>
+    <string name="results">Results</string>
+    <string name="detected">Detected</string>
+    <string name="selected_flower">Selected Flower</string>
+
+    <string name="unknown">Unknown</string>
+    <string name="no_results_found">No Results Found</string>
+
+    <string name="edit_name">Edit Name</string>
+    <string name="edit_dates">Edit Dates</string>
+    <string name="plant_date">Plant Date</string>
+    <string name="death_date">Death Date</string>
+    <string name="n_a">N/A</string>
+    <string name="no_description_available">No description available</string>
+    <string name="save_description">Save Description</string>
+    <string name="edit_description">Edit Description</string>
+    <string name="result">Result</string>
+
+    <!-- Edit Dates Dialog -->
+    <string name="plant_date_after_death_date">Plant date cannot be after death date.</string>
+    <string name="death_date_before_plant_date">Death date cannot be before plant date.</string>
+    <string name="select_date">Select Date</string>
+
+    <!-- Edit Name Dialog -->
+    <string name="name">Name</string>
+
+    <!-- Common Buttons -->
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- FlowerLocationScreen -->
+    <string name="location">Location</string>
+    <string name="plant_location">Plant Location</string>
+    <string name="garden_center">Garden Center</string>
+
+    <!-- Modal Bottom Sheet Content -->
+    <string name="plant_details">Plant Details:\nName: %1$s \nLocation: %2$f, %3$f \nDescription: \n%4$s</string>
+    <string name="save_location">Save Location</string>
+
+    <!-- FlowerPicturesScreen -->
+    <string name="add_picture">Add Picture</string>
+    <string name="no_pictures_available">No pictures available.</string>
+
+    <!-- PictureItem -->
+    <string name="delete">Delete</string>
+
+    <string name="ai_garden_helper">AI Garden Helper</string>
+    <string name="search">Search</string>
+    <string name="clear">Clear</string>
+    <string name="add_plant">Add Plant</string>
+    <string name="condition">Condition: %1$s</string>
+
+    <!-- Placeholder for plant condition -->
+    <string name="add_new_plant">Add New Plant</string>
+    <string name="add">Add</string>
+
+    <string name="user_name">User Name</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="dont_have_account_registration">Dont have an account? Registration</string>
+    <string name="clear_text">Clear text</string>
+
+    <!-- Registration Screen -->
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="register">Register</string>
+    <string name="already_have_account_login">Already have an account? Login</string>
+
+
+    <!-- User Settings -->
+    <string name="dark_mode_status">Dark Mode: %1$s</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="switch_to_light_mode">Switch to Light Mode</string>
+    <string name="switch_to_dark_mode">Switch to Dark Mode</string>
+    <string name="logged_in">Logged In</string>
+    <string name="logged_out">Logged Out</string>
+    <string name="edit">Edit</string>
+    <string name="edit_user_details">Edit User Details</string>
+    <string name="show_password">Show Password</string>
+    <string name="hide_password">Hide Password</string>
+
+
+    <string name="apple_apple_scab">Apple Apple Scab: https://en.wikipedia.org/wiki/Apple_scab</string>
+    <string name="apple_black_rot">Apple Black Rot: https://en.wikipedia.org/wiki/Apple_black_rot</string>
+    <string name="apple_cedar_apple_rust">Apple Cedar Apple Rust: https://en.wikipedia.org/wiki/Cedar_apple_rust</string>
+    <string name="apple_healthy">Apple Healthy: https://en.wikipedia.org/wiki/Apple</string>
+    <string name="blueberry_healthy">Blueberry Healthy: https://en.wikipedia.org/wiki/Blueberry</string>
+    <string name="cherry_including_sour_powdery_mildew">Cherry Including Sour Powdery Mildew: https://en.wikipedia.org/wiki/Powdery_mildew</string>
+    <string name="cherry_including_sour_healthy">Cherry Including Sour Healthy: https://en.wikipedia.org/wiki/Cherry</string>
+    <string name="corn_maize_cercospora_leaf_spot_gray_leaf_spot">Corn Maize Cercospora Leaf Spot Gray Leaf Spot: https://en.wikipedia.org/wiki/Cercospora_leaf_spot</string>
+    <string name="corn_maize_common_rust">Corn Maize Common Rust: https://en.wikipedia.org/wiki/Puccinia_sorghi</string>
+    <string name="corn_maize_northern_leaf_blight">Corn Maize Northern Leaf Blight: https://en.wikipedia.org/wiki/Northern_leaf_blight</string>
+    <string name="corn_maize_healthy">Corn Maize Healthy: https://en.wikipedia.org/wiki/Maize</string>
+    <string name="grape_black_rot">Grape Black Rot: https://en.wikipedia.org/wiki/Grape_black_rot</string>
+    <string name="grape_esca_black_measles">Grape Esca Black Measles: https://en.wikipedia.org/wiki/Esca_(grapevine_disease)</string>
+    <string name="grape_leaf_blight_isariopsis_leaf_spot">Grape Leaf Blight Isariopsis Leaf Spot: https://en.wikipedia.org/wiki/Leaf_spot</string>
+    <string name="grape_healthy">Grape Healthy: https://en.wikipedia.org/wiki/Grape</string>
+    <string name="orange_haunglongbing_citrus_greening">Orange Haunglongbing Citrus Greening: https://en.wikipedia.org/wiki/Citrus_greening</string>
+    <string name="peach_bacterial_spot">Peach Bacterial Spot: https://en.wikipedia.org/wiki/Bacterial_spot</string>
+    <string name="peach_healthy">Peach Healthy: https://en.wikipedia.org/wiki/Peach</string>
+    <string name="pepper_bell_bacterial_spot">Pepper Bell Bacterial Spot: https://en.wikipedia.org/wiki/Bacterial_spot</string>
+    <string name="pepper_bell_healthy">Pepper Bell Healthy: https://en.wikipedia.org/wiki/Pepper</string>
+    <string name="potato_early_blight">Potato Early Blight: https://en.wikipedia.org/wiki/Early_blight_of_potato</string>
+    <string name="potato_late_blight">Potato Late Blight: https://en.wikipedia.org/wiki/Late_blight</string>
+    <string name="potato_healthy">Potato Healthy: https://en.wikipedia.org/wiki/Potato</string>
+    <string name="raspberry_healthy">Raspberry Healthy: https://en.wikipedia.org/wiki/Raspberry</string>
+    <string name="soybean_healthy">Soybean Healthy: https://en.wikipedia.org/wiki/Soybean</string>
+    <string name="squash_powdery_mildew">Squash Powdery Mildew: https://en.wikipedia.org/wiki/Powdery_mildew</string>
+    <string name="strawberry_leaf_scorch">Strawberry Leaf Scorch: https://en.wikipedia.org/wiki/Strawberry_leaf_scorch</string>
+    <string name="strawberry_healthy">Strawberry Healthy: https://en.wikipedia.org/wiki/Strawberry</string>
+    <string name="tomato_bacterial_spot">Tomato Bacterial Spot: https://en.wikipedia.org/wiki/Bacterial_spot</string>
+    <string name="tomato_early_blight">Tomato Early Blight: https://en.wikipedia.org/wiki/Early_blight_of_tomato</string>
+    <string name="tomato_late_blight">Tomato Late Blight: https://en.wikipedia.org/wiki/Late_blight_of_tomato</string>
+    <string name="tomato_leaf_mold">Tomato Leaf Mold: https://en.wikipedia.org/wiki/Leaf_mold_of_tomato</string>
+    <string name="tomato_septoria_leaf_spot">Tomato Septoria Leaf Spot: https://en.wikipedia.org/wiki/Septoria_leaf_spot</string>
+    <string name="tomato_spider_mites_two_spotted_spider_mite">Tomato Spider Mites Two Spotted Spider Mite: https://en.wikipedia.org/wiki/Two-spotted_spider_mite</string>
+    <string name="tomato_target_spot">Tomato Target Spot: https://en.wikipedia.org/wiki/Target_spot_(tomato)</string>
+    <string name="tomato_tomato_yellow_leaf_curl_virus">Tomato Tomato Yellow Leaf Curl Virus: https://en.wikipedia.org/wiki/Tomato_yellow_leaf_curl_virus</string>
+    <string name="tomato_tomato_mosaic_virus">Tomato Tomato Mosaic Virus: https://en.wikipedia.org/wiki/Tomato_mosaic_virus</string>
+    <string name="tomato_healthy">Tomato Healthy: https://en.wikipedia.org/wiki/Tomato</string>
+
+
 </resources>

@@ -16,7 +16,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -33,22 +32,23 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.withStyle
+import cz.pef.project.R
+
 
 @Composable
 fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerAiViewModel>()
     val uiState = viewModel.uiState.value
     val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
-
 
     val launcher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -60,119 +60,111 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
-        Scaffold(
-            topBar = { FlowerAppBar(title = "AI", navigation = navigation) },
-            bottomBar = {
-                FlowerNavigationBar(
-                    navigation = navigation,
-                    selectedItem = "AI",
-                    id = id
-                )
-            },
-            content = { padding ->
-                Column(
+        Scaffold(topBar = {
+            FlowerAppBar(
+                title = stringResource(R.string.ai), navigation = navigation
+            )
+        }, bottomBar = {
+            FlowerNavigationBar(
+                navigation = navigation, selectedItem = "AI", id = id
+            )
+        }, content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .size(200.dp)
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .clickable { launcher.launch("image/*") }, // Kliknutím spustí výběr obrázku
+                    contentAlignment = Alignment.Center
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .size(200.dp)
-                            .clip(RoundedCornerShape(16.dp))
-                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                            .clickable { launcher.launch("image/*") }, // Kliknutím spustí výběr obrázku
-                        contentAlignment = Alignment.Center
-                    ) {
-                        if (uiState.selectedImageUri != null) {
-                            Image(
-                                painter = rememberAsyncImagePainter(uiState.selectedImageUri),
-                                contentDescription = "Selected Flower",
-                                modifier = Modifier.matchParentSize()
-                            )
-                        } else {
-                            Text(
-                                text = "Select Image",
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Button(
-                        onClick = { viewModel.analyzeImage(id) },
-                        enabled = uiState.selectedImageUri != null
-                    ) {
-                        Text("Analyze Image")
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    if (!uiState.analysisResult.isNullOrEmpty()) {
-                        Text(
-                            text = "Results:",
-                            color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.bodyLarge
+                    if (uiState.selectedImageUri != null) {
+                        Image(
+                            painter = rememberAsyncImagePainter(uiState.selectedImageUri),
+                            contentDescription = stringResource(R.string.selected_flower),
+                            modifier = Modifier.matchParentSize()
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        val annotatedText = buildAnnotatedString {
-                            uiState.analysisResult.split("\n").forEach { line ->
-                                val parts = line.split(" (")
-                                if (parts.size == 2) {
-                                    val title = parts[0]
-                                    val urlStart = title.indexOf("https://")
-                                    val url = if (urlStart >= 0) title.substring(urlStart) else null
-
-                                    if (url != null) {
-                                        append("Detected: ")
-                                        pushStringAnnotation(tag = "URL", annotation = url)
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.colorScheme.primary,
-                                                textDecoration = TextDecoration.Underline
-                                            )
-                                        ) {
-                                            append(title.substringBefore("https://"))
-                                        }
-                                        pop()
-                                        append(" (")
-                                        append(parts[1])
-                                    } else {
-                                        withStyle(
-                                            style = SpanStyle(
-                                                color = MaterialTheme.colorScheme.onSurface
-                                            )
-                                        ) {
-                                            append(line)
-                                        }
-                                    }
-                                }
-                                append("\n")
-                            }
-                        }
-
-                        ClickableText(
-                            text = annotatedText,
-                            style = TextStyle(color = MaterialTheme.colorScheme.onSurface),
-                            onClick = { offset ->
-                                annotatedText.getStringAnnotations(
-                                    tag = "URL",
-                                    start = offset,
-                                    end = offset
-                                )
-                                    .firstOrNull()?.let { annotation ->
-                                        val intent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
-                                        context.startActivity(intent)
-                                    }
-                            }
+                    } else {
+                        Text(
+                            text = stringResource(R.string.select_image),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = { viewModel.analyzeImage(id) },
+                    enabled = uiState.selectedImageUri != null
+                ) {
+                    Text(stringResource(R.string.analyze_image))
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                if (!uiState.analysisResult.isNullOrEmpty()) {
+                    Text(
+                        text = stringResource(R.string.results),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    val annotatedText = buildAnnotatedString {
+                        uiState.analysisResult.split("\n").forEach { line ->
+                            val parts = line.split(" (")
+                            if (parts.size == 2) {
+                                val title = parts[0]
+                                val urlStart = title.indexOf("https://")
+                                val url = if (urlStart >= 0) title.substring(urlStart) else null
+
+                                if (url != null) {
+                                    append(stringResource(R.string.detected) + ": ")
+                                    pushStringAnnotation(tag = "URL", annotation = url)
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            textDecoration = TextDecoration.Underline
+                                        )
+                                    ) {
+                                        append(title.substringBefore("https://"))
+                                    }
+                                    pop()
+                                    append(" (")
+                                    append(parts[1])
+                                } else {
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onSurface
+                                        )
+                                    ) {
+                                        append(line)
+                                    }
+                                }
+                            }
+                            append("\n")
+                        }
+                    }
+
+                    ClickableText(text = annotatedText,
+                        style = TextStyle(color = MaterialTheme.colorScheme.onSurface),
+                        onClick = { offset ->
+                            annotatedText.getStringAnnotations(
+                                tag = "URL", start = offset, end = offset
+                            ).firstOrNull()?.let { annotation ->
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                context.startActivity(intent)
+                            }
+                        })
+                }
             }
-        )
+        })
     }
 }

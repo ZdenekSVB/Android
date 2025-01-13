@@ -56,8 +56,7 @@ class FlowerLocationViewModel @Inject constructor(
                 val plant = plantDao.getPlantById(plantId)
                 if (plant != null) {
                     _uiState.value = _uiState.value.copy(
-                        selectedPlant = plant,
-                        location = LatLng(plant.latitude, plant.longitude)
+                        selectedPlant = plant, location = LatLng(plant.latitude, plant.longitude)
                     )
                 }
             } catch (e: Exception) {
@@ -70,10 +69,7 @@ class FlowerLocationViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 plantDao.updatePlantLocation(plantId, newLocation.latitude, newLocation.longitude)
-                Log.d(
-                    "FlowerLocationViewModel",
-                    "Location updated for plantId $plantId: $newLocation"
-                )
+                Log.d("FlowerLocationViewModel", "Location updated for plantId $plantId: $newLocation")
 
                 // Načtení aktuálních detailů rostliny
                 loadPlantDetails(plantId)

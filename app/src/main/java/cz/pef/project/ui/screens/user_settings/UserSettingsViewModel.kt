@@ -1,18 +1,12 @@
 package cz.pef.project.ui.screens.user_settings
 
-import android.app.Application
-import android.content.Context
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.dao.UserDao
 import cz.pef.project.datastore.DataStoreManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,12 +15,9 @@ import kotlinx.coroutines.flow.first
 
 @HiltViewModel
 class UserSettingsViewModel @Inject constructor(
-    application: Application,
     private val datastore: DataStoreManager, // Inject DataStoreManager
     private val userDao: UserDao // Inject UserDao
 ) : ViewModel() {
-
-    private val context = application
 
     private val userPreferencesFlow = datastore.getLoginState()
     private val _uiState = MutableStateFlow(UserSettingsUiState())
@@ -93,6 +84,7 @@ class UserSettingsViewModel @Inject constructor(
             }
         }
     }
+
     private fun validateFirstName(name: String): String? {
         return if (name.isBlank()) "First name cannot be empty" else null
     }
@@ -110,10 +102,7 @@ class UserSettingsViewModel @Inject constructor(
     }
 
     fun validateAndSaveUserDetails(
-        firstName: String,
-        lastName: String,
-        userName: String,
-        password: String
+        firstName: String, lastName: String, userName: String, password: String
     ) {
         val firstNameError = validateFirstName(firstName)
         val lastNameError = validateLastName(lastName)

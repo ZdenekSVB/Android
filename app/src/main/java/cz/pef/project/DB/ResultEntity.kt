@@ -5,8 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    tableName = "results",
-    foreignKeys = [ForeignKey(
+    tableName = "results", foreignKeys = [ForeignKey(
         entity = PlantEntity::class,
         parentColumns = ["id"],
         childColumns = ["plantId"],

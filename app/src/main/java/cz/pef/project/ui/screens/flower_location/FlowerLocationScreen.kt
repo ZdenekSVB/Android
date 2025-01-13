@@ -1,6 +1,5 @@
 package cz.pef.project.ui.screens.flower_location
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,8 +17,8 @@ import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.GardenCenterBottomSheet
-import cz.pef.project.ui.elements.PlantDetailsBottomSheet
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import cz.pef.project.map.bitmapDescriptorFromVector
 import cz.pef.project.R
 
@@ -34,7 +33,6 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
 
     val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
 
-
     val context = LocalContext.current
 
     LaunchedEffect(id) {
@@ -47,8 +45,18 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
         Scaffold(
-            topBar = { FlowerAppBar(title = "Location", navigation = navigation) },
-            bottomBar = { FlowerNavigationBar(navigation = navigation, selectedItem = "Location", id = id) },
+            topBar = {
+                FlowerAppBar(
+                    title = stringResource(id = R.string.location), navigation = navigation
+                )
+            },
+            bottomBar = {
+                FlowerNavigationBar(
+                    navigation = navigation,
+                    selectedItem = stringResource(id = R.string.location),
+                    id = id
+                )
+            },
         ) { padding ->
             Box(
                 modifier = Modifier
@@ -58,62 +66,61 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                 if (uiState.value.location != null) {
                     plantMarkerState = rememberMarkerState(position = uiState.value.location!!)
 
-                    GoogleMap(
-                        modifier = Modifier.fillMaxSize(),
+                    GoogleMap(modifier = Modifier.fillMaxSize(),
                         cameraPositionState = rememberCameraPositionState {
                             position = CameraPosition.fromLatLngZoom(uiState.value.location!!, 10f)
-                        }
-                    ) {
-                        Marker(
-                            state = plantMarkerState,
-                            title = "Plant Location",
+                        }) {
+                        Marker(state = plantMarkerState,
+                            title = stringResource(id = R.string.plant_location),
                             draggable = true,
                             onClick = {
                                 isPlantBottomSheetVisible = true
                                 true
-                            }
-                        )
+                            })
 
                         uiState.value.gardenCenters.forEach { gardenCenter ->
-                            Marker(
-                                state = rememberMarkerState(
-                                    position = LatLng(
-                                        gardenCenter.geometry.coordinates[1],
-                                        gardenCenter.geometry.coordinates[0]
-                                    )
-                                ),
+                            Marker(state = rememberMarkerState(
+                                position = LatLng(
+                                    gardenCenter.geometry.coordinates[1],
+                                    gardenCenter.geometry.coordinates[0]
+                                )
+                            ),
                                 title = gardenCenter.properties.name,
-                                snippet = "Garden Center",
+                                snippet = stringResource(id = R.string.garden_center),
                                 icon = bitmapDescriptorFromVector(context, R.drawable.florist),
                                 onClick = {
                                     selectedGardenCenter = gardenCenter
                                     isGardenBottomSheetVisible = true
                                     true
-                                }
-                            )
+                                })
                         }
                     }
                 } else {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
-                        contentAlignment = Alignment.Center
+                        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
                     ) {
                         CircularProgressIndicator()
                     }
                 }
 
                 if (isPlantBottomSheetVisible) {
-                    ModalBottomSheet(
-                        onDismissRequest = { isPlantBottomSheetVisible = false },
+                    ModalBottomSheet(onDismissRequest = { isPlantBottomSheetVisible = false },
                         content = {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize()
                                     .padding(16.dp)
                             ) {
-                                var isBottomSheetVisible= true
+                                var isBottomSheetVisible = true
                                 Text(
-                                    text = "Plant Details:\nName: ${uiState.value.selectedPlant!!.name} \nLocation: ${plantMarkerState.position.latitude}, ${plantMarkerState.position.longitude} \nDescription: \n${uiState.value.selectedPlant!!.description} ",
+                                    text = stringResource(
+                                        id = R.string.plant_details,
+                                        uiState.value.selectedPlant!!.name,
+                                        plantMarkerState.position.latitude,
+                                        plantMarkerState.position.longitude,
+                                        uiState.value.selectedPlant!!.description
+                                            ?: "Description missing"
+                                    ),
                                     style = MaterialTheme.typography.bodyLarge,
                                     modifier = Modifier.align(Alignment.TopStart)
                                 )
@@ -127,29 +134,22 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                                             )
                                         }
                                         isBottomSheetVisible = false
-                                    },
-                                    modifier = Modifier.align(Alignment.BottomEnd)
+                                    }, modifier = Modifier.align(Alignment.BottomEnd)
                                 ) {
-                                    Text("Save Location")
+                                    Text(stringResource(id = R.string.save_location))
                                 }
-
                             }
-                        }
-                    )
+                        })
                 }
 
                 if (isGardenBottomSheetVisible) {
-                    ModalBottomSheet(
-                        onDismissRequest = { isGardenBottomSheetVisible = false },
+                    ModalBottomSheet(onDismissRequest = { isGardenBottomSheetVisible = false },
                         content = {
                             selectedGardenCenter?.let { gardenCenter ->
-                                GardenCenterBottomSheet(
-                                    properties = gardenCenter.properties,
-                                    onDismiss = { isGardenBottomSheetVisible = false }
-                                )
+                                GardenCenterBottomSheet(properties = gardenCenter.properties,
+                                    onDismiss = { isGardenBottomSheetVisible = false })
                             }
-                        }
-                    )
+                        })
                 }
             }
         }

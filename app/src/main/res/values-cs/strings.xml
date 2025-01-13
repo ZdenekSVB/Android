@@ -1,0 +1,139 @@
+<resources>
+    <string name="app_name">AI Zahradní Asistent</string>
+
+    <string name="no_internet_connection">Žádné internetové připojení</string>
+    <string name="user_settings">Nastavení uživatele</string>
+
+    <string name="description">Popis</string>
+    <string name="pictures">Obrázky</string>
+    <string name="ai">AI</string>
+    <string name="map">Mapa</string>
+
+    <string name="selected_garden_center">
+        Vybrané zahradní centrum:\nNázev: %1$s \nPopis: %2$s \nAdresa: %3$s
+    </string>
+
+    <string name="back">Zpět</string>
+    <string name="close">Zavřít</string>
+
+    <string name="select_image">Vybrat obrázek</string>
+    <string name="analyze_image">Analyzovat obrázek</string>
+    <string name="results">Výsledky</string>
+    <string name="detected">Zjištěno</string>
+    <string name="selected_flower">Vybraný květ</string>
+
+    <string name="unknown">Neznámý</string>
+    <string name="no_results_found">Nebyly nalezeny žádné výsledky</string>
+
+    <string name="edit_name">Upravit název</string>
+    <string name="edit_dates">Upravit data</string>
+    <string name="plant_date">Datum výsadby</string>
+    <string name="death_date">Datum úmrtí</string>
+    <string name="n_a">Není k dispozici</string>
+    <string name="no_description_available">Popis není k dispozici</string>
+    <string name="save_description">Uložit popis</string>
+    <string name="edit_description">Upravit popis</string>
+    <string name="result">Výsledek</string>
+
+    <!-- Edit Dates Dialog -->
+    <string name="plant_date_after_death_date">Datum výsadby nemůže být po datu úmrtí.</string>
+    <string name="death_date_before_plant_date">Datum úmrtí nemůže být před datem výsadby.</string>
+    <string name="select_date">Vybrat datum</string>
+
+    <!-- Edit Name Dialog -->
+    <string name="name">Název</string>
+
+    <!-- Common Buttons -->
+    <string name="save">Uložit</string>
+    <string name="cancel">Zrušit</string>
+
+    <!-- FlowerLocationScreen -->
+    <string name="location">Lokalita</string>
+    <string name="plant_location">Lokalita rostliny</string>
+    <string name="garden_center">Zahradní centrum</string>
+
+    <!-- Modal Bottom Sheet Content -->
+    <string name="plant_details">Detaily rostliny:\nNázev: %1$s \nLokalita: %2$f, %3$f \nPopis: \n%4$s</string>
+    <string name="save_location">Uložit lokaci</string>
+
+    <!-- FlowerPicturesScreen -->
+    <string name="add_picture">Přidat obrázek</string>
+    <string name="no_pictures_available">Žádné obrázky nejsou k dispozici.</string>
+
+    <!-- PictureItem -->
+    <string name="delete">Smazat</string>
+
+    <string name="ai_garden_helper">AI Zahradní Asistent</string>
+    <string name="search">Hledat</string>
+    <string name="clear">Vymazat</string>
+    <string name="add_plant">Přidat rostlinu</string>
+    <string name="condition">Stav: %1$s</string>
+
+    <!-- Placeholder for plant condition -->
+    <string name="add_new_plant">Přidat novou rostlinu</string>
+    <string name="add">Přidat</string>
+
+    <string name="user_name">Uživatelské jméno</string>
+    <string name="password">Heslo</string>
+    <string name="login">Přihlásit se</string>
+    <string name="dont_have_account_registration">Nemáte účet? Registrace</string>
+    <string name="clear_text">Vymazat text</string>
+
+    <!-- Registration Screen -->
+    <string name="first_name">Jméno</string>
+    <string name="last_name">Příjmení</string>
+    <string name="register">Registrovat</string>
+    <string name="already_have_account_login">Máte již účet? Přihlášení</string>
+
+    <!-- User Settings -->
+    <string name="dark_mode_status">Tmavý režim: %1$s</string>
+    <string name="enabled">Povoleno</string>
+    <string name="disabled">Zakázáno</string>
+    <string name="switch_to_light_mode">Přepnout na světlý režim</string>
+    <string name="switch_to_dark_mode">Přepnout na tmavý režim</string>
+    <string name="logged_in">Přihlášen</string>
+    <string name="logged_out">Odhlášen</string>
+    <string name="edit">Upravit</string>
+    <string name="edit_user_details">Upravit údaje uživatele</string>
+    <string name="show_password">Zobrazit heslo</string>
+    <string name="hide_password">Skrýt heslo</string>
+
+    <string name="apple_apple_scab">Jablko jablečná skvrnitost: https://cs.wikipedia.org/wiki/Jablk%C3%A1_skvrnitost</string>
+    <string name="apple_black_rot">Jablko černá hniloba: https://cs.wikipedia.org/wiki/Jablk%C3%A1_čern%C3%A1_hniloba</string>
+    <string name="apple_cedar_apple_rust">Jablko cedrová rez: https://cs.wikipedia.org/wiki/Cedrov%C3%A1_rez</string>
+    <string name="apple_healthy">Jablko zdravé: https://cs.wikipedia.org/wiki/Jablko</string>
+    <string name="blueberry_healthy">Borůvka zdravá: https://cs.wikipedia.org/wiki/Bor%C5%AFvka</string>
+    <string name="cherry_including_sour_powdery_mildew">Třešně včetně kyselé moučnatky: https://cs.wikipedia.org/wiki/Mou%C4%8Dn%C3%A1_plevel</string>
+    <string name="cherry_including_sour_healthy">Třešně včetně kyselé zdravé: https://cs.wikipedia.org/wiki/T%C5%99e%C5%A1n%C4%9B</string>
+    <string name="corn_maize_cercospora_leaf_spot_gray_leaf_spot">Kukuřice šedá skvrna na listech: https://cs.wikipedia.org/wiki/Kuku%C5%99ice</string>
+    <string name="corn_maize_common_rust">Kukuřice běžná rez: https://cs.wikipedia.org/wiki/Kuku%C5%99ice</string>
+    <string name="corn_maize_northern_leaf_blight">Kukuřice severní hniloba listů: https://cs.wikipedia.org/wiki/Kuku%C5%99ice</string>
+    <string name="corn_maize_healthy">Kukuřice zdravá: https://cs.wikipedia.org/wiki/Kuku%C5%99ice</string>
+    <string name="grape_black_rot">Hroznové víno černá hniloba: https://cs.wikipedia.org/wiki/Hroznov%C3%A9_v%C3%ADno</string>
+    <string name="grape_esca_black_measles">Hroznové víno esca černá malomocnost: https://cs.wikipedia.org/wiki/Hroznové_víno</string>
+    <string name="grape_leaf_blight_isariopsis_leaf_spot">Hroznové víno listová skvrna Isariopsis: https://cs.wikipedia.org/wiki/Hroznové_víno</string>
+    <string name="grape_healthy">Hroznové víno zdravé: https://cs.wikipedia.org/wiki/Hroznové_víno</string>
+    <string name="orange_haunglongbing_citrus_greening">Pomeranč Huanglongbing citrusová zčervenání: https://cs.wikipedia.org/wiki/Citrus</string>
+    <string name="peach_bacterial_spot">Meruňka bakteriální skvrna: https://cs.wikipedia.org/wiki/Meru%C5%88ka</string>
+    <string name="peach_healthy">Meruňka zdravá: https://cs.wikipedia.org/wiki/Meru%C5%88ka</string>
+    <string name="pepper_bell_bacterial_spot">Paprika bakteriální skvrna: https://cs.wikipedia.org/wiki/Paprika</string>
+    <string name="pepper_bell_healthy">Paprika zdravá: https://cs.wikipedia.org/wiki/Paprika</string>
+    <string name="potato_early_blight">Brambory rané hniloba: https://cs.wikipedia.org/wiki/Brambory</string>
+    <string name="potato_late_blight">Brambory pozdní hniloba: https://cs.wikipedia.org/wiki/Brambory</string>
+    <string name="potato_healthy">Brambory zdravé: https://cs.wikipedia.org/wiki/Brambory</string>
+    <string name="raspberry_healthy">Malina zdravá: https://cs.wikipedia.org/wiki/Malina</string>
+    <string name="soybean_healthy">Sójové boby zdravé: https://cs.wikipedia.org/wiki/S%C3%B3jov%C3%A9_boby</string>
+    <string name="squash_powdery_mildew">Tykev moučnatka: https://cs.wikipedia.org/wiki/Mou%C4%8Dn%C3%A1_plevel</string>
+    <string name="strawberry_leaf_scorch">Jahodová spálená skvrna: https://cs.wikipedia.org/wiki/Jahoda</string>
+    <string name="strawberry_healthy">Jahoda zdravá: https://cs.wikipedia.org/wiki/Jahoda</string>
+    <string name="tomato_bacterial_spot">Rajče bakteriální skvrna: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_early_blight">Rajče rané hniloba: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_late_blight">Rajče pozdní hniloba: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_leaf_mold">Rajče listová plíseň: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_septoria_leaf_spot">Rajče Septoria skvrna na listech: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_spider_mites_two_spotted_spider_mite">Rajče roztoči: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_target_spot">Rajče cílová skvrna: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_tomato_yellow_leaf_curl_virus">Rajče žlutá listová kadeřavost: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_tomato_mosaic_virus">Rajče mozaika viru: https://cs.wikipedia.org/wiki/Rajče</string>
+    <string name="tomato_healthy">Rajče zdravé: https://cs.wikipedia.org/wiki/Rajče</string>
+</resources>

@@ -1,8 +1,5 @@
 package cz.pef.project.ui.screens.flower_pictures
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.DB.PictureEntity
@@ -33,11 +30,11 @@ class FlowerPicturesViewModel @Inject constructor(
     }
 
 
-
     fun loadPicturesFromDatabase(plantId: Int) {
         viewModelScope.launch {
             try {
-                val pictures = pictureDao.getPicturesByPlantId(plantId = plantId) // Replace with the actual plant ID if needed.
+                val pictures =
+                    pictureDao.getPicturesByPlantId(plantId = plantId) // Replace with the actual plant ID if needed.
                 val pictureList = pictures.map { Picture(url = it.url, name = it.name) }
                 _uiState.value = _uiState.value.copy(pictures = pictureList)
             } catch (e: Exception) {
@@ -71,7 +68,8 @@ class FlowerPicturesViewModel @Inject constructor(
                 _uiState.value = _uiState.value.copy(
                     pictures = _uiState.value.pictures + newPicture
                 )
-            } catch (e: Exception) {onError("Couldnt add photo")
+            } catch (e: Exception) {
+                onError("Couldnt add photo")
             }
         }
     }
@@ -112,6 +110,7 @@ class FlowerPicturesViewModel @Inject constructor(
             }
         }
     }
+
     private fun observeThemePreference() {
         viewModelScope.launch {
             dataStoreManager.darkModeFlow.collect { isDark ->

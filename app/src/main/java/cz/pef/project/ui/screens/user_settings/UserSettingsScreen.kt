@@ -12,7 +12,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -39,7 +38,8 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.navigation.INavigationRouter
-import cz.pef.project.ui.screens.flower_description.FlowerDescriptionViewModel
+import androidx.compose.ui.res.stringResource
+import cz.pef.project.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -51,75 +51,92 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = { Text("AI Garden Helper") },
-                    navigationIcon = {
-                        IconButton(onClick = { navigation.returnBack() }) {
-                            Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
-                        }
+        Scaffold(topBar = {
+            TopAppBar(title = { Text(stringResource(id = R.string.ai_garden_helper)) },
+                navigationIcon = {
+                    IconButton(onClick = { navigation.returnBack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = stringResource(id = R.string.back)
+                        )
                     }
+                })
+        }, content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = stringResource(
+                        id = R.string.dark_mode_status,
+                        if (isDarkTheme) stringResource(id = R.string.enabled) else stringResource(
+                            id = R.string.disabled
+                        )
+                    )
                 )
-            },
-            content = { padding ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(text = "Dark Mode: ${if (isDarkTheme) "Enabled" else "Disabled"}")
 
-                    Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    Button(onClick = { viewModel.toggleDarkMode() }) {
-                        Text(if (isDarkTheme) "Switch to Light Mode" else "Switch to Dark Mode")
-                    }
-                    Text(text = if (uiState.isLoggedIn) "Logged In" else "Logged Out")
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    UserDetailRow(label = "First Name", value = uiState.firstName)
-                    UserDetailRow(label = "Last Name", value = uiState.lastName)
-                    UserDetailRow(label = "User Name", value = uiState.userName)
-                    UserDetailRow(label = "Password", value = "********") // Skrýt heslo
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Button(onClick = { viewModel.showEditDialog() }) {
-                        Text("Edit")
-                    }
-
-                }
-
-                if (uiState.isEditDialogVisible) {
-                    EditUserDialog(
-                        firstName = uiState.firstName,
-                        lastName = uiState.lastName,
-                        userName = uiState.userName,
-                        password = uiState.password,
-                        onDismiss = { viewModel.hideEditDialog() },
-                        onSave = { firstName, lastName, userName, password ->
-                            viewModel.validateAndSaveUserDetails(
-                                firstName,
-                                lastName,
-                                userName,
-                                password
-                            )
-                        },
-                        firstNameError = uiState.firstNameError,
-                        lastNameError = uiState.lastNameError,
-                        userNameError = uiState.userNameError,
-                        passwordError = uiState.passwordError
+                Button(onClick = { viewModel.toggleDarkMode() }) {
+                    Text(
+                        if (isDarkTheme) stringResource(id = R.string.switch_to_light_mode) else stringResource(
+                            id = R.string.switch_to_dark_mode
+                        )
                     )
                 }
+                Text(
+                    text = if (uiState.isLoggedIn) stringResource(id = R.string.logged_in) else stringResource(
+                        id = R.string.logged_out
+                    )
+                )
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                UserDetailRow(
+                    label = stringResource(id = R.string.first_name), value = uiState.firstName
+                )
+                UserDetailRow(
+                    label = stringResource(id = R.string.last_name), value = uiState.lastName
+                )
+                UserDetailRow(
+                    label = stringResource(id = R.string.user_name), value = uiState.userName
+                )
+                UserDetailRow(
+                    label = stringResource(id = R.string.password), value = "********"
+                ) // Hide password
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Button(onClick = { viewModel.showEditDialog() }) {
+                    Text(stringResource(id = R.string.edit))
+                }
 
             }
-        )
+
+            if (uiState.isEditDialogVisible) {
+                EditUserDialog(
+                    firstName = uiState.firstName,
+                    lastName = uiState.lastName,
+                    userName = uiState.userName,
+                    password = uiState.password,
+                    onDismiss = { viewModel.hideEditDialog() },
+                    onSave = { firstName, lastName, userName, password ->
+                        viewModel.validateAndSaveUserDetails(
+                            firstName, lastName, userName, password
+                        )
+                    },
+                    firstNameError = uiState.firstNameError,
+                    lastNameError = uiState.lastNameError,
+                    userNameError = uiState.userNameError,
+                    passwordError = uiState.passwordError
+                )
+            }
+
+        })
     }
 }
 
@@ -132,8 +149,7 @@ fun UserDetailRow(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = label,
-            style = MaterialTheme.typography.bodyLarge
+            text = label, style = MaterialTheme.typography.bodyLarge
         )
         Text(
             text = value,
@@ -162,53 +178,49 @@ fun EditUserDialog(
     var newPassword by remember { mutableStateOf(password) }
     var passwordVisible by remember { mutableStateOf(false) }
 
-    AlertDialog(
-        onDismissRequest = onDismiss,
-        title = { Text("Edit User Details") },
+    AlertDialog(onDismissRequest = onDismiss,
+        title = { Text(stringResource(id = R.string.edit_user_details)) },
         text = {
             Column {
-                OutlinedTextField(
-                    value = newFirstName,
+                OutlinedTextField(value = newFirstName,
                     onValueChange = { newFirstName = it },
-                    label = { Text("First Name") },
+                    label = { Text(stringResource(id = R.string.first_name)) },
                     isError = firstNameError != null
                 )
                 if (firstNameError != null) {
                     Text(firstNameError, color = MaterialTheme.colorScheme.error)
                 }
-                OutlinedTextField(
-                    value = newLastName,
+                OutlinedTextField(value = newLastName,
                     onValueChange = { newLastName = it },
-                    label = { Text("Last Name") },
+                    label = { Text(stringResource(id = R.string.last_name)) },
                     isError = lastNameError != null
                 )
                 if (lastNameError != null) {
                     Text(lastNameError, color = MaterialTheme.colorScheme.error)
                 }
-                OutlinedTextField(
-                    value = newUserName,
+                OutlinedTextField(value = newUserName,
                     onValueChange = { newUserName = it },
-                    label = { Text("User Name") },
+                    label = { Text(stringResource(id = R.string.user_name)) },
                     isError = userNameError != null
                 )
                 if (userNameError != null) {
                     Text(userNameError, color = MaterialTheme.colorScheme.error)
                 }
-                OutlinedTextField(
-                    value = newPassword,
+                OutlinedTextField(value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = { Text("Password") },
+                    label = { Text(stringResource(id = R.string.password)) },
                     isError = passwordError != null,
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(
                                 imageVector = if (passwordVisible) Icons.Default.Clear else Icons.Default.AccountCircle,
-                                contentDescription = if (passwordVisible) "Hide Password" else "Show Password"
+                                contentDescription = if (passwordVisible) stringResource(id = R.string.hide_password) else stringResource(
+                                    id = R.string.show_password
+                                )
                             )
                         }
-                    }
-                )
+                    })
                 if (passwordError != null) {
                     Text(passwordError, color = MaterialTheme.colorScheme.error)
                 }
@@ -218,13 +230,12 @@ fun EditUserDialog(
             Button(onClick = {
                 onSave(newFirstName, newLastName, newUserName, newPassword)
             }) {
-                Text("Save")
+                Text(stringResource(id = R.string.save))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(id = R.string.cancel))
             }
-        }
-    )
+        })
 }

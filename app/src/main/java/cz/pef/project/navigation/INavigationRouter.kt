@@ -1,7 +1,6 @@
 package cz.pef.project.navigation
 
 import androidx.navigation.NavController
-import cz.pef.project.communication.Plant
 
 interface INavigationRouter {
     fun getNavController(): NavController

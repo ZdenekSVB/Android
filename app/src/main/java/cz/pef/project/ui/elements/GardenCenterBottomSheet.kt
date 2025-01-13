@@ -9,7 +9,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import cz.pef.project.R
 import cz.pef.project.communication.Properties
 
 @Composable
@@ -20,15 +22,19 @@ fun GardenCenterBottomSheet(properties: Properties, onDismiss: () -> Unit) {
             .padding(16.dp)
     ) {
         Text(
-            text = "Selected Garden Center:\nName: ${properties.name} \nDescription: ${properties.description} \nAddress:${properties.address}",
+            text = stringResource(
+                id = R.string.selected_garden_center,
+                properties.name,
+                properties.description,
+                properties.address
+            ),
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.align(Alignment.TopStart)
         )
         Button(
-            onClick = onDismiss,
-            modifier = Modifier.align(Alignment.BottomEnd)
+            onClick = onDismiss, modifier = Modifier.align(Alignment.BottomEnd)
         ) {
-            Text("Close")
+            Text(stringResource(R.string.close))
         }
     }
 }

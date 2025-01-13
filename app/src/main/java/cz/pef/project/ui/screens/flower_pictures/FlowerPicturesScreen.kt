@@ -7,15 +7,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -35,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -42,10 +40,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.communication.Picture
-import cz.pef.project.communication.Plant
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
+import cz.pef.project.R
 
 @Composable
 fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
@@ -55,18 +53,15 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
 
     val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
 
-
     val imageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             uri?.let {
-                viewModel.addPictureToPlant(
-                    pictureUri = uri.toString(),
+                viewModel.addPictureToPlant(pictureUri = uri.toString(),
                     plantId = id,
                     onError = { errorMessage ->
                         // Show error message to user
                         Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
-                    }
-                )
+                    })
             }
         }
 
@@ -77,21 +72,24 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
     ) {
-        Scaffold(
-            topBar = { FlowerAppBar(title = "Pictures", navigation = navigation) },
-            bottomBar = {
-                FlowerNavigationBar(
-                    navigation = navigation,
-                    selectedItem = "Pictures",
-                    id = id
+        Scaffold(topBar = {
+            FlowerAppBar(
+                title = stringResource(id = R.string.pictures), navigation = navigation
+            )
+        }, bottomBar = {
+            FlowerNavigationBar(
+                navigation = navigation,
+                selectedItem = stringResource(id = R.string.pictures),
+                id = id
+            )
+        }, floatingActionButton = {
+            FloatingActionButton(onClick = { imageLauncher.launch("image/*") }) {
+                Icon(
+                    Icons.Default.Add,
+                    contentDescription = stringResource(id = R.string.add_picture)
                 )
-            },
-            floatingActionButton = {
-                FloatingActionButton(onClick = { imageLauncher.launch("image/*") }) {
-                    Icon(Icons.Default.Add, contentDescription = "Add Picture")
-                }
             }
-        ) { padding ->
+        }) { padding ->
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -99,7 +97,7 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
             ) {
                 if (uiState.pictures.isEmpty()) {
                     Text(
-                        text = "No pictures available.",
+                        text = stringResource(id = R.string.no_pictures_available),
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier
                             .fillMaxSize()
@@ -115,15 +113,11 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
                     ) {
                         items(uiState.pictures.size) { index ->
                             val picture = uiState.pictures[index]
-                            PictureItem(
-                                picture = picture,
-                                onNameChange = { newName ->
-                                    viewModel.updatePictureName(picture.url, newName)
-                                },
-                                onDelete = {
-                                    viewModel.deletePicture(picture.url)
-                                }
-                            )
+                            PictureItem(picture = picture, onNameChange = { newName ->
+                                viewModel.updatePictureName(picture.url, newName)
+                            }, onDelete = {
+                                viewModel.deletePicture(picture.url)
+                            })
                         }
                     }
                 }
@@ -134,9 +128,7 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
 
 @Composable
 fun PictureItem(
-    picture: Picture,
-    onNameChange: (String) -> Unit,
-    onDelete: () -> Unit
+    picture: Picture, onNameChange: (String) -> Unit, onDelete: () -> Unit
 ) {
     var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(picture.name) }
@@ -148,8 +140,7 @@ fun PictureItem(
             .padding(8.dp)
     ) {
         // Obrázek
-        Image(
-            painter = rememberAsyncImagePainter(picture.url),
+        Image(painter = rememberAsyncImagePainter(picture.url),
             contentDescription = picture.name,
             modifier = Modifier
                 .fillMaxSize()
@@ -172,8 +163,7 @@ fun PictureItem(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
-                Text(
-                    text = "Save",
+                Text(text = stringResource(id = R.string.save),
                     style = TextStyle(color = Color.Green, fontSize = 12.sp),
                     modifier = Modifier
                         .clickable {
@@ -181,35 +171,34 @@ fun PictureItem(
                             isEditing = false
                         }
                         .padding(top = 8.dp)
-                        .align(Alignment.BottomEnd)
-                )
+                        .align(Alignment.BottomEnd))
             } else {
-                Text(
-                    text = picture.name,
+                Text(text = picture.name,
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable { isEditing = true } // Kliknutím přepnout do režimu editace
                         .padding(4.dp),
-                    maxLines = 1
-                )
+                    maxLines = 1)
             }
         }
 
         // Ikona pro smazání
         IconButton(
-            onClick = onDelete,
-            modifier = Modifier
+            onClick = onDelete, modifier = Modifier
                 .align(Alignment.TopEnd)
                 .padding(8.dp)
         ) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete", tint = Color.White)
+            Icon(
+                Icons.Default.Delete,
+                contentDescription = stringResource(id = R.string.delete),
+                tint = Color.White
+            )
         }
 
         // Dialog pro zobrazení zvětšeného obrázku
         if (showImageDialog) {
-            androidx.compose.material3.AlertDialog(
-                onDismissRequest = { showImageDialog = false },
+            androidx.compose.material3.AlertDialog(onDismissRequest = { showImageDialog = false },
                 text = {
                     Image(
                         painter = rememberAsyncImagePainter(picture.url),
@@ -218,15 +207,12 @@ fun PictureItem(
                     )
                 },
                 confirmButton = {
-                    Text(
-                        text = "Close",
+                    Text(text = stringResource(id = R.string.close),
                         modifier = Modifier
                             .clickable { showImageDialog = false }
                             .padding(8.dp),
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            )
+                        color = MaterialTheme.colorScheme.primary)
+                })
         }
     }
 }

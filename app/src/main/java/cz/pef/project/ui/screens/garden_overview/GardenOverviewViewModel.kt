@@ -1,12 +1,10 @@
 package cz.pef.project.ui.screens.garden_overview
 
 import android.util.Log
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.DB.PlantEntity
-import cz.pef.project.DB.ResultEntity
 import cz.pef.project.DB.toPlant
 import cz.pef.project.dao.UserDao
 import cz.pef.project.datastore.DataStoreManager
@@ -14,7 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.debounce
 import javax.inject.Inject
 
 @HiltViewModel
@@ -126,8 +123,6 @@ class GardenOverviewViewModel @Inject constructor(
             }
         }
     }
-
-
 
 
 }

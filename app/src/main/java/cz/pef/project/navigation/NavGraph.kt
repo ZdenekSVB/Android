@@ -28,8 +28,7 @@ fun NavGraph(
 ) {
 
     NavHost(
-        navController = navController,
-        startDestination = startDestination
+        navController = navController, startDestination = startDestination
     ) {
 
         composable(Destination.RegistrationScreen.route) {
@@ -44,37 +43,32 @@ fun NavGraph(
             GardenOverviewScreen(navigation = navigation)
         }
 
-        composable(Destination.FlowerPicturesScreen.route, arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
-        )) {
+        composable(Destination.FlowerPicturesScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) {
             val id = it.arguments?.getInt("id")
             FlowerPicturesScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerDescriptionScreen.route, arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
-        )) {
+        composable(Destination.FlowerDescriptionScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) {
             val id = it.arguments?.getInt("id")
             FlowerDescriptionScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerAiScreen.route, arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
-        )) {
+        composable(Destination.FlowerAiScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) {
             val id = it.arguments?.getInt("id")
             FlowerAiScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.FlowerLocationScreen.route, arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
-        )) {
+        composable(Destination.FlowerLocationScreen.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) {
             val id = it.arguments?.getInt("id")
             FlowerLocationScreen(navigation = navigation, id = id ?: -1)
         }
 
-        composable(Destination.LoadingScreenMap.route, arguments = listOf(
-            navArgument("id") { type = NavType.IntType }
-        )) {
+        composable(Destination.LoadingScreenMap.route,
+            arguments = listOf(navArgument("id") { type = NavType.IntType })) {
             val id = it.arguments?.getInt("id")
             LoadingScreenMap(navigation = navigation, id = id ?: -1)
         }

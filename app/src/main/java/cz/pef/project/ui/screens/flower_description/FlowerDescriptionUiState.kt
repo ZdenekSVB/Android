@@ -15,7 +15,5 @@ data class FlowerDescriptionUiState(
 
 
 data class HealthResult(
-    val number: Int,
-    val condition: String,
-    val description: String
+    val number: Int, val condition: String, val description: String
 )

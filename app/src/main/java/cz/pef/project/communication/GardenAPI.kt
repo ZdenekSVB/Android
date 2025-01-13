@@ -5,7 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Headers
 
 
-
 interface GardenAPI {
 
     // Hlava pro specifikování formátu JSON

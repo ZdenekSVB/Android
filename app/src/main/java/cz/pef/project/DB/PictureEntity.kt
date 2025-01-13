@@ -7,14 +7,12 @@ import androidx.room.PrimaryKey
 
 
 @Entity(
-    tableName = "pictures",
-    foreignKeys = [ForeignKey(
+    tableName = "pictures", foreignKeys = [ForeignKey(
         entity = PlantEntity::class,
         parentColumns = ["id"],
         childColumns = ["plantId"],
         onDelete = ForeignKey.CASCADE
-    )],
-    indices = [Index(value = ["plantId"])]
+    )], indices = [Index(value = ["plantId"])]
 )
 data class PictureEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,

@@ -20,11 +20,11 @@ object UserPreferences {
 }
 
 class DataStoreManager @Inject constructor(
-    private val context: Context,
-    private val userDao: UserDao
+    private val context: Context, private val userDao: UserDao
 ) {
     suspend fun getUserId(userName: String): Int {
-        return userDao.getUserIdByUsername(userName) ?: throw IllegalArgumentException("User not found")
+        return userDao.getUserIdByUsername(userName)
+            ?: throw IllegalArgumentException("User not found")
     }
 
     suspend fun saveLoginState(isLoggedIn: Boolean, userName: String) {

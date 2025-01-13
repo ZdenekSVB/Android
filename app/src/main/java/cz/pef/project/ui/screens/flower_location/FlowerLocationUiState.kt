@@ -13,4 +13,4 @@ data class FlowerLocationUiState(
     val exception: Throwable? = null,
     val cException: Exception? = null,
 
-)
+    )

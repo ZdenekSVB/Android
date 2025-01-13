@@ -47,11 +47,8 @@ object RetrofitModule {
     @Provides
     @Singleton
     fun provideRetrofit(moshi: Moshi, okHttpClient: OkHttpClient): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
-            .client(okHttpClient)
-            .build()
+        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create(moshi)).client(okHttpClient).build()
     }
 
 

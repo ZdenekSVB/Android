@@ -28,86 +28,82 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.navigation.INavigationRouter
+import androidx.compose.ui.res.stringResource
+import cz.pef.project.R
 
 @Composable
 fun RegistrationScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<RegistrationViewModel>()
     val uiState = viewModel.uiState
-    val darkTheme = true // Nastavení dark mode
+    val darkTheme = true // Set dark mode
 
     MaterialTheme(
         colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
     ) {
-        Scaffold(
-            modifier = Modifier.fillMaxSize(),
-            content = { padding ->
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(padding)
-                        .padding(16.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    // Nadpis
-                    Text(
-                        text = "AI Garden Helper",
-                        style = MaterialTheme.typography.headlineLarge,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
+        Scaffold(modifier = Modifier.fillMaxSize(), content = { padding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Header
+                Text(
+                    text = stringResource(id = R.string.ai_garden_helper),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
-                    // Pole formuláře
-                    RegistrationField(
-                        label = "First Name",
-                        value = uiState.firstName,
-                        error = uiState.firstNameError,
-                        onValueChange = { viewModel.updateFirstName(it) },
-                        onClear = { viewModel.clearFirstName() }
-                    )
-                    RegistrationField(
-                        label = "Last Name",
-                        value = uiState.lastName,
-                        error = uiState.lastNameError,
-                        onValueChange = { viewModel.updateLastName(it) },
-                        onClear = { viewModel.clearLastName() }
-                    )
-                    RegistrationField(
-                        label = "User Name",
-                        value = uiState.userName,
-                        error = uiState.userNameError,
-                        onValueChange = { viewModel.updateUserName(it) },
-                        onClear = { viewModel.clearUserName() }
-                    )
-                    RegistrationField(
-                        label = "Password",
-                        value = uiState.password,
-                        error = uiState.passwordError,
-                        onValueChange = { viewModel.updatePassword(it) },
-                        onClear = { viewModel.clearPassword() },
-                        isPassword = true
-                    )
+                // Form fields
+                RegistrationField(label = stringResource(id = R.string.first_name),
+                    value = uiState.firstName,
+                    error = uiState.firstNameError,
+                    onValueChange = { viewModel.updateFirstName(it) },
+                    onClear = { viewModel.clearFirstName() })
+                RegistrationField(label = stringResource(id = R.string.last_name),
+                    value = uiState.lastName,
+                    error = uiState.lastNameError,
+                    onValueChange = { viewModel.updateLastName(it) },
+                    onClear = { viewModel.clearLastName() })
+                RegistrationField(label = stringResource(id = R.string.user_name),
+                    value = uiState.userName,
+                    error = uiState.userNameError,
+                    onValueChange = { viewModel.updateUserName(it) },
+                    onClear = { viewModel.clearUserName() })
+                RegistrationField(
+                    label = stringResource(id = R.string.password),
+                    value = uiState.password,
+                    error = uiState.passwordError,
+                    onValueChange = { viewModel.updatePassword(it) },
+                    onClear = { viewModel.clearPassword() },
+                    isPassword = true
+                )
 
-                    Spacer(modifier = Modifier.height(16.dp))
-                    RegistrationButton(
-                        viewModel = viewModel,
-                        navigation = navigation)
-                    Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    // TextButton pro login
-                    TextButton(onClick = { navigation.navigateToLogin() }) {
-                        Text("Already have an account? Login")
-                    }
+                // Register button
+                RegistrationButton(
+                    viewModel = viewModel, navigation = navigation
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                // TextButton for login
+                TextButton(onClick = { navigation.navigateToLogin() }) {
+                    Text(stringResource(id = R.string.already_have_account_login))
                 }
             }
-        )
+        })
     }
 }
+
 @Composable
 fun RegistrationButton(
-    viewModel: RegistrationViewModel,
-    navigation: INavigationRouter
+    viewModel: RegistrationViewModel, navigation: INavigationRouter
 ) {
     val context = LocalContext.current  // Get the context here, inside the composable
 
@@ -116,10 +112,9 @@ fun RegistrationButton(
             viewModel.register(context) {
                 navigation.navigateToGardenOverviewScreen()
             }
-        },
-        modifier = Modifier.fillMaxWidth()
+        }, modifier = Modifier.fillMaxWidth()
     ) {
-        Text("Register")
+        Text(stringResource(id = R.string.register))
     }
 }
 
@@ -141,7 +136,10 @@ fun RegistrationField(
             modifier = Modifier.fillMaxWidth(),
             trailingIcon = {
                 IconButton(onClick = onClear) {
-                    Icon(Icons.Default.Clear, contentDescription = "Clear text")
+                    Icon(
+                        Icons.Default.Clear,
+                        contentDescription = stringResource(id = R.string.clear_text)
+                    )
                 }
             },
             visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None

@@ -1,6 +1,5 @@
 package cz.pef.project.dao
 
-import android.util.Log
 import androidx.room.*
 import cz.pef.project.DB.PictureEntity
 import cz.pef.project.DB.PlantEntity

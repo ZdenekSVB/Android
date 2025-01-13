@@ -1,8 +1,6 @@
 package cz.pef.project.ui.screens.login
 
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
-
 import android.app.Application
 import android.content.Context
 import androidx.lifecycle.AndroidViewModel
@@ -16,8 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    application: Application,
-    private val userDao: UserDao,  // Inject UserDao
+    application: Application, private val userDao: UserDao,  // Inject UserDao
     private val datastore: DataStoreManager // Inject DataStoreManager
 ) : AndroidViewModel(application) {
 

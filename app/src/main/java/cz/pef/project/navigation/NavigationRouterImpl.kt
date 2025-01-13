@@ -2,7 +2,6 @@ package cz.pef.project.navigation
 
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.NavController
-import cz.pef.project.communication.Plant
 
 class NavigationRouterImpl(private val navController: NavController) : INavigationRouter {
 
@@ -51,13 +50,13 @@ class NavigationRouterImpl(private val navController: NavController) : INavigati
                 Destination.FlowerLocationScreen.route,
                 Destination.FlowerDescriptionScreen.route,
                 Destination.FlowerPicturesScreen.route
-            )) {
+            )
+        ) {
             navigateIfResumed(Destination.GardenOverviewScreen.route)
         } else {
             navController.popBackStack()
         }
     }
-
 
 
     private fun navigateIfResumed(route: String) {

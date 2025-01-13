@@ -8,15 +8,15 @@ interface IBaseRemoteRepository {
 
     fun <T : Any> handleResponse(call: Response<T>): CommunicationResult<T> {
 
-            if (call.isSuccessful){
-                call.body()?.let {
-                    return CommunicationResult.Success(it)
-                }?:run {
-                    return CommunicationResult.Error(CommunicationError(call.code(), call.message()))
-                }
-            } else {
+        if (call.isSuccessful) {
+            call.body()?.let {
+                return CommunicationResult.Success(it)
+            } ?: run {
                 return CommunicationResult.Error(CommunicationError(call.code(), call.message()))
             }
+        } else {
+            return CommunicationResult.Error(CommunicationError(call.code(), call.message()))
+        }
 
     }
 
@@ -24,18 +24,22 @@ interface IBaseRemoteRepository {
     suspend fun <T : Any> makeApiCall(apiCall: suspend () -> Response<T>): CommunicationResult<T> {
         try {
             val call: Response<T> = apiCall()
-            if (call.isSuccessful){
+            if (call.isSuccessful) {
                 call.body()?.let {
                     return CommunicationResult.Success(it)
-                }?:run {
-                    return CommunicationResult.Error(CommunicationError(call.code(), call.message()))
+                } ?: run {
+                    return CommunicationResult.Error(
+                        CommunicationError(
+                            call.code(), call.message()
+                        )
+                    )
                 }
             } else {
                 return CommunicationResult.Error(CommunicationError(call.code(), call.message()))
             }
-        } catch (ex: UnknownHostException){
+        } catch (ex: UnknownHostException) {
             return CommunicationResult.Exception(ex)
-        } catch (ex: SocketTimeoutException){
+        } catch (ex: SocketTimeoutException) {
             return CommunicationResult.ConnectionError()
         } catch (ex: Exception) {
             return CommunicationResult.Exception(ex)
