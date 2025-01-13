@@ -1,5 +1,6 @@
 package cz.pef.project.ui.screens.flower_pictures
 
+import android.net.Uri
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -9,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -31,13 +33,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import coil3.compose.AsyncImage
 import coil3.compose.rememberAsyncImagePainter
 import cz.pef.project.communication.Picture
 import cz.pef.project.navigation.INavigationRouter
@@ -125,14 +130,13 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
         }
     }
 }
-
 @Composable
 fun PictureItem(
     picture: Picture, onNameChange: (String) -> Unit, onDelete: () -> Unit
 ) {
     var isEditing by remember { mutableStateOf(false) }
     var editedName by remember { mutableStateOf(picture.name) }
-    var showImageDialog by remember { mutableStateOf(false) } // Stav pro zobrazení zvětšeného obrázku
+    var showImageDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -140,11 +144,15 @@ fun PictureItem(
             .padding(8.dp)
     ) {
         // Obrázek
-        Image(painter = rememberAsyncImagePainter(picture.url),
-            contentDescription = picture.name,
+        AsyncImage(
+            model = Uri.parse(picture.url),
+            contentDescription = stringResource(id = R.string.description),
+            placeholder = painterResource(R.drawable.baseline_image_24),
+            error = painterResource(R.drawable.baseline_image_24),
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { showImageDialog = true } // Kliknutím zobrazit dialog
+                .clickable { showImageDialog = true }, // Otevřít dialog při kliknutí
+            contentScale = ContentScale.Crop
         )
 
         // Změna názvu a stav pro editaci
@@ -173,13 +181,15 @@ fun PictureItem(
                         .padding(top = 8.dp)
                         .align(Alignment.BottomEnd))
             } else {
-                Text(text = picture.name,
+                Text(
+                    text = picture.name,
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.White),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { isEditing = true } // Kliknutím přepnout do režimu editace
+                        .clickable { isEditing = true }
                         .padding(4.dp),
-                    maxLines = 1)
+                    maxLines = 1
+                )
             }
         }
 
@@ -196,23 +206,28 @@ fun PictureItem(
             )
         }
 
-        // Dialog pro zobrazení zvětšeného obrázku
+        // Dialog pro zvětšení obrázku
         if (showImageDialog) {
-            androidx.compose.material3.AlertDialog(onDismissRequest = { showImageDialog = false },
+            androidx.compose.material3.AlertDialog(
+                onDismissRequest = { showImageDialog = false },
                 text = {
                     Image(
                         painter = rememberAsyncImagePainter(picture.url),
-                        contentDescription = "Zoomed Picture",
-                        modifier = Modifier.fillMaxWidth()
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxWidth(),
+                        contentScale = ContentScale.Fit
                     )
                 },
                 confirmButton = {
-                    Text(text = stringResource(id = R.string.close),
+                    Text(
+                        text = stringResource(id = R.string.close),
                         modifier = Modifier
                             .clickable { showImageDialog = false }
                             .padding(8.dp),
-                        color = MaterialTheme.colorScheme.primary)
-                })
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            )
         }
     }
 }

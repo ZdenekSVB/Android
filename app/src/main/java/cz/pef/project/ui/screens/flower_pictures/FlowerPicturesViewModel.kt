@@ -1,5 +1,6 @@
 package cz.pef.project.ui.screens.flower_pictures
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.DB.PictureEntity
@@ -33,46 +34,46 @@ class FlowerPicturesViewModel @Inject constructor(
     fun loadPicturesFromDatabase(plantId: Int) {
         viewModelScope.launch {
             try {
-                val pictures =
-                    pictureDao.getPicturesByPlantId(plantId = plantId) // Replace with the actual plant ID if needed.
+                val pictures = pictureDao.getPicturesByPlantId(plantId)
                 val pictureList = pictures.map { Picture(url = it.url, name = it.name) }
                 _uiState.value = _uiState.value.copy(pictures = pictureList)
             } catch (e: Exception) {
                 setError(e)
+                Log.e("FlowerPicturesVM", "Chyba při načítání obrázků: ${e.message}")
             }
         }
     }
 
+
     fun addPictureToPlant(pictureUri: String, plantId: Int, onError: (String) -> Unit) {
         viewModelScope.launch {
             try {
-                // Check if the picture URI already exists for the given plant
+                // Kontrola, zda obrázek již existuje
                 val existingPicture = pictureDao.getPictureByUriAndPlantId(pictureUri, plantId)
-
                 if (existingPicture != null) {
-                    // If the picture already exists, you can either return or notify the
-                    onError("Photo is already added in gallery")
+                    onError("Foto je již přidáno do galerie")
                     return@launch
                 }
 
-                // Create and save a new picture entity
+                // Uložení obrázku
                 val newPictureEntity = PictureEntity(
                     plantId = plantId,
                     url = pictureUri,
-                    name = "Picture ${System.currentTimeMillis()}"
+                    name = "Obrázek ${System.currentTimeMillis()}"
                 )
                 pictureDao.insertPicture(newPictureEntity)
 
-                // Update UI state
+                // Aktualizace UI stavu
                 val newPicture = Picture(url = pictureUri, name = newPictureEntity.name)
                 _uiState.value = _uiState.value.copy(
                     pictures = _uiState.value.pictures + newPicture
                 )
             } catch (e: Exception) {
-                onError("Couldnt add photo")
+                onError("Obrázek se nepodařilo přidat: ${e.message}")
             }
         }
     }
+
 
 
     fun setError(error: Throwable) {
@@ -80,6 +81,10 @@ class FlowerPicturesViewModel @Inject constructor(
     }
 
     fun updatePictureName(pictureUrl: String, newName: String) {
+        if (newName.isBlank()) {
+            Log.e("FlowerPicturesVM", "Nový název nesmí být prázdný")
+            return
+        }
         viewModelScope.launch {
             try {
                 val pictureEntity = pictureDao.getPictureByUrl(pictureUrl)
@@ -91,6 +96,8 @@ class FlowerPicturesViewModel @Inject constructor(
                         if (it.url == pictureUrl) it.copy(name = newName) else it
                     }
                     _uiState.value = _uiState.value.copy(pictures = updatedPictures)
+                } else {
+                    Log.e("FlowerPicturesVM", "Obrázek nenalezen: $pictureUrl")
                 }
             } catch (e: Exception) {
                 setError(e)
@@ -110,6 +117,7 @@ class FlowerPicturesViewModel @Inject constructor(
             }
         }
     }
+
 
     private fun observeThemePreference() {
         viewModelScope.launch {

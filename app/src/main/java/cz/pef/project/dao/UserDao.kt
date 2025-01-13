@@ -49,9 +49,6 @@ interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertPicture(picture: PictureEntity)
 
-    @Query("SELECT * FROM pictures WHERE plantId = :plantId")
-    suspend fun getPicturesByPlantId(plantId: Int): List<PictureEntity>
-
     @Query("SELECT * FROM pictures WHERE url = :url")
     suspend fun getPictureByUrl(url: String): PictureEntity?
 
@@ -75,4 +72,8 @@ interface UserDao {
 
     @Query("SELECT * FROM plants WHERE id = :plantId")
     suspend fun getPlantById(plantId: Int): PlantEntity?
+
+    @Query("SELECT * FROM pictures WHERE plantId = :plantId")
+    suspend fun getPicturesByPlantId(plantId: Int): List<PictureEntity>
+
 }
