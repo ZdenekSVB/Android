@@ -1,4 +1,4 @@
-import cz.pef.project.ui.screens.garden_overview.GardenOverviewViewModel
+package cz.pef.project.ui.screens.garden_overview
 
 import android.content.Context
 import android.util.Log
@@ -57,6 +57,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewModelScope
 import coil3.compose.rememberAsyncImagePainter
+import cz.pef.project.DB.ResultEntity
 import cz.pef.project.communication.Plant
 import cz.pef.project.datastore.DataStoreManager
 import cz.pef.project.navigation.INavigationRouter
@@ -143,9 +144,11 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                     items(uiState.filteredPlants) { plant ->
                         PlantCard(
                             plant = plant,
-                            onClick = { navigation.navigateToFlowerDescriptionScreen(plant.id) }
+                            onClick = { navigation.navigateToFlowerDescriptionScreen(plant.id) },
+                            results =viewModel.getResultsForPlant(plant.id)// Metoda načtení výsledků
                         )
                     }
+
                 }
             }
         )
@@ -171,10 +174,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
     }
 }
 
-
-
 @Composable
-fun PlantCard(plant: Plant, onClick: () -> Unit) {
+fun PlantCard(plant: Plant, onClick: () -> Unit, results: List<ResultEntity>) {
     Card(
         onClick = onClick,
         modifier = Modifier
@@ -202,15 +203,26 @@ fun PlantCard(plant: Plant, onClick: () -> Unit) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
+
+                // Získání posledního výsledku
+                val lastResult = results.lastOrNull { it.plantId == plant.id }
+                val conditionText = lastResult?.condition ?: "Unknown"
+                val conditionColor = if (conditionText.equals("healthy", ignoreCase = true)) {
+                    Color.Green
+                } else {
+                    Color.Red
+                }
+
                 Text(
-                    text = if (plant.isHealthy) "Healthy" else "Not Healthy",
+                    text = conditionText,
                     style = MaterialTheme.typography.bodySmall,
-                    color = if (plant.isHealthy) Color.Green else Color.Red
+                    color = conditionColor
                 )
             }
         }
     }
 }
+
 
 
 @Composable

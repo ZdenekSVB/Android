@@ -3,6 +3,7 @@ package cz.pef.project.ui.screens.flower_description
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import cz.pef.project.DB.ResultEntity
 import cz.pef.project.dao.UserDao
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -96,5 +97,14 @@ class FlowerDescriptionViewModel @Inject constructor(
             }
         }
     }
+    fun loadResultsForPlant(plantId: Int) {
+        viewModelScope.launch {
+            val results = plantDao.getResultsByPlantId(plantId).mapIndexed { index, result ->
+                HealthResult(number = index+1, condition = result.condition, description = result.description)
+            }
+            _uiState.value = uiState.copy(results = results)
+        }
+    }
+
 
 }

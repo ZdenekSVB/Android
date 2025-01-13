@@ -8,11 +8,13 @@ data class FlowerDescriptionUiState(
     val deathDate: String? = null,
     val isEditNameDialogVisible: Boolean = false,
     val isEditDatesDialogVisible: Boolean = false,
-    val isEditingDescription: Boolean = false // Nový stav pro režim editace
+    val isEditingDescription: Boolean = false,
+    val results: List<HealthResult> = emptyList() // Přidání seznamu výsledků
 )
 
 
 data class HealthResult(
     val number: Int,
-    val condition: String
+    val condition: String,
+    val description: String
 )

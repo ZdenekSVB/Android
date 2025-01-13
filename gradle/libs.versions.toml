@@ -24,6 +24,8 @@ ksp-version = "1.9.0-1.0.13"
 
 lifecycle = "2.8.6"
 playServicesMaps = "19.0.0"
+tensorflowLite = "2.13.0"
+tensorflowLiteSupport = "0.4.0"
 
 
 [libraries]
@@ -72,6 +74,9 @@ room-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx
 room-ktx = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler-kapt = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflowLite" }
+tensorflow-lite-support = { module = "org.tensorflow:tensorflow-lite-support", version.ref = "tensorflowLiteSupport" }
+
 
 
 [plugins]

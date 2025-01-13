@@ -1,7 +1,9 @@
 package cz.pef.project.ui.screens.flower_description
 
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.icu.util.Calendar
+import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -41,7 +44,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.communication.Plant
@@ -54,8 +61,11 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerDescriptionViewModel>()
     val uiState = viewModel.uiState
 
+    val context = LocalContext.current
+
     LaunchedEffect(id) {
         viewModel.loadPlantDetails(id)
+        viewModel.loadResultsForPlant(id)
     }
 
     MaterialTheme(
@@ -162,6 +172,65 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                             }
                         }
                     }
+                    Spacer(modifier = Modifier.height(16.dp))
+
+// LazyColumn pro zobrazení výsledků
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        items(uiState.results) { result ->
+                            Card(
+                                modifier = Modifier.fillMaxWidth(),
+                                elevation = CardDefaults.cardElevation(4.dp)
+                            ) {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(8.dp)
+                                ) {
+                                    // Zobrazení čísla výsledku a podmínky na samostatném řádku
+                                    Text("Result #${result.number}: ${result.condition}")
+
+                                    val annotatedDescription = buildAnnotatedString {
+                                        val urlStart = result.description.indexOf("http")
+                                        if (urlStart != -1) {
+                                            val url = result.description.substring(urlStart)
+                                            val textBeforeUrl = result.description.substring(0, urlStart)
+
+                                            append(textBeforeUrl)
+
+                                            pushStringAnnotation(tag = "URL", annotation = url)
+                                            withStyle(
+                                                style = SpanStyle(
+                                                    color = MaterialTheme.colorScheme.primary,
+                                                    textDecoration = TextDecoration.Underline
+                                                )
+                                            ) {
+                                                append(url)
+                                            }
+                                            pop()
+                                        } else {
+                                            append(result.description)
+                                        }
+                                    }
+
+                                    // Popis s odkazy jako ClickableText
+                                    ClickableText(
+                                        text = annotatedDescription,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        onClick = { offset ->
+                                            annotatedDescription.getStringAnnotations("URL", start = offset, end = offset)
+                                                .firstOrNull()?.let { annotation ->
+                                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                                    context.startActivity(intent)
+                                                }
+                                        }
+                                    )
+                                }
+                            }
+                        }
+                    }
 
 
 
@@ -191,6 +260,7 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                         onCancel = { viewModel.dismissDialogs() }
                     )
                 }
+
             }
         )
     }

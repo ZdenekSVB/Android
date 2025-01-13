@@ -68,6 +68,7 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
 }
 
 dependencies {
@@ -120,5 +121,10 @@ dependencies {
     implementation(libs.room.lifecycle)
     implementation(libs.room.runtime)
     ksp(libs.room.compiler.kapt)
+
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.support)
+
+
 
 }

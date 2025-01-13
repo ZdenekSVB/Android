@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.room.*
 import cz.pef.project.DB.PictureEntity
 import cz.pef.project.DB.PlantEntity
+import cz.pef.project.DB.ResultEntity
 import cz.pef.project.DB.UserEntity
 
 @Dao
@@ -67,5 +68,14 @@ interface UserDao {
 
     @Query("SELECT * FROM pictures WHERE url = :uri AND plantId = :plantId LIMIT 1")
     suspend fun getPictureByUriAndPlantId(uri: String, plantId: Int): PictureEntity?
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertResult(result: ResultEntity)
+
+    @Query("SELECT * FROM results WHERE plantId = :plantId")
+    suspend fun getResultsByPlantId(plantId: Int): List<ResultEntity>
+
+    @Query("SELECT * FROM results WHERE plantId = :plantId ORDER BY id DESC LIMIT 1")
+    suspend fun getLastResultByPlantId(plantId: Int): ResultEntity?
 
 }

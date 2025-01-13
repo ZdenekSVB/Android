@@ -1,10 +1,12 @@
 package cz.pef.project.ui.screens.garden_overview
 
+import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 import androidx.lifecycle.viewModelScope
 import cz.pef.project.DB.PlantEntity
+import cz.pef.project.DB.ResultEntity
 import cz.pef.project.DB.toPlant
 import cz.pef.project.dao.UserDao
 import cz.pef.project.datastore.DataStoreManager
@@ -76,12 +78,26 @@ class GardenOverviewViewModel @Inject constructor(
                 val plants = plantDao.getPlantsByUserId(userId)
                 _uiState.value = _uiState.value.copy(
                     plants = plants.map { it.toPlant() },
-                    filteredPlants = plants.map { it.toPlant() } // Aktualizujte i filtrovaný seznam
+                    filteredPlants = plants.map { it.toPlant() }
                 )
             } catch (e: Exception) {
-                // Handle error
+                Log.e("GardenOverviewViewModel", "Error loading plants: ${e.message}")
             }
         }
     }
+
+    fun getResultsForPlant(plantId: Int): List<ResultEntity> {
+        var results: List<ResultEntity> = emptyList()
+        viewModelScope.launch {
+            try {
+                results = plantDao.getResultsByPlantId(plantId)
+            } catch (e: Exception) {
+                Log.e("GardenOverviewViewModel", "Error fetching results for plant $plantId: ${e.message}")
+            }
+        }
+        return results
+    }
+
+
 
 }
