@@ -141,8 +141,9 @@ class FlowerAiViewModel @Inject constructor(
                 if (results.isNotEmpty()) {
                     uiState.value = uiState.value.copy(analysisResult = results.joinToString("\n") {
                         val confidencePercentage = it.confidence * 100
-                        "${it.title} (Confidence: %.2f%%)".format(confidencePercentage)
+                        String.format("%s (Confidence: %.2f%%)", it.title, confidencePercentage)
                     })
+
 
                 } else {
                     uiState.value =

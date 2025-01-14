@@ -1,6 +1,7 @@
 [versions]
 agp = "8.5.2"
 coilCompose = "3.0.3"
+converterGson = "2.9.0"
 datastorePreferencesVersion = "1.0.0"
 hiltAndroidTesting = "2.46"
 kotlin = "1.9.0"
@@ -8,10 +9,13 @@ coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
+kotlinxCoroutinesTest = "1.7.3"
 lifecycleRuntimeKtx = "2.8.6"
 activityCompose = "1.9.2"
 composeBom = "2024.04.01"
 
+mockitoCore = "5.5.0"
+mockwebserver = "4.10.0"
 room = "2.6.1"
 
 hilt_v = "2.46"
@@ -33,6 +37,7 @@ timber = "4.7.1"
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "datastorePreferencesVersion" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hiltAndroidTesting" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -53,7 +58,10 @@ hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref
 hilt-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hilt-compose_v" }
 hilt-kapt = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt_v" }
 
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+mockito-core = { module = "org.mockito:mockito-core", version.ref = "mockitoCore" }
+mockwebserver = { module = "com.squareup.okhttp3:mockwebserver", version.ref = "mockwebserver" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit_v" }
 retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit_v" }
 retrofit-okhtt3 = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "logging_v" }

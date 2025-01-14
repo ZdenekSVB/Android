@@ -135,5 +135,10 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
     kaptAndroidTest(libs.hilt.kapt)
 
+    implementation(libs.converter.gson)
+    testImplementation(libs.mockwebserver)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    testImplementation(libs.mockito.core)
 
 }
