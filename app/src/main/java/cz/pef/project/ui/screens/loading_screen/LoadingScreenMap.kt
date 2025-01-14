@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.theme.basicMargin
@@ -23,8 +24,7 @@ fun LoadingScreenMap(
 ) {
     navigation.navigateToFlowerLocationScreen(id)
     val viewModel = hiltViewModel<LoadingScreenViewModel>()
-    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
-
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Watch the dark theme setting
 
     MaterialTheme(
         colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
@@ -35,11 +35,13 @@ fun LoadingScreenMap(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
+                    .testTag("LoadingScreen") // Added test tag to the Box
             ) {
                 CircularProgressIndicator(
                     modifier = Modifier
                         .align(Alignment.Center)
                         .padding(top = basicMargin(), bottom = basicMargin())
+                        .testTag("LoadingProgressIndicator") // Added test tag to the progress indicator
                 )
             }
         }

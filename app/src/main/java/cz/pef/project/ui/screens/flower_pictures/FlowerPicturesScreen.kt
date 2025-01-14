@@ -49,6 +49,7 @@ import cz.pef.project.ui.elements.FlowerAppBar
 import cz.pef.project.ui.elements.FlowerNavigationBar
 import cz.pef.project.R
 
+
 @Composable
 fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
     val viewModel = hiltViewModel<FlowerPicturesViewModel>()
@@ -129,6 +130,7 @@ fun FlowerPicturesScreen(navigation: INavigationRouter, id: Int) {
         }
     }
 }
+
 @Composable
 fun PictureItem(
     picture: Picture, onNameChange: (String) -> Unit, onDelete: () -> Unit
@@ -142,7 +144,7 @@ fun PictureItem(
             .aspectRatio(1f)
             .padding(8.dp)
     ) {
-        // Obrázek
+        // Image
         AsyncImage(
             model = Uri.parse(picture.url),
             contentDescription = stringResource(id = R.string.description),
@@ -150,11 +152,11 @@ fun PictureItem(
             error = painterResource(R.drawable.baseline_image_24),
             modifier = Modifier
                 .fillMaxSize()
-                .clickable { showImageDialog = true }, // Otevřít dialog při kliknutí
+                .clickable { showImageDialog = true }, // Open dialog on click
             contentScale = ContentScale.Crop
         )
 
-        // Změna názvu a stav pro editaci
+        // Name change and edit state
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -192,7 +194,7 @@ fun PictureItem(
             }
         }
 
-        // Ikona pro smazání
+        // Delete icon
         IconButton(
             onClick = onDelete, modifier = Modifier
                 .align(Alignment.TopEnd)
@@ -205,7 +207,7 @@ fun PictureItem(
             )
         }
 
-        // Dialog pro zvětšení obrázku
+        // Image dialog for enlarged view
         if (showImageDialog) {
             androidx.compose.material3.AlertDialog(
                 onDismissRequest = { showImageDialog = false },

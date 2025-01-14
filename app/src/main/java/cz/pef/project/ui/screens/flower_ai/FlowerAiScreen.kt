@@ -38,6 +38,7 @@ import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.withStyle
@@ -73,7 +74,9 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(16.dp),
+                    .padding(16.dp)
+                    .testTag("FlowerAiScreenContent") // Přidání testovacího tagu
+                ,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
@@ -81,7 +84,8 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                         .size(200.dp)
                         .clip(RoundedCornerShape(16.dp))
                         .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .clickable { launcher.launch("image/*") }, // Kliknutím spustí výběr obrázku
+                        .clickable { launcher.launch("image/*") } // Kliknutím spustí výběr obrázku
+                        .testTag("ImageSelectBox"), // Přidání testovacího tagu
                     contentAlignment = Alignment.Center
                 ) {
                     if (uiState.selectedImageUri != null) {
@@ -89,11 +93,13 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                             painter = rememberAsyncImagePainter(uiState.selectedImageUri),
                             contentDescription = stringResource(R.string.selected_flower),
                             modifier = Modifier.matchParentSize()
+                                .testTag("SelectedImage") // Přidání testovacího tagu pro obrázek
                         )
                     } else {
                         Text(
                             text = stringResource(R.string.select_image),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.testTag("ImagePlaceholder") // Přidání testovacího tagu pro placeholder
                         )
                     }
                 }
@@ -102,7 +108,8 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
 
                 Button(
                     onClick = { viewModel.analyzeImage(id) },
-                    enabled = uiState.selectedImageUri != null
+                    enabled = uiState.selectedImageUri != null,
+                    modifier = Modifier.testTag("AnalyzeImageButton") // Přidání testovacího tagu pro tlačítko
                 ) {
                     Text(stringResource(R.string.analyze_image))
                 }
@@ -113,7 +120,8 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                     Text(
                         text = stringResource(R.string.results),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.testTag("ResultsTitle") // Přidání testovacího tagu pro titulek výsledků
                     )
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -162,7 +170,9 @@ fun FlowerAiScreen(navigation: INavigationRouter, id: Int) {
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
                                 context.startActivity(intent)
                             }
-                        })
+                        },
+                        modifier = Modifier.testTag("ResultsText") // Přidání testovacího tagu pro text výsledků
+                    )
                 }
             }
         })

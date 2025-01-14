@@ -18,6 +18,7 @@ import cz.pef.project.ui.elements.FlowerNavigationBar
 import cz.pef.project.navigation.INavigationRouter
 import cz.pef.project.ui.elements.GardenCenterBottomSheet
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import cz.pef.project.map.bitmapDescriptorFromVector
 import cz.pef.project.R
@@ -66,25 +67,32 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                 if (uiState.value.location != null) {
                     plantMarkerState = rememberMarkerState(position = uiState.value.location!!)
 
-                    GoogleMap(modifier = Modifier.fillMaxSize(),
+                    GoogleMap(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .testTag("GoogleMap"),
                         cameraPositionState = rememberCameraPositionState {
                             position = CameraPosition.fromLatLngZoom(uiState.value.location!!, 10f)
-                        }) {
-                        Marker(state = plantMarkerState,
+                        }
+                    ) {
+                        Marker(
+                            state = plantMarkerState,
                             title = stringResource(id = R.string.plant_location),
                             draggable = true,
                             onClick = {
                                 isPlantBottomSheetVisible = true
                                 true
-                            })
+                            }
+                        )
 
                         uiState.value.gardenCenters.forEach { gardenCenter ->
-                            Marker(state = rememberMarkerState(
-                                position = LatLng(
-                                    gardenCenter.geometry.coordinates[1],
-                                    gardenCenter.geometry.coordinates[0]
-                                )
-                            ),
+                            Marker(
+                                state = rememberMarkerState(
+                                    position = LatLng(
+                                        gardenCenter.geometry.coordinates[1],
+                                        gardenCenter.geometry.coordinates[0]
+                                    )
+                                ),
                                 title = gardenCenter.properties.name,
                                 snippet = stringResource(id = R.string.garden_center),
                                 icon = bitmapDescriptorFromVector(context, R.drawable.florist),
@@ -92,7 +100,8 @@ fun FlowerLocationScreen(navigation: INavigationRouter, id: Int) {
                                     selectedGardenCenter = gardenCenter
                                     isGardenBottomSheetVisible = true
                                     true
-                                })
+                                }
+                            )
                         }
                     }
                 } else {

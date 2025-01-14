@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -40,6 +41,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.navigation.INavigationRouter
 import androidx.compose.ui.res.stringResource
 import cz.pef.project.R
+
+const val FirstNameField = "FirstNameField"
+const val LastNameField = "LastNameField"
+const val UserNameField = "UserNameField"
+const val PasswordField = "PasswordField"
+const val EditButton = "EditButton"
+const val DarkModeButton = "DarkModeButton"
+const val DarkMode = "DarkMode"
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -81,13 +90,14 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Button(onClick = { viewModel.toggleDarkMode() }) {
+                Button(onClick = { viewModel.toggleDarkMode() }, modifier = Modifier.testTag(DarkModeButton)) {
                     Text(
                         if (isDarkTheme) stringResource(id = R.string.switch_to_light_mode) else stringResource(
                             id = R.string.switch_to_dark_mode
-                        )
+                        ),modifier = Modifier.testTag(DarkMode)
                     )
                 }
+
                 Text(
                     text = if (uiState.isLoggedIn) stringResource(id = R.string.logged_in) else stringResource(
                         id = R.string.logged_out
@@ -97,24 +107,31 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                 Spacer(modifier = Modifier.height(16.dp))
 
                 UserDetailRow(
-                    label = stringResource(id = R.string.first_name), value = uiState.firstName
+                    label = stringResource(id = R.string.first_name),
+                    value = uiState.firstName,
+                    testTag = FirstNameField
                 )
                 UserDetailRow(
-                    label = stringResource(id = R.string.last_name), value = uiState.lastName
+                    label = stringResource(id = R.string.last_name),
+                    value = uiState.lastName,
+                    testTag = LastNameField
                 )
                 UserDetailRow(
-                    label = stringResource(id = R.string.user_name), value = uiState.userName
+                    label = stringResource(id = R.string.user_name),
+                    value = uiState.userName,
+                    testTag = UserNameField
                 )
                 UserDetailRow(
-                    label = stringResource(id = R.string.password), value = "********"
-                ) // Hide password
+                    label = stringResource(id = R.string.password),
+                    value = "********",
+                    testTag = PasswordField
+                )
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                Button(onClick = { viewModel.showEditDialog() }) {
+                Button(onClick = { viewModel.showEditDialog() }, modifier = Modifier.testTag(EditButton)) {
                     Text(stringResource(id = R.string.edit))
                 }
-
             }
 
             if (uiState.isEditDialogVisible) {
@@ -125,9 +142,7 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                     password = uiState.password,
                     onDismiss = { viewModel.hideEditDialog() },
                     onSave = { firstName, lastName, userName, password ->
-                        viewModel.validateAndSaveUserDetails(
-                            firstName, lastName, userName, password
-                        )
+                        viewModel.validateAndSaveUserDetails(firstName, lastName, userName, password)
                     },
                     firstNameError = uiState.firstNameError,
                     lastNameError = uiState.lastNameError,
@@ -135,17 +150,17 @@ fun UserSettingsScreen(navigation: INavigationRouter) {
                     passwordError = uiState.passwordError
                 )
             }
-
         })
     }
 }
 
 @Composable
-fun UserDetailRow(label: String, value: String) {
+fun UserDetailRow(label: String, value: String, testTag: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .testTag(testTag),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
@@ -185,7 +200,8 @@ fun EditUserDialog(
                 OutlinedTextField(value = newFirstName,
                     onValueChange = { newFirstName = it },
                     label = { Text(stringResource(id = R.string.first_name)) },
-                    isError = firstNameError != null
+                    isError = firstNameError != null,
+                    modifier = Modifier.testTag("EditFirstNameField")
                 )
                 if (firstNameError != null) {
                     Text(firstNameError, color = MaterialTheme.colorScheme.error)
@@ -193,7 +209,8 @@ fun EditUserDialog(
                 OutlinedTextField(value = newLastName,
                     onValueChange = { newLastName = it },
                     label = { Text(stringResource(id = R.string.last_name)) },
-                    isError = lastNameError != null
+                    isError = lastNameError != null,
+                    modifier = Modifier.testTag("EditLastNameField")
                 )
                 if (lastNameError != null) {
                     Text(lastNameError, color = MaterialTheme.colorScheme.error)
@@ -201,7 +218,8 @@ fun EditUserDialog(
                 OutlinedTextField(value = newUserName,
                     onValueChange = { newUserName = it },
                     label = { Text(stringResource(id = R.string.user_name)) },
-                    isError = userNameError != null
+                    isError = userNameError != null,
+                    modifier = Modifier.testTag("EditUserNameField")
                 )
                 if (userNameError != null) {
                     Text(userNameError, color = MaterialTheme.colorScheme.error)
@@ -211,6 +229,7 @@ fun EditUserDialog(
                     label = { Text(stringResource(id = R.string.password)) },
                     isError = passwordError != null,
                     visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                    modifier = Modifier.testTag("EditPasswordField"),
                     trailingIcon = {
                         IconButton(onClick = { passwordVisible = !passwordVisible }) {
                             Icon(

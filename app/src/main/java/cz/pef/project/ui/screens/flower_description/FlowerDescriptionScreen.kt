@@ -44,6 +44,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -92,7 +93,9 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
             ) {
                 // Jméno kytky s edit tlačítkem
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("EditNameButton"), // Přidání testovacího tagu
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -142,7 +145,7 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Description section
+                // Popis kytky s edit tlačítkem
                 Column(
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -158,18 +161,21 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                     .fillMaxWidth(0.9f) // Limit width so the icon button can still fit
                                     .height(200.dp) // Height for the text input
                                     .verticalScroll(rememberScrollState()) // Scrollable text field
+                                    .testTag("DescriptionInputField") // Přidání testovacího tagu
                             )
                         } else {
                             Text(
                                 text = uiState.description
                                     ?: stringResource(id = R.string.no_description_available),
                                 style = MaterialTheme.typography.bodyMedium,
-                                modifier = Modifier.padding(8.dp)
+                                modifier = Modifier
+                                    .padding(8.dp)
+                                    .testTag("DescriptionText") // Přidání testovacího tagu pro text
                             )
                         }
                     }
 
-                    // Save/Edit button always visible, ensuring it stays aligned at the end
+                    // Save/Edit button always visible
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -187,13 +193,15 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                 imageVector = if (uiState.isEditingDescription) Icons.Default.CheckCircle else Icons.Default.Edit,
                                 contentDescription = if (uiState.isEditingDescription) stringResource(
                                     id = R.string.save_description
-                                ) else stringResource(id = R.string.edit_description)
+                                ) else stringResource(id = R.string.edit_description),
+                                modifier = Modifier.testTag("SaveDescriptionButton") // Přidání testovacího tagu
                             )
                         }
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Zobrazení výsledků
                 LazyColumn(
                     modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -236,7 +244,8 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                 }
 
                                 // Popis s odkazy jako ClickableText
-                                ClickableText(text = annotatedDescription,
+                                ClickableText(
+                                    text = annotatedDescription,
                                     style = MaterialTheme.typography.bodyMedium,
                                     onClick = { offset ->
                                         annotatedDescription.getStringAnnotations(
@@ -247,30 +256,40 @@ fun FlowerDescriptionScreen(navigation: INavigationRouter, id: Int) {
                                             )
                                             context.startActivity(intent)
                                         }
-                                    })
+                                    },
+                                    modifier = Modifier.testTag("ResultDescriptionText") // Přidání testovacího tagu
+                                )
                             }
                         }
                     }
                 }
             }
 
+            // Dialog pro úpravu jména
             if (uiState.isEditNameDialogVisible) {
-                EditNameDialog(currentName = uiState.name ?: "", onSave = { newName ->
-                    viewModel.updateName(newName)
-                    viewModel.saveNameToDatabase(newName) // Uloží do databáze
-                    viewModel.dismissDialogs()
-                }, onCancel = { viewModel.dismissDialogs() })
+                EditNameDialog(
+                    currentName = uiState.name ?: "",
+                    onSave = { newName ->
+                        viewModel.updateName(newName)
+                        viewModel.saveNameToDatabase(newName) // Uloží do databáze
+                        viewModel.dismissDialogs()
+                    },
+                    onCancel = { viewModel.dismissDialogs() }
+                )
             }
 
+            // Dialog pro úpravu dat
             if (uiState.isEditDatesDialogVisible) {
-                EditDatesDialog(currentPlantDate = uiState.plantDate,
+                EditDatesDialog(
+                    currentPlantDate = uiState.plantDate,
                     currentDeathDate = uiState.deathDate,
                     onSave = { plantDate, deathDate ->
                         viewModel.updateDates(plantDate, deathDate)
                         viewModel.saveDatesToDatabase(plantDate, deathDate) // Uloží do databáze
                         viewModel.dismissDialogs()
                     },
-                    onCancel = { viewModel.dismissDialogs() })
+                    onCancel = { viewModel.dismissDialogs() }
+                )
             }
         })
     }
@@ -374,6 +393,7 @@ fun EditNameDialog(currentName: String, onSave: (String) -> Unit, onCancel: () -
                 onValueChange = { newName = it },
                 label = { Text(stringResource(id = R.string.name)) },
                 modifier = Modifier.fillMaxWidth()
+                    .testTag("NameInputField") // Přidání testovacího tagu
             )
         },
         confirmButton = {

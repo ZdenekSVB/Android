@@ -44,6 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -60,7 +61,7 @@ import kotlinx.coroutines.launch
 fun GardenOverviewScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<GardenOverviewViewModel>()
     val uiState by viewModel.uiState.collectAsState()
-    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Sledujeme nastavení tmavého režimu
+    val isDarkTheme by viewModel.isDarkTheme.collectAsState() // Watch the dark theme setting
     val (showDialog, setShowDialog) = remember { mutableStateOf(false) }
     val dataStore = viewModel.dataStoreManager
 
@@ -87,7 +88,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                         IconButton(onClick = { navigation.returnBack() }) {
                             Icon(
                                 Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = stringResource(id = R.string.back)
+                                contentDescription = stringResource(id = R.string.back),
+                                modifier = Modifier.testTag("BackButton")
                             )
                         }
                     },
@@ -95,7 +97,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                         IconButton(onClick = { navigation.navigateToUserSettingsScreen() }) {
                             Icon(
                                 Icons.Default.AccountCircle,
-                                contentDescription = stringResource(id = R.string.user_settings)
+                                contentDescription = stringResource(id = R.string.user_settings),
+                                modifier = Modifier.testTag("UserSettingsButton")
                             )
                         }
                     }
@@ -106,22 +109,26 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                     modifier = Modifier.fillMaxWidth(),
                     actions = {
                         OutlinedTextField(
-                            value = uiState.searchQuery, // Hodnota propojena se stavem
-                            onValueChange = { viewModel.updateSearchQuery(it) }, // Aktualizace hodnoty ve ViewModelu
+                            value = uiState.searchQuery, // Value linked to state
+                            onValueChange = { viewModel.updateSearchQuery(it) },
                             placeholder = { Text(stringResource(id = R.string.search)) },
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier
+                                .weight(1f)
+                                .testTag("SearchField"),
                             trailingIcon = {
                                 if (uiState.searchQuery.isNotEmpty()) {
                                     IconButton(onClick = { viewModel.updateSearchQuery("") }) {
                                         Icon(
                                             Icons.Default.Clear,
-                                            contentDescription = stringResource(id = R.string.clear)
+                                            contentDescription = stringResource(id = R.string.clear),
+                                            modifier = Modifier.testTag("ClearSearchButton")
                                         )
                                     }
                                 } else {
                                     Icon(
                                         Icons.Default.Search,
-                                        contentDescription = stringResource(id = R.string.search)
+                                        contentDescription = stringResource(id = R.string.search),
+                                        modifier = Modifier.testTag("SearchIcon")
                                     )
                                 }
                             }
@@ -133,7 +140,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                 FloatingActionButton(onClick = { setShowDialog(true) }) {
                     Icon(
                         Icons.Default.Add,
-                        contentDescription = stringResource(id = R.string.add_plant)
+                        contentDescription = stringResource(id = R.string.add_plant),
+                        modifier = Modifier.testTag("AddPlantButton")
                     )
                 }
             },
@@ -142,7 +150,8 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(padding)
-                        .padding(8.dp),
+                        .padding(8.dp)
+                        .testTag("PlantList"),
                     contentPadding = PaddingValues(bottom = 72.dp) // Space for BottomAppBar
                 ) {
                     items(uiState.filteredPlants) { plant ->
@@ -175,6 +184,7 @@ fun GardenOverviewScreen(navigation: INavigationRouter) {
         }
     }
 }
+
 
 @Composable
 fun PlantCard(plant: Plant, onClick: () -> Unit) {

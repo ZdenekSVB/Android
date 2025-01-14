@@ -30,7 +30,7 @@ android {
         versionCode = myVersionCode
         versionName = myVersionName
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "cz.pef.project.HiltTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -68,7 +68,9 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
+    adbOptions {
+        timeOutInMs = 20000 // Increase timeout to 20 seconds
+    }
 }
 
 dependencies {
@@ -82,11 +84,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.play.services.maps)
-    implementation(libs.core.ktx)
-    implementation(libs.androidx.junit.ktx)
-    implementation(libs.androidx.runner)
     testImplementation(libs.junit)
-    testImplementation(libs.junit.jupiter)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
@@ -130,23 +128,12 @@ dependencies {
     implementation(libs.tensorflow.lite.support)
 
 
-    // Testovací knihovny
-    testImplementation(libs.junit)
-    testImplementation(libs.mockito.core)
-    testImplementation(libs.kotlinx.coroutines.test)
+    implementation(libs.timber)
 
-    // Retrofit a Gson
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
-    // MockWebServer pro testování API
-    testImplementation(libs.mockwebserver)
-
-    // Další knihovny (pokud používáte AndroidX testy)
-    testImplementation(libs.mockk)
 
     // Hilt testing
     androidTestImplementation(libs.hilt.android.testing)
-    kaptAndroidTest(libs.hilt.android.compiler.v2511)
+    kaptAndroidTest(libs.hilt.kapt)
+
 
 }

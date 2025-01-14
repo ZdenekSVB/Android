@@ -33,6 +33,11 @@ import cz.pef.project.navigation.INavigationRouter
 import androidx.compose.ui.res.stringResource
 import cz.pef.project.R
 
+
+const val UserNameLoginField = "UserNameLoginField"
+const val PasswordLoginField = "PasswordLoginField"
+const val LoginButton = "LoginButton"
+
 @Composable
 fun LoginScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<LoginViewModel>()
@@ -65,7 +70,7 @@ fun LoginScreen(navigation: INavigationRouter) {
                     value = uiState.userName,
                     error = uiState.userNameError,
                     onValueChange = { viewModel.updateUserName(it) },
-                    testTag = "UserNameLoginField",
+                    testTag = UserNameLoginField,
                     onClear = { viewModel.clearUserName() })
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -78,14 +83,14 @@ fun LoginScreen(navigation: INavigationRouter) {
                     onValueChange = { viewModel.updatePassword(it) },
                     onClear = { viewModel.clearPassword() },
                     isPassword = true,
-                    testTag = "PasswordLoginField"
+                    testTag = PasswordLoginField
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Login Button
                 LoginButton(
-                    viewModel = viewModel, navigation = navigation, testTag = "LoginButton"
+                    viewModel = viewModel, navigation = navigation, testTag = LoginButton
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))

@@ -1,5 +1,6 @@
 package cz.pef.project.ui.screens.registration
 
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -30,12 +32,20 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import cz.pef.project.navigation.INavigationRouter
 import androidx.compose.ui.res.stringResource
 import cz.pef.project.R
+import cz.pef.project.navigation.Destination
+
+const val FirstNameField = "FirstNameField"
+const val LastNameField = "LastNameField"
+const val UserNameRegistrationField = "UserNameRegistrationField"
+const val PasswordRegistrationField = "PasswordRegistrationField"
+const val RegistrationButtonTag = "RegistrationButton"
 
 @Composable
 fun RegistrationScreen(navigation: INavigationRouter) {
     val viewModel = hiltViewModel<RegistrationViewModel>()
     val uiState = viewModel.uiState
     val darkTheme = true // Set dark mode
+
 
     MaterialTheme(
         colorScheme = if (darkTheme) darkColorScheme() else lightColorScheme()
@@ -59,35 +69,47 @@ fun RegistrationScreen(navigation: INavigationRouter) {
                 Spacer(modifier = Modifier.height(24.dp))
 
                 // Form fields
-                RegistrationField(label = stringResource(id = R.string.first_name),
+                RegistrationField(
+                    label = stringResource(id = R.string.first_name),
                     value = uiState.firstName,
                     error = uiState.firstNameError,
                     onValueChange = { viewModel.updateFirstName(it) },
-                    onClear = { viewModel.clearFirstName() })
-                RegistrationField(label = stringResource(id = R.string.last_name),
+                    onClear = { viewModel.clearFirstName() },
+                    testTag = FirstNameField
+                )
+                RegistrationField(
+                    label = stringResource(id = R.string.last_name),
                     value = uiState.lastName,
                     error = uiState.lastNameError,
                     onValueChange = { viewModel.updateLastName(it) },
-                    onClear = { viewModel.clearLastName() })
-                RegistrationField(label = stringResource(id = R.string.user_name),
+                    onClear = { viewModel.clearLastName() },
+                    testTag = LastNameField
+                )
+                RegistrationField(
+                    label = stringResource(id = R.string.user_name),
                     value = uiState.userName,
                     error = uiState.userNameError,
                     onValueChange = { viewModel.updateUserName(it) },
-                    onClear = { viewModel.clearUserName() })
+                    onClear = { viewModel.clearUserName() },
+                    testTag = UserNameRegistrationField
+                )
                 RegistrationField(
                     label = stringResource(id = R.string.password),
                     value = uiState.password,
                     error = uiState.passwordError,
                     onValueChange = { viewModel.updatePassword(it) },
                     onClear = { viewModel.clearPassword() },
-                    isPassword = true
+                    isPassword = true,
+                    testTag = PasswordRegistrationField
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // Register button
                 RegistrationButton(
-                    viewModel = viewModel, navigation = navigation
+                    viewModel = viewModel,
+                    navigation = navigation,
+                    testTag = RegistrationButtonTag
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -103,16 +125,21 @@ fun RegistrationScreen(navigation: INavigationRouter) {
 
 @Composable
 fun RegistrationButton(
-    viewModel: RegistrationViewModel, navigation: INavigationRouter
+    viewModel: RegistrationViewModel,
+    navigation: INavigationRouter,
+    testTag: String
 ) {
-    val context = LocalContext.current  // Get the context here, inside the composable
+    val context = LocalContext.current
 
     Button(
         onClick = {
             viewModel.register(context) {
                 navigation.navigateToGardenOverviewScreen()
             }
-        }, modifier = Modifier.fillMaxWidth()
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag) // Add test tag here
     ) {
         Text(stringResource(id = R.string.register))
     }
@@ -125,7 +152,8 @@ fun RegistrationField(
     error: String?,
     onValueChange: (String) -> Unit,
     onClear: () -> Unit,
-    isPassword: Boolean = false
+    isPassword: Boolean = false,
+    testTag: String
 ) {
     Column {
         OutlinedTextField(
@@ -133,7 +161,9 @@ fun RegistrationField(
             onValueChange = onValueChange,
             label = { Text(label) },
             isError = error != null,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag(testTag), // Add test tag here
             trailingIcon = {
                 IconButton(onClick = onClear) {
                     Icon(
