@@ -48,6 +48,7 @@ fun FlowerNavigationBar(
         },
             label = { Text(stringResource(R.string.map)) },
             selected = selectedItem == "Map",
-            onClick = { navigation.navigateToLoadingScreenMap(id) })
+            onClick = { navigation.navigateToFlowerLocationScreen(id) })
+        //navigation.navigateToLoadingScreenMap(id) někdy se načte někdy ne
     }
 }
